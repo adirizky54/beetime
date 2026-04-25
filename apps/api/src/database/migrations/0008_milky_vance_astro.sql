@@ -1,0 +1,2 @@
+CREATE TYPE "public"."date_format_enum" AS ENUM('hyphen-separated-yyyy-mm-dd', 'hyphen-separated-mm-dd-yyyy', 'hyphen-separated-dd-mm-yyyy', 'slash-separated-mm-dd-yyyy', 'slash-separated-dd-mm-yyyy');--> statement-breakpoint
+ALTER TABLE "organizations" ADD COLUMN "date_format" date_format_enum DEFAULT 'hyphen-separated-yyyy-mm-dd';

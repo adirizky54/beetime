@@ -1,7 +1,6 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "packageManager": "bun",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -23,9 +22,22 @@
       "outputs": []
     },
     "check:types": {
-      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!**/*.md"],
       "outputs": []
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:push": {
+      "cache": false
+    },
+    "db:studio": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "organizations" ADD COLUMN "interval_format" interval_format_enum DEFAULT 'hours-minutes';
