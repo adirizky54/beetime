@@ -1,8 +1,9 @@
 import { and, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import type { CreateTaskInput, UpdateTaskInput } from "@beetime/schema";
+
 import { tasks } from "@/database/schema";
 import { db } from "@/lib/db";
-import type { CreateTaskInput, UpdateTaskInput } from "@/schemas/tasks";
 
 export async function listTasks(projectId: string) {
   const tasksList = await db.query.tasks.findMany({

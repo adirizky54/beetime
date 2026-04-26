@@ -1,17 +1,13 @@
 import { and, desc, eq, exists, ilike, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import type { CreateProjectInput, ProjectQuery, UpdateProjectInput } from "@beetime/schema";
 
 import { clients, members, projectMembers, projects, users } from "@/database/schema";
 import type { AuthUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { withPagination } from "@/lib/pagination";
-import type {
-  ListProjectsInput,
-  CreateProjectInput,
-  UpdateProjectInput,
-} from "@/schemas/projects";
 
-export async function listProjects(user: AuthUser, orgId: string, query: ListProjectsInput) {
+export async function listProjects(user: AuthUser, orgId: string, query: ProjectQuery) {
   const conditions = [eq(projects.organizationId, orgId)];
 
   if (query.status === "active") {

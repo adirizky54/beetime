@@ -1,13 +1,13 @@
 import { eq, and, or, like, isNull, isNotNull, asc } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import type { ClientQuery, CreateClientInput, UpdateClientInput } from "@beetime/schema";
 
 import { clients, projects } from "@/database/schema";
 import type { AuthUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { withPagination } from "@/lib/pagination";
-import type { CreateClientInput, ListClientsInput, UpdateClientInput } from "@/schemas/clients";
 
-export async function listClients(orgId: string, query: ListClientsInput) {
+export async function listClients(orgId: string, query: ClientQuery) {
   const conditions = [eq(clients.organizationId, orgId)];
 
   if (query.status === "active") {
@@ -56,7 +56,7 @@ export async function listClients(orgId: string, query: ListClientsInput) {
   return result;
 }
 
-export async function listClientsAll(orgId: string, status: ListClientsInput["status"]) {
+export async function listClientsAll(orgId: string, status: ClientQuery["status"]) {
   const conditions = [eq(clients.organizationId, orgId)];
 
   if (status === "active") {

@@ -1,17 +1,20 @@
 import * as v from "valibot";
+import {
+  ClientQuerySchema,
+  CreateClientSchema,
+  CreateProjectSchema,
+  MemberAllQuerySchema,
+  MemberQuerySchema,
+  ProjectQuerySchema,
+  UpdateClientSchema,
+  UpdateProjectSchema
+} from "@beetime/schema";
 
 import { createRouter } from "@/lib/app";
 import { authMiddleware } from "@/middlewares/auth";
 import { authorize } from "@/middlewares/authorize";
 import { validator } from "@/middlewares/validator";
 import { verifyMembership } from "@/middlewares/verify-membership";
-import { createClientSchema, listClientsSchema, updateClientSchema } from "@/schemas/clients";
-import { listMembersAllSchema, listMembersSchema } from "@/schemas/members";
-import {
-  createProjectSchema,
-  listProjectsSchema,
-  updateProjectSchema,
-} from "@/schemas/projects";
 import * as clientService from "@/services/clients";
 import * as memberService from "@/services/members";
 import * as projectService from "@/services/projects";
@@ -26,7 +29,7 @@ organizationsRoutes.use("*", verifyMembership);
 organizationsRoutes.get(
   "/projects",
   authorize({ project: ["read"] }),
-  validator("query", listProjectsSchema),
+  validator("query", ProjectQuerySchema),
   async (c) => {
     const user = c.get("user")!;
     const { orgId } = c.req.param();
@@ -75,7 +78,7 @@ organizationsRoutes.get(
 organizationsRoutes.post(
   "/projects",
   authorize({ project: ["create"] }),
-  validator("json", createProjectSchema),
+  validator("json", CreateProjectSchema),
   async (c) => {
     const user = c.get("user")!;
     const { orgId } = c.req.param();
@@ -97,7 +100,7 @@ organizationsRoutes.post(
 organizationsRoutes.patch(
   "/projects/:projectId",
   authorize({ project: ["update"] }),
-  validator("json", updateProjectSchema),
+  validator("json", UpdateProjectSchema),
   async (c) => {
     const { orgId, projectId } = c.req.param();
     const data = c.req.valid("json");
@@ -165,7 +168,7 @@ organizationsRoutes.post(
 organizationsRoutes.get(
   "/clients",
   authorize({ client: ["read"] }),
-  validator("query", listClientsSchema),
+  validator("query", ClientQuerySchema),
   async (c) => {
     const { orgId } = c.req.param();
     const query = c.req.valid("query");
@@ -182,7 +185,7 @@ organizationsRoutes.get(
 organizationsRoutes.get(
   "/clients/all",
   authorize({ client: ["read"] }),
-  validator("query", v.pick(listClientsSchema, ["status"])),
+  validator("query", v.pick(ClientQuerySchema, ["status"])),
   async (c) => {
     const { orgId } = c.req.param();
     const { status } = c.req.valid("query");
@@ -214,7 +217,7 @@ organizationsRoutes.get(
 organizationsRoutes.post(
   "/clients",
   authorize({ client: ["create"] }),
-  validator("json", createClientSchema),
+  validator("json", CreateClientSchema),
   async (c) => {
     const user = c.get("user")!;
     const { orgId } = c.req.param();
@@ -232,7 +235,7 @@ organizationsRoutes.post(
 organizationsRoutes.patch(
   "/clients/:clientId",
   authorize({ client: ["update"] }),
-  validator("json", updateClientSchema),
+  validator("json", UpdateClientSchema),
   async (c) => {
     const { orgId, clientId } = c.req.param();
     const data = c.req.valid("json");
@@ -296,7 +299,7 @@ organizationsRoutes.post(
 organizationsRoutes.get(
   "/members",
   authorize({ member: ["read"] }),
-  validator("query", listMembersSchema),
+  validator("query", MemberQuerySchema),
   async (c) => {
     const { orgId } = c.req.param();
     const query = c.req.valid("query");
@@ -313,7 +316,7 @@ organizationsRoutes.get(
 organizationsRoutes.get(
   "/members/all",
   authorize({ member: ["read"] }),
-  validator("query", listMembersAllSchema),
+  validator("query", MemberAllQuerySchema),
   async (c) => {
     const { orgId } = c.req.param();
     const query = c.req.valid("query");

@@ -1,11 +1,11 @@
 import { and, asc, eq, ilike, or, sql } from "drizzle-orm";
+import type { MemberAllQuery, MemberQuery } from "@beetime/schema";
 
 import { members, users } from "@/database/schema";
 import { db } from "@/lib/db";
 import { withPagination } from "@/lib/pagination";
-import type { ListMembersAllInput, ListMembersInput } from "@/schemas/members";
 
-function buildMemberConditions(orgId: string, query: ListMembersAllInput) {
+function buildMemberConditions(orgId: string, query: MemberAllQuery) {
   const conditions = [eq(members.organizationId, orgId)];
 
   if (query.search) {
@@ -36,7 +36,7 @@ const memberFields = {
   createdAt: members.createdAt,
 };
 
-export async function listMembers(orgId: string, query: ListMembersInput) {
+export async function listMembers(orgId: string, query: MemberQuery) {
   const conditions = buildMemberConditions(orgId, query);
 
   const memberList = db
@@ -63,7 +63,7 @@ export async function listMembers(orgId: string, query: ListMembersInput) {
   return result;
 }
 
-export async function listMembersAll(orgId: string, query: ListMembersAllInput) {
+export async function listMembersAll(orgId: string, query: MemberAllQuery) {
   const conditions = buildMemberConditions(orgId, query);
 
   return db
