@@ -1,5 +1,6 @@
 import * as v from "valibot";
 import {
+  ClientAllQuerySchema,
   ClientQuerySchema,
   CreateClientSchema,
   CreateProjectSchema,
@@ -185,7 +186,7 @@ organizationsRoutes.get(
 organizationsRoutes.get(
   "/clients/all",
   authorize({ client: ["read"] }),
-  validator("query", v.pick(ClientQuerySchema, ["status"])),
+  validator("query", ClientAllQuerySchema),
   async (c) => {
     const { orgId } = c.req.param();
     const { status } = c.req.valid("query");

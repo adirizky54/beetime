@@ -24,8 +24,8 @@ export const CreateProjectSchema = v.pipe(
   v.object({
     name: v.pipe(v.string(), v.trim(), v.nonEmpty("Project name must not be empty")),
     description: v.optional(v.string()),
-    clientId: v.nullish(v.pipe(v.string(), v.uuid("Invalid client ID format"))),
-    privacy: v.optional(v.picklist(["public", "private"]), "public"),
+    clientId: v.nullable(v.string()),
+    privacy: v.picklist(["public", "private"]),
     userIds: v.array(v.string()),
   }),
   v.forward(
@@ -41,9 +41,9 @@ export const UpdateProjectSchema = v.pipe(
   v.object({
     name: v.optional(v.pipe(v.string(), v.trim(), v.nonEmpty("Project name must not be empty"))),
     description: v.optional(v.string()),
-    clientId: v.nullish(v.pipe(v.string(), v.uuid("Invalid client ID format"))),
-    privacy: v.optional(v.picklist(["public", "private"])),
-    userIds: v.optional(v.array(v.string())),
+    clientId: v.nullable(v.string()),
+    privacy: v.picklist(["public", "private"]),
+    userIds: v.array(v.string()),
   }),
   v.forward(
     v.check(
@@ -52,7 +52,7 @@ export const UpdateProjectSchema = v.pipe(
     ),
     ["userIds"],
   ),
-);;
+);
 
 export const ProjectQuerySchema = v.object({
   ...PaginationSchema.entries,

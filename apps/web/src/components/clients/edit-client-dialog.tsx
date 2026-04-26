@@ -2,6 +2,7 @@ import { Controller, useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { UpdateClientSchema, type Client, type UpdateClientInput } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
 import {
   Dialog,
@@ -22,7 +23,7 @@ import { Spinner } from "@beetime/ui/components/spinner";
 import { Textarea } from "@beetime/ui/components/textarea";
 import { toastManager } from "@beetime/ui/components/toast";
 
-import { type Client, type ClientCreateInput, ClientCreateSchema, clientQueries } from "@/queries/clients";
+import { clientQueries } from "@/queries/client";
 
 interface EditClientDialogProps {
   open: boolean;
@@ -33,9 +34,9 @@ interface EditClientDialogProps {
 export function EditClientDialog({ open, onOpenChange, client }: EditClientDialogProps) {
   const queryClient = useQueryClient();
 
-  const form = useForm<ClientCreateInput>({
+  const form = useForm<UpdateClientInput>({
     mode: "all",
-    resolver: valibotResolver(ClientCreateSchema),
+    resolver: valibotResolver(UpdateClientSchema),
     defaultValues: {
       name: client.name,
       email: client.email,
@@ -56,7 +57,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
         if (error.response.status === 400) {
           const errors = error.data.errors;
           for (const key in errors) {
-            form.setError(key as keyof ClientCreateInput, {
+            form.setError(key as keyof UpdateClientInput, {
               type: "manual",
               message: errors[key][0],
             });

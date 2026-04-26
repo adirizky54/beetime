@@ -2,6 +2,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { UpdateProjectSchema, type Client, type Project, type UpdateProjectInput } from "@beetime/schema";
 import { Avatar, AvatarFallback, AvatarImage } from "@beetime/ui/components/avatar";
 import { Button } from "@beetime/ui/components/button";
 import {
@@ -41,8 +42,8 @@ import { toastManager } from "@beetime/ui/components/toast";
 
 import { getInitials } from "@/utils/string";
 import { authQueries } from "@/queries/auth";
-import { type Client, clientQueries } from "@/queries/clients";
-import { type Project, type ProjectCreateInput, ProjectCreateSchema, projectQueries } from "@/queries/projects";
+import { projectQueries } from "@/queries/project";
+import { clientQueries } from "@/queries/client";
 
 interface EditProjectDialogProps {
   open: boolean;
@@ -54,9 +55,9 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
   const queryClient = useQueryClient();
   const anchor = useComboboxAnchor();
 
-  const form = useForm<ProjectCreateInput>({
+  const form = useForm<UpdateProjectInput>({
     mode: "all",
-    resolver: valibotResolver(ProjectCreateSchema),
+    resolver: valibotResolver(UpdateProjectSchema),
     defaultValues: {
       name: project.name,
       description: project.description ?? "",
@@ -91,7 +92,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
         if (error.response.status === 400) {
           const errors = error.data.errors;
           for (const key in errors) {
-            form.setError(key as keyof ProjectCreateInput, {
+            form.setError(key as keyof UpdateProjectInput, {
               type: "manual",
               message: errors[key][0],
             });

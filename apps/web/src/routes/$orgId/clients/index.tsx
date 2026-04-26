@@ -5,6 +5,7 @@ import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
+import { ClientQuerySchema, type Client } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@beetime/ui/components/dropdown-menu";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@beetime/ui/components/input-group";
@@ -17,14 +18,14 @@ import { AppContent } from "@/components/layouts/app-content";
 import { AppHeader } from "@/components/layouts/app-header";
 import { CreateClientDialog } from "@/components/clients/create-client-dialog";
 import { ActionsClient } from "@/components/clients/actions-client";
-import { type Client, ClientSearchParamsSchema, clientQueries } from "@/queries/clients";
+import { clientQueries } from "@/queries/client";
 import { toTitleCase } from "@/utils/string";
 
 export const Route = createFileRoute("/$orgId/clients/")({
   head: () => ({
     meta: [{ title: "Clients — Bee Time" }]
   }),
-  validateSearch: ClientSearchParamsSchema,
+  validateSearch: ClientQuerySchema,
   component: RouteComponent,
 })
 

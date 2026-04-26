@@ -34,7 +34,10 @@ export const ClientQuerySchema = v.object({
   status: v.optional(v.picklist(["all", "active", "archived"]), "all"),
 });
 
+export const ClientAllQuerySchema = v.pick(ClientQuerySchema, ["status"]);
+
 export type Client = v.InferOutput<typeof ClientSchema>;
 export type CreateClientInput = v.InferOutput<typeof CreateClientSchema>;
 export type UpdateClientInput = v.InferOutput<typeof UpdateClientSchema>;
 export type ClientQuery = v.InferOutput<typeof ClientQuerySchema>;
+export type ClientAllQuery = v.InferOutput<typeof ClientAllQuerySchema>;

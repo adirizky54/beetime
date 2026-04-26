@@ -1,5 +1,6 @@
 import { RiUserLine } from "@remixicon/react";
 
+import type { Project } from "@beetime/schema";
 import {
   Avatar,
   AvatarFallback,
@@ -7,7 +8,6 @@ import {
   AvatarImage
 } from "@beetime/ui/components/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
-import { type Project } from "@/queries/projects";
 
 type MembersProjectProps = {
   project: Project;

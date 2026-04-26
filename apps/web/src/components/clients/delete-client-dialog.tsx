@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import type { Client } from "@beetime/schema";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@beetime/ui/components/alert-dialog";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { toastManager } from "@beetime/ui/components/toast";
 
-import { type Client, clientQueries } from "@/queries/clients";
+import { clientQueries } from "@/queries/client";
 
 type DeleteClientDialogProps = {
   client: Client;

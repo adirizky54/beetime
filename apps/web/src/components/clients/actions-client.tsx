@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiArchiveLine, RiDeleteBinLine, RiHistoryLine, RiMoreFill, RiPencilFill } from "@remixicon/react";
 
+import type { Client } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@beetime/ui/components/dropdown-menu";
 import { toastManager } from "@beetime/ui/components/toast";
@@ -10,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/
 import { Can } from "@/components/ui/can";
 import { DeleteClientDialog } from "@/components/clients/delete-client-dialog";
 import { EditClientDialog } from "@/components/clients/edit-client-dialog";
-import { type Client, clientQueries } from "@/queries/clients";
+import { clientQueries } from "@/queries/client";
 
 type ActionsClientProps = {
   client: Client;

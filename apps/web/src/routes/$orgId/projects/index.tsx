@@ -5,6 +5,7 @@ import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
+import { ProjectQuerySchema, type Project } from "@beetime/schema";
 import { Badge } from "@beetime/ui/components/badge";
 import { Button } from "@beetime/ui/components/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@beetime/ui/components/dropdown-menu";
@@ -19,14 +20,14 @@ import { AppHeader } from "@/components/layouts/app-header";
 import { CreateProjectDialog } from "@/components/projects/create-project-dialog";
 import { ActionsProject } from "@/components/projects/actions-project";
 import { MembersProject } from "@/components/projects/members-project";
-import { type Project, ProjectSearchParamsSchema, projectQueries } from "@/queries/projects";
+import { projectQueries } from "@/queries/project";
 import { toTitleCase } from "@/utils/string";
 
 export const Route = createFileRoute("/$orgId/projects/")({
   head: () => ({
     meta: [{ title: "Projects — Bee Time" }]
   }),
-  validateSearch: ProjectSearchParamsSchema,
+  validateSearch: ProjectQuerySchema,
   component: RouteComponent,
 })
 
