@@ -1,5 +1,4 @@
 import { format, isSameDay, isSameMonth, isSameYear, isToday } from "date-fns";
-import type { OrgDateFormat } from "@/lib/auth";
 
 /**
  * Formats a date range into a human-readable string.
@@ -24,15 +23,6 @@ export function formatDateRange(from: Date, to: Date) {
   return `${format(from, "MMM d, yyyy")} - ${format(to, "MMM d, yyyy")}`;
 }
 
-/**
- * Returns up to 2 uppercase initials from a name string.
- *
- * Examples:
- *   getInitials("John Doe")          // "JD"
- *   getInitials("Alice")             // "A"
- *   getInitials("John Michael Doe")  // "JM"
- *   getInitials("")                  // ""
- */
 export function getInitials(name: string) {
   return name
     .trim()
@@ -43,50 +33,9 @@ export function getInitials(name: string) {
     .toUpperCase();
 }
 
-/**
- * Converts a string to title case, where the first letter of each word is capitalized.
- *
- * Example:
- *   toTitleCase("hello world") // returns "Hello World"
- */
 export function toTitleCase(str: string) {
   return str.replace(
     /\w\S*/g,
     (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
   );
 }
-
-/**
- * Maps the organization's dateFormat setting to a date-fns format string.
- *
- * Supported org formats:
- *   "hyphen-separated-yyyy-mm-dd"  → "yyyy-MM-dd"
- *   "hyphen-separated-mm-dd-yyyy"  → "MM-dd-yyyy"
- *   "hyphen-separated-dd-mm-yyyy"  → "dd-MM-yyyy"
- *   "slash-separated-mm-dd-yyyy"   → "MM/dd/yyyy"
- *   "slash-separated-dd-mm-yyyy"   → "dd/MM/yyyy"
- *
- * Falls back to "d MMM, yyyy" for unknown or nullish values.
- */
-export function orgDateFormatToFns(orgFmt: OrgDateFormat | null | undefined) {
-  switch (orgFmt) {
-    case "hyphen-separated-yyyy-mm-dd": return "yyyy-MM-dd";
-    case "hyphen-separated-mm-dd-yyyy": return "MM-dd-yyyy";
-    case "hyphen-separated-dd-mm-yyyy": return "dd-MM-yyyy";
-    case "slash-separated-mm-dd-yyyy":  return "MM/dd/yyyy";
-    case "slash-separated-dd-mm-yyyy":  return "dd/MM/yyyy";
-    default: return "d MMM, yyyy";
-  }
-}
-
-/**
- * Formats a date using a date-fns format string.
- *
- * Example:
- *   formatDate("2026-04-24")              // "24 Apr, 2026"
- *   formatDate("2026-04-24", "MM/dd/yyyy") // "04/24/2026"
- */
-export function formatDate(date: Date | string, fmt = "d MMM, yyyy") {
-  return format(new Date(date), fmt);
-}
-
