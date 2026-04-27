@@ -12,14 +12,15 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
+    "@beetime/env": "workspace:*",
     "react-email": "6.0.1",
-    "react-dom": "19.2.4",
-    "react": "19.2.4"
+    "react-dom": "catalog:ui",
+    "react": "catalog:ui"
   },
   "devDependencies": {
     "@react-email/ui": "6.0.1",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "typescript": "6.0.3"
+    "@types/react": "catalog:ui",
+    "@types/react-dom": "catalog:ui",
+    "typescript": "catalog:core"
   }
 }

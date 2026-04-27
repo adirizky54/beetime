@@ -1,10 +1,10 @@
 {
-  "name": "@beetime/schema",
+  "name": "@beetime/env",
   "version": "0.0.1",
-  "type": "module",
   "private": true,
+  "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    "./api": "./src/api.ts"
   },
   "scripts": {
     "clean": "rm -rf .turbo && rm -rf node_modules",
@@ -14,6 +14,7 @@
     "valibot": "catalog:core"
   },
   "devDependencies": {
+    "@types/bun": "catalog:core",
     "typescript": "catalog:core"
   }
 }

@@ -21,9 +21,9 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "react": "19.2.4",
+    "react": "catalog:ui",
     "react-day-picker": "^9.14.0",
-    "react-dom": "19.2.4",
+    "react-dom": "catalog:ui",
     "react-resizable-panels": "^4.8.0",
     "recharts": "3.8.0",
     "shadcn": "^4.1.2",
@@ -32,9 +32,10 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
-    "@types/node": "^25.1.0",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "tailwindcss": "^4.1.18"
+    "@types/node": "catalog:core",
+    "@types/react": "catalog:ui",
+    "@types/react-dom": "catalog:ui",
+    "tailwindcss": "^4.1.18",
+    "typescript": "catalog:core"
   }
 }

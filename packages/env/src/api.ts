@@ -1,4 +1,4 @@
-import * as v from 'valibot'
+import * as v from "valibot";
 
 const EnvSchema = v.object({
   APP_NAME: v.string(),
@@ -11,3 +11,5 @@ const EnvSchema = v.object({
 });
 
 export const env = v.parse(EnvSchema, process.env);
+
+export type Env = v.InferOutput<typeof EnvSchema>;
