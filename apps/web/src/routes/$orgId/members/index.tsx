@@ -195,7 +195,7 @@ function RouteComponent() {
                 <DropdownMenuGroup>
                   <DropdownMenuLabel>Role</DropdownMenuLabel>
                   <DropdownMenuRadioGroup
-                    value={search.role ?? "all"}
+                    value={search.role}
                     onValueChange={(value) => {
                       navigate({ search: { ...search, page: 1, role: value as typeof search.role } });
                     }}
