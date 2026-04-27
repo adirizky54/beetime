@@ -8,17 +8,6 @@ export type Permissions = {
 
 export const authQueries = {
   all: () => ["auth"] as const,
-  membersKey: () => [...authQueries.all(), "members"] as const,
-  organizationMembers: (orgId: string) =>
-    queryOptions({
-      queryKey: [...authQueries.membersKey(), orgId] as const,
-      queryFn: async () => await auth.organization.listMembers({
-        query: {
-          organizationId: orgId,
-        },
-      }),
-      select: (response) => response.data?.members,
-    }),
   permissionsKey: () => [...authQueries.all(), "permissions"] as const,
   hasPermission: (orgId: string, permissions: Permissions) =>
     queryOptions({

@@ -41,9 +41,9 @@ import { Textarea } from "@beetime/ui/components/textarea";
 import { toastManager } from "@beetime/ui/components/toast";
 
 import { getInitials } from "@/utils/string";
-import { authQueries } from "@/queries/auth";
-import { projectQueries } from "@/queries/project";
 import { clientQueries } from "@/queries/client";
+import { memberQueries } from "@/queries/member";
+import { projectQueries } from "@/queries/project";
 
 interface CreateProjectDialogProps {
   open: boolean;
@@ -69,10 +69,10 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
   const privacy = useWatch({ control: form.control, name: "privacy" });
 
   const { data: members } = useQuery({
-    ...authQueries.organizationMembers(orgId),
+    ...memberQueries.listAll(orgId),
     enabled: open,
   });
-  const orgMembers = members ?? [];
+  const orgMembers = members?.data ?? [];
 
   const { data: clientsResponse } = useQuery({
     ...clientQueries.listAll(orgId, { status: "active" }),
@@ -124,7 +124,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
   };
 
   const getMembers = (userIds: Array<string>) => {
-    return orgMembers.filter((m) => userIds.includes(m.userId));
+    return orgMembers.filter((m) => userIds.includes(m.id));
   };
 
   return (
@@ -262,16 +262,16 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                       name={field.name}
                       items={orgMembers}
                       value={getMembers(field.value)}
-                      onValueChange={(items) => field.onChange(items.map((m) => m.userId))}
-                      itemToStringLabel={(item) => item.user.name}
-                      itemToStringValue={(item) => item.userId}
+                      onValueChange={(items) => field.onChange(items.map((m) => m.id))}
+                      itemToStringLabel={(item) => item.name}
+                      itemToStringValue={(item) => item.id}
                     >
                       <ComboboxChips ref={anchor}>
                         <ComboboxValue>
                           {(values: Array<typeof orgMembers[number]>) => (
                             <>
                               {values.map((value) => (
-                                <ComboboxChip key={value.userId}>{value.user.name}</ComboboxChip>
+                                <ComboboxChip key={value.id}>{value.name}</ComboboxChip>
                               ))}
                               <ComboboxChipsInput
                                 ref={field.ref}
@@ -288,12 +288,12 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                         <ComboboxEmpty>No member found.</ComboboxEmpty>
                         <ComboboxList>
                           {(item: typeof orgMembers[number]) => (
-                            <ComboboxItem key={item.userId} value={item}>
+                            <ComboboxItem key={item.id} value={item}>
                               <Avatar size="sm">
-                                <AvatarImage src={item.user.image} alt={item.user.name} />
-                                <AvatarFallback>{getInitials(item.user.name)}</AvatarFallback>
+                                <AvatarImage src={item.image ?? undefined} alt={item.name} />
+                                <AvatarFallback>{getInitials(item.name)}</AvatarFallback>
                               </Avatar>
-                              {item.user.name}
+                              {item.name}
                             </ComboboxItem>
                           )}
                         </ComboboxList>
