@@ -1,5 +1,4 @@
 import { format, isSameDay, isSameMonth, isSameYear, isToday } from "date-fns";
-import type { OrgDateFormat } from "@/lib/auth";
 
 /**
  * Formats a date range into a human-readable string.
@@ -40,19 +39,3 @@ export function toTitleCase(str: string) {
     (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
   );
 }
-
-export function orgDateFormatToFns(orgFmt: OrgDateFormat | null | undefined) {
-  switch (orgFmt) {
-    case "hyphen-separated-yyyy-mm-dd": return "yyyy-MM-dd";
-    case "hyphen-separated-mm-dd-yyyy": return "MM-dd-yyyy";
-    case "hyphen-separated-dd-mm-yyyy": return "dd-MM-yyyy";
-    case "slash-separated-mm-dd-yyyy":  return "MM/dd/yyyy";
-    case "slash-separated-dd-mm-yyyy":  return "dd/MM/yyyy";
-    default: return "d MMM, yyyy";
-  }
-}
-
-export function formatDate(date: Date | string, fmt = "d MMM, yyyy") {
-  return format(new Date(date), fmt);
-}
-

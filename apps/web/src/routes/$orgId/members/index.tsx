@@ -21,7 +21,13 @@ import { ActionsMember } from "@/components/members/actions-member";
 import { InviteMemberDialog } from "@/components/members/invite-member-dialog";
 import { auth } from "@/lib/auth";
 import { memberQueries } from "@/queries/member";
-import { formatDate, getInitials, orgDateFormatToFns, toTitleCase } from "@/utils/string";
+import { useFormatDate } from "@/hooks/use-format-date";
+import { getInitials, toTitleCase } from "@/utils/string";
+
+function JoinedDateCell({ date }: { date: string }) {
+  const formatted = useFormatDate(date, "datetime");
+  return <span className="text-muted-foreground">{formatted}</span>;
+}
 
 export const Route = createFileRoute("/$orgId/members/")({
   head: () => ({
@@ -45,12 +51,9 @@ function RouteComponent() {
   const search = Route.useSearch();
 
   const { data: session } = auth.useSession();
-  const { data: activeOrg } = auth.useActiveOrganization();
 
   const [searchText, setSearchText] = useState(search.search ?? "");
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
-
-  const dateFormat = orgDateFormatToFns(activeOrg?.dateFormat);
 
   const { data: members, isLoading: loadingMembers } = useQuery(memberQueries.list(orgId, search));
 
@@ -119,15 +122,13 @@ function RouteComponent() {
       },
       {
         accessorKey: "createdAt",
-        header: "Joined",
+        header: "Joined at",
         cell: ({ row }) => (
-          <span className="text-muted-foreground">
-            {formatDate(row.original.createdAt, dateFormat)}
-          </span>
+          <JoinedDateCell date={row.original.createdAt} />
         ),
       },
     ],
-    [orgId, session?.user.id, dateFormat],
+    [orgId, session?.user.id],
   );
 
   const table = useReactTable({
