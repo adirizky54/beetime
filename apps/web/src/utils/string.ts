@@ -1,4 +1,5 @@
 import { format, isSameDay, isSameMonth, isSameYear, isToday } from "date-fns";
+import type { OrgDateFormat } from "@/lib/auth";
 
 /**
  * Formats a date range into a human-readable string.
@@ -67,7 +68,7 @@ export function toTitleCase(str: string) {
  *
  * Falls back to "d MMM, yyyy" for unknown or nullish values.
  */
-export function orgDateFormatToFns(orgFmt: string | null | undefined): string {
+export function orgDateFormatToFns(orgFmt: OrgDateFormat | null | undefined) {
   switch (orgFmt) {
     case "hyphen-separated-yyyy-mm-dd": return "yyyy-MM-dd";
     case "hyphen-separated-mm-dd-yyyy": return "MM-dd-yyyy";
@@ -85,7 +86,7 @@ export function orgDateFormatToFns(orgFmt: string | null | undefined): string {
  *   formatDate("2026-04-24")              // "24 Apr, 2026"
  *   formatDate("2026-04-24", "MM/dd/yyyy") // "04/24/2026"
  */
-export function formatDate(date: Date | string, fmt = "d MMM, yyyy"): string {
+export function formatDate(date: Date | string, fmt = "d MMM, yyyy") {
   return format(new Date(date), fmt);
 }
 

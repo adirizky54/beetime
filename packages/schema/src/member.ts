@@ -14,12 +14,12 @@ export const MemberSchema = v.object({
 export const MemberQuerySchema = v.object({
   ...PaginationSchema.entries,
   search: v.optional(v.string()),
-  role: v.optional(v.picklist(["all", "owner", "admin", "member"]), "all"),
+  role: v.optional(v.picklist(["owner", "admin", "member"])),
 });
 
 export const MemberAllQuerySchema = v.object({
   search: v.optional(v.string()),
-  role: v.optional(v.picklist(["all", "owner", "admin", "member"]), "all"),
+  role: v.optional(v.picklist(["owner", "admin", "member"])),
 });
 
 export type Member = v.InferOutput<typeof MemberSchema>;
