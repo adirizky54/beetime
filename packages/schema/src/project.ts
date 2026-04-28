@@ -3,15 +3,17 @@ import { MemberSchema } from "./member";
 import { PaginationSchema } from "./utils";
 
 export const ProjectSchema = v.object({
- id: v.string(),
+  id: v.string(),
   name: v.string(),
   description: v.nullable(v.string()),
   organizationId: v.string(),
   clientId: v.nullable(v.string()),
-  client: v.nullable(v.object({
-    id: v.string(),
-    name: v.string(),
-  })),
+  client: v.nullable(
+    v.object({
+      id: v.string(),
+      name: v.string(),
+    }),
+  ),
   privacy: v.picklist(["private", "public"]),
   members: v.array(v.pick(MemberSchema, ["id", "name", "image"])),
   createdBy: v.string(),
@@ -29,10 +31,7 @@ export const CreateProjectSchema = v.pipe(
     userIds: v.array(v.string()),
   }),
   v.forward(
-    v.check(
-      (input) => input.privacy === "private" && input.userIds.length === 0,
-      "Please select at least one member",
-    ),
+    v.check((input) => input.privacy === "private" && input.userIds.length === 0, "Please select at least one member"),
     ["userIds"],
   ),
 );

@@ -1,11 +1,11 @@
-import { Link, createFileRoute } from "@tanstack/react-router"
-import { valibotResolver } from "@hookform/resolvers/valibot"
-import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
-import * as v from "valibot"
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as v from "valibot";
 
-import { Button } from "@beetime/ui/components/button"
-import { Card, CardContent } from "@beetime/ui/components/card"
+import { Button } from "@beetime/ui/components/button";
+import { Card, CardContent } from "@beetime/ui/components/card";
 import {
   Field,
   FieldDescription,
@@ -13,28 +13,21 @@ import {
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@beetime/ui/components/field"
-import { Input } from "@beetime/ui/components/input"
-import { Spinner } from "@beetime/ui/components/spinner"
-import { auth } from "@/lib/auth"
+} from "@beetime/ui/components/field";
+import { Input } from "@beetime/ui/components/input";
+import { Spinner } from "@beetime/ui/components/spinner";
+import { auth } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
   head: () => ({
-    meta: [{ title: "Login — Bee Time" }]
-  })
-})
+    meta: [{ title: "Login — Bee Time" }],
+  }),
+});
 
 const formSchema = v.object({
-  email: v.pipe(
-    v.string(),
-    v.nonEmpty("Please enter your email."),
-    v.email(),
-  ),
-  password: v.pipe(
-    v.string(),
-    v.nonEmpty("Please enter your password."),
-  ),
+  email: v.pipe(v.string(), v.nonEmpty("Please enter your email."), v.email()),
+  password: v.pipe(v.string(), v.nonEmpty("Please enter your password.")),
 });
 
 function RouteComponent() {
@@ -46,27 +39,30 @@ function RouteComponent() {
     defaultValues: {
       email: "",
       password: "",
-    }
+    },
   });
 
   const onSubmit = form.handleSubmit(async (values) => {
-    await auth.signIn.email({
-      email: values.email,
-      password: values.password,
-      callbackURL: "/"
-    }, {
-      onRequest: () => {
-        form.clearErrors();
-        setLoading(true);
+    await auth.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+        callbackURL: "/",
       },
-      onSuccess: () => {
-        setLoading(false);
+      {
+        onRequest: () => {
+          form.clearErrors();
+          setLoading(true);
+        },
+        onSuccess: () => {
+          setLoading(false);
+        },
+        onError: (err) => {
+          setLoading(false);
+          form.setError("email", { message: err.error.message });
+        },
       },
-      onError: (err) => {
-        setLoading(false);
-        form.setError("email", { message: err.error.message });
-      }
-    });
+    );
   });
 
   return (
@@ -79,9 +75,7 @@ function RouteComponent() {
                 <FieldGroup>
                   <div className="flex flex-col items-center gap-2 text-center">
                     <h1 className="text-2xl font-bold">Welcome back</h1>
-                    <p className="text-balance text-muted-foreground">
-                      Login to your Bee Time account
-                    </p>
+                    <p className="text-balance text-muted-foreground">Login to your Bee Time account</p>
                   </div>
                   <Controller
                     name="email"
@@ -98,9 +92,7 @@ function RouteComponent() {
                           aria-invalid={fieldState.invalid}
                           required
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -111,10 +103,7 @@ function RouteComponent() {
                       <Field data-invalid={fieldState.invalid}>
                         <div className="flex items-center">
                           <FieldLabel htmlFor="password">Password</FieldLabel>
-                          <Link
-                            to="/forgot-password"
-                            className="ml-auto text-sm underline-offset-2 hover:underline"
-                          >
+                          <Link to="/forgot-password" className="ml-auto text-sm underline-offset-2 hover:underline">
                             Forgot your password?
                           </Link>
                         </div>
@@ -127,9 +116,7 @@ function RouteComponent() {
                           aria-invalid={fieldState.invalid}
                           required
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -168,8 +155,7 @@ function RouteComponent() {
             </CardContent>
           </Card>
           <FieldDescription className="px-6 text-center">
-            By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-            and <a href="#">Privacy Policy</a>.
+            By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
           </FieldDescription>
         </div>
       </div>

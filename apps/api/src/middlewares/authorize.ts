@@ -2,17 +2,10 @@ import { createMiddleware } from "hono/factory";
 import { auth } from "@/lib/auth";
 import type { statement } from "@/utils/permissions";
 
-type ArrayElement<T> = T extends readonly (infer E)[] ? E : never;
-
 type Statements = typeof statement;
 
 type Permissions = {
-  // eslint-disable-next-line @typescript-eslint/array-type
-  [key in keyof Statements]?: Array<
-    Statements[key] extends readonly unknown[]
-      ? ArrayElement<Statements[key]>
-      : never
-  >;
+  [R in keyof Statements]?: Array<Statements[R][number]>;
 };
 
 /**

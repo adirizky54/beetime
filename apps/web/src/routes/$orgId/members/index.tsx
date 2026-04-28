@@ -9,7 +9,15 @@ import { MemberQuerySchema, type Member } from "@beetime/schema";
 import { Avatar, AvatarFallback, AvatarImage } from "@beetime/ui/components/avatar";
 import { Badge } from "@beetime/ui/components/badge";
 import { Button } from "@beetime/ui/components/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@beetime/ui/components/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@beetime/ui/components/dropdown-menu";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@beetime/ui/components/input-group";
 
 import { Can } from "@/components/ui/can";
@@ -31,7 +39,7 @@ function JoinedDateCell({ date }: { date: string }) {
 
 export const Route = createFileRoute("/$orgId/members/")({
   head: () => ({
-    meta: [{ title: "Members — Bee Time" }]
+    meta: [{ title: "Members — Bee Time" }],
   }),
   validateSearch: MemberQuerySchema,
   component: RouteComponent,
@@ -39,9 +47,12 @@ export const Route = createFileRoute("/$orgId/members/")({
 
 function getRoleBadgeClassName(role: Member["role"]) {
   switch (role) {
-    case "owner": return "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400";
-    case "admin": return "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400";
-    case "member": return undefined;
+    case "owner":
+      return "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400";
+    case "admin":
+      return "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400";
+    case "member":
+      return undefined;
   }
 }
 
@@ -57,15 +68,18 @@ function RouteComponent() {
 
   const { data: members, isLoading: loadingMembers } = useQuery(memberQueries.list(orgId, search));
 
-  const debouncedSetSearch = useDebouncedCallback((_search: string) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        page: 1,
-        search: _search,
-      }),
-    });
-  }, { wait: 500 });
+  const debouncedSetSearch = useDebouncedCallback(
+    (_search: string) => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          page: 1,
+          search: _search,
+        }),
+      });
+    },
+    { wait: 500 },
+  );
 
   const pagination = {
     pageIndex: search.page - 1,
@@ -86,17 +100,11 @@ function RouteComponent() {
                 <AvatarFallback>{getInitials(m.name)}</AvatarFallback>
               </Avatar>
 
-              <span className="font-medium truncate">{m.name}</span>
+              <span className="truncate font-medium">{m.name}</span>
 
-              {m.banned && (
-                <Badge variant="destructive">Banned</Badge>
-              )}
+              {m.banned && <Badge variant="destructive">Banned</Badge>}
 
-              <ActionsMember
-                member={m}
-                orgId={orgId}
-                currentUserId={session?.user.id}
-              />
+              <ActionsMember member={m} orgId={orgId} currentUserId={session?.user.id} />
             </div>
           );
         },
@@ -104,9 +112,7 @@ function RouteComponent() {
       {
         accessorKey: "email",
         header: "Email",
-        cell: ({ row }) => (
-          <span className="text-muted-foreground">{row.original.email}</span>
-        ),
+        cell: ({ row }) => <span className="text-muted-foreground">{row.original.email}</span>,
       },
       {
         accessorKey: "role",
@@ -123,9 +129,7 @@ function RouteComponent() {
       {
         accessorKey: "createdAt",
         header: "Joined at",
-        cell: ({ row }) => (
-          <JoinedDateCell date={row.original.createdAt} />
-        ),
+        cell: ({ row }) => <JoinedDateCell date={row.original.createdAt} />,
       },
     ],
     [orgId, session?.user.id],
@@ -139,8 +143,7 @@ function RouteComponent() {
     manualPagination: true,
     state: { pagination },
     onPaginationChange: (updater) => {
-      const newPagination =
-        typeof updater === "function" ? updater(pagination) : updater;
+      const newPagination = typeof updater === "function" ? updater(pagination) : updater;
       navigate({
         search: {
           ...search,
@@ -158,11 +161,7 @@ function RouteComponent() {
 
   return (
     <AppContent>
-      <AppHeader
-        breadcrumbs={[
-          { title: "Members", to: "/$orgId/members", params: { orgId } },
-        ]}
-      >
+      <AppHeader breadcrumbs={[{ title: "Members", to: "/$orgId/members", params: { orgId } }]}>
         <Can orgId={orgId} permissions={{ member: ["create"] }}>
           <Button className="ml-auto" size="sm" onClick={() => setInviteDialogOpen(true)}>
             <RiAddLine data-icon="inline-start" />
@@ -173,13 +172,9 @@ function RouteComponent() {
 
       <AppBody>
         <div className="w-full">
-          <div className="flex items-start flex-wrap gap-2.5">
+          <div className="flex flex-wrap items-start gap-2.5">
             <InputGroup className="md:w-56">
-              <InputGroupInput
-                placeholder="Search..."
-                value={searchText}
-                onChange={(e) => onSearch(e.target.value)}
-              />
+              <InputGroupInput placeholder="Search..." value={searchText} onChange={(e) => onSearch(e.target.value)} />
               <InputGroupAddon align="inline-start">
                 <RiSearchLine className="text-muted-foreground" />
               </InputGroupAddon>
@@ -188,8 +183,7 @@ function RouteComponent() {
             <DropdownMenu>
               <DropdownMenuTrigger render={<Button variant="outline" />}>
                 <RiShieldUserLine data-icon="inline-start" />
-                <span className="text-muted-foreground">Role:</span>{" "}
-                {toTitleCase(search.role ?? "all")}
+                <span className="text-muted-foreground">Role:</span> {toTitleCase(search.role ?? "all")}
               </DropdownMenuTrigger>
 
               <DropdownMenuContent className="w-32">
@@ -201,10 +195,18 @@ function RouteComponent() {
                       navigate({ search: { ...search, page: 1, role: value as typeof search.role } });
                     }}
                   >
-                    <DropdownMenuRadioItem value={undefined} closeOnClick>All</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="owner" closeOnClick>Owner</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="admin" closeOnClick>Admin</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="member" closeOnClick>Member</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value={undefined} closeOnClick>
+                      All
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="owner" closeOnClick>
+                      Owner
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="admin" closeOnClick>
+                      Admin
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="member" closeOnClick>
+                      Member
+                    </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
@@ -222,12 +224,8 @@ function RouteComponent() {
       </AppBody>
 
       <Can orgId={orgId} permissions={{ member: ["create"] }}>
-        <InviteMemberDialog
-          open={inviteDialogOpen}
-          onOpenChange={setInviteDialogOpen}
-          orgId={orgId}
-        />
+        <InviteMemberDialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen} orgId={orgId} />
       </Can>
     </AppContent>
-  )
+  );
 }

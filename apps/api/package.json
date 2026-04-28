@@ -5,15 +5,19 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "clean": "rm -rf .turbo && rm -rf node_modules",
+    "check:format": "oxfmt --check",
+    "check:lint": "oxlint",
     "check:types": "tsc --noEmit",
+    "fix:format": "oxfmt .",
+    "fix:lint": "oxlint --fix .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@beetime/schema": "workspace:*",
     "@beetime/env": "workspace:*",
+    "@beetime/schema": "workspace:*",
     "@hono/valibot-validator": "^0.6.1",
     "better-auth": "^1.6.9",
     "drizzle-orm": "^0.45.2",

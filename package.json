@@ -7,14 +7,20 @@
     "dev": "turbo run dev",
     "clean": "turbo run clean && rm -rf .turbo && rm -rf node_modules",
     "check": "turbo run check",
+    "check:format": "turbo run check:format",
     "check:lint": "turbo run check:lint",
     "check:types": "turbo run check:types",
+    "fix": "turbo run fix",
+    "fix:format": "turbo run fix:format",
+    "fix:lint": "turbo run fix:lint",
     "db:generate": "turbo -F @beetime/api db:generate",
     "db:migrate": "turbo -F @beetime/api db:migrate",
     "db:push": "turbo -F @beetime/api db:push",
     "db:studio": "turbo -F @beetime/api db:studio"
   },
   "devDependencies": {
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
     "turbo": "^2.9.6",
     "typescript": "6.0.3"
   },

@@ -6,14 +6,7 @@ import { env } from "@beetime/env/api";
 
 import { db } from "./db";
 import { getActiveOrganization } from "@/utils/access";
-import {
-  ac,
-  admin,
-  member,
-  owner,
-  superadmin,
-  user,
-} from "@/utils/permissions";
+import { ac, admin, member, owner, superadmin, user } from "@/utils/permissions";
 import { toSlug } from "@/utils/string";
 
 export const auth = betterAuth({
@@ -90,9 +83,7 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          const activeOrganization = await getActiveOrganization(
-            session.userId,
-          );
+          const activeOrganization = await getActiveOrganization(session.userId);
 
           return {
             data: {

@@ -10,10 +10,7 @@ function buildMemberConditions(orgId: string, query: MemberAllQuery) {
 
   if (query.search) {
     const pattern = `%${query.search}%`;
-    const searchCondition = or(
-      ilike(users.name, pattern),
-      ilike(users.email, pattern),
-    );
+    const searchCondition = or(ilike(users.name, pattern), ilike(users.email, pattern));
     if (searchCondition) {
       conditions.push(searchCondition);
     }
@@ -54,11 +51,7 @@ export async function listMembers(orgId: string, query: MemberQuery) {
     .where(and(...conditions))
     .then(([row]) => row.count);
 
-  const result = await withPagination(
-    memberList,
-    memberCount,
-    { page: query.page, pageSize: query.pageSize },
-  );
+  const result = await withPagination(memberList, memberCount, { page: query.page, pageSize: query.pageSize });
 
   return result;
 }

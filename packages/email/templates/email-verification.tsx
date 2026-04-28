@@ -18,9 +18,7 @@ interface EmailVerificationProps {
   verificationUrl: string;
 }
 
-export const EmailVerification = ({
-  verificationUrl,
-}: EmailVerificationProps) => (
+export const EmailVerification = ({ verificationUrl }: EmailVerificationProps) => (
   <Html>
     <Head />
     <Tailwind
@@ -28,15 +26,14 @@ export const EmailVerification = ({
         presets: [pixelBasedPreset],
         theme: {
           fontFamily: {
-            sans:
-              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-          }
-        }
+            sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+          },
+        },
       }}
     >
-      <Body className="bg-white font-sans mx-auto my-0">
+      <Body className="mx-auto my-0 bg-white font-sans">
         <Preview>Confirm your email address</Preview>
-        <Container className="mx-auto my-0 py-0 px-5">
+        <Container className="mx-auto my-0 px-5 py-0">
           <Section className="mt-8">
             <Img
               src="https://react-email-demo-8tpggc8r2-resend.vercel.app/static/slack-logo.png"
@@ -45,25 +42,25 @@ export const EmailVerification = ({
               alt="Slack"
             />
           </Section>
-          <Heading className="text-[#1d1c1d] text-4xl font-bold my-[30px] mx-0 p-0 leading-[42px]">
+          <Heading className="mx-0 my-[30px] p-0 text-4xl leading-[42px] font-bold text-[#1d1c1d]">
             Verify your email address
           </Heading>
-          <Text className="text-xl mb-7.5">
-            Thanks for signing up! Please click the button below to verify your
-            email address and complete your account setup.
+          <Text className="mb-7.5 text-xl">
+            Thanks for signing up! Please click the button below to verify your email address and complete your account
+            setup.
           </Text>
 
           <Section className="mt-[32px] mb-[32px] text-center">
             <Button
-              className="rounded bg-amber-600 px-[16px] py-[12px] text-center font-semibold text-[16px] text-white no-underline"
+              className="rounded bg-amber-600 px-[16px] py-[12px] text-center text-[16px] font-semibold text-white no-underline"
               href={verificationUrl}
             >
               Verify Email Address
             </Button>
           </Section>
 
-          <Text className="text-[14px] text-black leading-[24px]">
-            or copy and paste this URL into your browser:{' '}
+          <Text className="text-[14px] leading-[24px] text-black">
+            or copy and paste this URL into your browser:{" "}
             <Link href={verificationUrl} className="text-blue-600 no-underline">
               {verificationUrl}
             </Link>
@@ -75,7 +72,7 @@ export const EmailVerification = ({
 );
 
 EmailVerification.PreviewProps = {
-  verificationUrl: 'https://example.com/verify',
+  verificationUrl: "https://example.com/verify",
 } as EmailVerificationProps;
 
 export default EmailVerification;

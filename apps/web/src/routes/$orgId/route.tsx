@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import { Outlet, createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { SidebarProvider } from "@beetime/ui/components/sidebar";
 import { AppSidebar } from "@/components/layouts/app-sidebar";
 import { OrgAccessDenied } from "@/components/errors/org-access-denied";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/$orgId")({
   },
   component: RouteComponent,
   notFoundComponent: OrgAccessDenied,
-})
+});
 
 function RouteComponent() {
   return (

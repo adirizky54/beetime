@@ -48,7 +48,8 @@ export const clientQueries = {
   update: (orgId: string, clientId: string) =>
     mutationOptions({
       mutationKey: [...clientQueries.updateKey(), orgId, clientId] as const,
-      mutationFn: async (data: UpdateClientInput) => await api.patch(`v1/organizations/${orgId}/clients/${clientId}`, data),
+      mutationFn: async (data: UpdateClientInput) =>
+        await api.patch(`v1/organizations/${orgId}/clients/${clientId}`, data),
     }),
   deleteKey: () => [...clientQueries.all(), "delete"] as const,
   delete: (orgId: string, clientId: string) =>

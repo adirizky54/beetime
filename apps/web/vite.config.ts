@@ -1,8 +1,8 @@
-import { defineConfig } from "vite"
-import { tanstackStart } from "@tanstack/react-start/plugin/vite"
-import viteReact from "@vitejs/plugin-react"
-import tailwindcss from "@tailwindcss/vite"
-import { nitro } from "nitro/vite"
+import { defineConfig } from "vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { nitro } from "nitro/vite";
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
@@ -13,10 +13,10 @@ const config = defineConfig({
       router: {
         quoteStyle: "double",
         semicolons: true,
-      }
+      },
     }),
     viteReact(),
   ],
-})
+});
 
-export default config
+export default config;

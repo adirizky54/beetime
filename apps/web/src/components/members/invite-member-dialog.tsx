@@ -11,12 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@beetime/ui/components/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@beetime/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import {
   Select,
@@ -77,9 +72,7 @@ export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: Invite
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Invite Member</DialogTitle>
-          <DialogDescription>
-            Invite someone to join your organization.
-          </DialogDescription>
+          <DialogDescription>Invite someone to join your organization.</DialogDescription>
         </DialogHeader>
 
         <form id="invite-member-form" onSubmit={onSubmit}>
@@ -98,9 +91,7 @@ export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: Invite
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -111,15 +102,8 @@ export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: Invite
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="invite-member-role">Role</FieldLabel>
-                  <Select
-                    items={roles}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger
-                      id="invite-member-role"
-                      aria-invalid={fieldState.invalid}
-                    >
+                  <Select items={roles} value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger id="invite-member-role" aria-invalid={fieldState.invalid}>
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                     <SelectContent alignItemWithTrigger={false}>
@@ -132,9 +116,7 @@ export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: Invite
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -142,11 +124,7 @@ export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: Invite
         </form>
 
         <DialogFooter>
-          <Button
-            type="submit"
-            form="invite-member-form"
-            disabled={!form.formState.isValid}
-          >
+          <Button type="submit" form="invite-member-form" disabled={!form.formState.isValid}>
             Send Invite
           </Button>
         </DialogFooter>

@@ -18,10 +18,7 @@ export async function listClients(orgId: string, query: ClientQuery) {
 
   if (query.search) {
     const searchPattern = `%${query.search}%`;
-    const searchCondition = or(
-      like(clients.name, searchPattern),
-      like(clients.email, searchPattern)
-    );
+    const searchCondition = or(like(clients.name, searchPattern), like(clients.email, searchPattern));
     if (searchCondition) {
       conditions.push(searchCondition);
     }
@@ -38,7 +35,7 @@ export async function listClients(orgId: string, query: ClientQuery) {
       createdBy: clients.createdBy,
       createdAt: clients.createdAt,
       updatedAt: clients.updatedAt,
-      archivedAt: clients.archivedAt
+      archivedAt: clients.archivedAt,
     })
     .from(clients)
     .where(and(...conditions))
@@ -46,12 +43,8 @@ export async function listClients(orgId: string, query: ClientQuery) {
     .$dynamic();
 
   const clientCount = db.$count(clients, and(...conditions));
-  
-  const result = await withPagination(
-    clientList,
-    clientCount,
-    { page: query.page, pageSize: query.pageSize }
-  );
+
+  const result = await withPagination(clientList, clientCount, { page: query.page, pageSize: query.pageSize });
 
   return result;
 }
@@ -75,10 +68,7 @@ export async function listClientsAll(orgId: string, status: ClientQuery["status"
 
 export async function getClient(orgId: string, clientId: string) {
   const client = await db.query.clients.findFirst({
-    where: and(
-      eq(clients.organizationId, orgId),
-      eq(clients.id, clientId),
-    ),
+    where: and(eq(clients.organizationId, orgId), eq(clients.id, clientId)),
   });
 
   if (!client) {
@@ -88,11 +78,7 @@ export async function getClient(orgId: string, clientId: string) {
   return client;
 }
 
-export async function createClient(
-  user: AuthUser,
-  orgId: string,
-  data: CreateClientInput
-) {
+export async function createClient(user: AuthUser, orgId: string, data: CreateClientInput) {
   const [client] = await db
     .insert(clients)
     .values({
@@ -108,16 +94,9 @@ export async function createClient(
   return client;
 }
 
-export async function updateClient(
-  orgId: string,
-  clientId: string,
-  data: UpdateClientInput
-) {
+export async function updateClient(orgId: string, clientId: string, data: UpdateClientInput) {
   const client = await db.query.clients.findFirst({
-    where: and(
-      eq(clients.organizationId, orgId),
-      eq(clients.id, clientId),
-    ),
+    where: and(eq(clients.organizationId, orgId), eq(clients.id, clientId)),
   });
 
   if (client) {
@@ -133,12 +112,7 @@ export async function updateClient(
   const [updatedClient] = await db
     .update(projects)
     .set(data)
-    .where(
-      and(
-        eq(clients.organizationId, orgId),
-        eq(clients.id, clientId)
-      )
-    )
+    .where(and(eq(clients.organizationId, orgId), eq(clients.id, clientId)))
     .returning();
 
   return updatedClient;
@@ -146,10 +120,7 @@ export async function updateClient(
 
 export async function deleteClient(orgId: string, clientId: string) {
   const client = await db.query.clients.findFirst({
-    where: and(
-      eq(clients.organizationId, orgId),
-      eq(clients.id, clientId),
-    ),
+    where: and(eq(clients.organizationId, orgId), eq(clients.id, clientId)),
   });
 
   if (!client) {
@@ -161,10 +132,7 @@ export async function deleteClient(orgId: string, clientId: string) {
 
 export async function archiveClient(orgId: string, clientId: string) {
   const client = await db.query.clients.findFirst({
-    where: and(
-      eq(clients.organizationId, orgId),
-      eq(clients.id, clientId),
-    ),
+    where: and(eq(clients.organizationId, orgId), eq(clients.id, clientId)),
   });
 
   if (!client) {
@@ -180,12 +148,7 @@ export async function archiveClient(orgId: string, clientId: string) {
   const [updatedClient] = await db
     .update(clients)
     .set({ archivedAt: new Date() })
-    .where(
-      and(
-        eq(clients.organizationId, orgId),
-        eq(clients.id, clientId),
-      )
-    )
+    .where(and(eq(clients.organizationId, orgId), eq(clients.id, clientId)))
     .returning();
 
   return updatedClient;
@@ -193,10 +156,7 @@ export async function archiveClient(orgId: string, clientId: string) {
 
 export async function unarchiveClient(orgId: string, clientId: string) {
   const client = await db.query.clients.findFirst({
-    where: and(
-      eq(clients.organizationId, orgId),
-      eq(clients.id, clientId),
-    ),
+    where: and(eq(clients.organizationId, orgId), eq(clients.id, clientId)),
   });
 
   if (!client) {
@@ -212,12 +172,7 @@ export async function unarchiveClient(orgId: string, clientId: string) {
   const [updatedClient] = await db
     .update(clients)
     .set({ archivedAt: null })
-    .where(
-      and(
-        eq(clients.organizationId, orgId),
-        eq(clients.id, clientId),
-      )
-    )
+    .where(and(eq(clients.organizationId, orgId), eq(clients.id, clientId)))
     .returning();
 
   return updatedClient;

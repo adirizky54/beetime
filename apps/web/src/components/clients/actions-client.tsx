@@ -4,7 +4,13 @@ import { RiArchiveLine, RiDeleteBinLine, RiHistoryLine, RiMoreFill, RiPencilFill
 
 import type { Client } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@beetime/ui/components/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@beetime/ui/components/dropdown-menu";
 import { toastManager } from "@beetime/ui/components/toast";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
@@ -15,7 +21,7 @@ import { clientQueries } from "@/queries/client";
 
 type ActionsClientProps = {
   client: Client;
-}
+};
 
 export function ActionsClient({ client }: ActionsClientProps) {
   const queryClient = useQueryClient();
@@ -49,15 +55,19 @@ export function ActionsClient({ client }: ActionsClientProps) {
       <Tooltip>
         <DropdownMenu>
           <TooltipTrigger
-            render={(
+            render={
               <DropdownMenuTrigger
-                render={(
-                  <Button variant="ghost" size="icon-xs" className="opacity-0 group-hover/table-row:opacity-100 data-popup-open:opacity-100">
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    className="opacity-0 group-hover/table-row:opacity-100 data-popup-open:opacity-100"
+                  >
                     <RiMoreFill className="size-4" />
                   </Button>
-                )}
+                }
               />
-            )}
+            }
           />
           <TooltipContent>Client Actions</TooltipContent>
           <DropdownMenuContent className="min-w-40">
@@ -86,11 +96,7 @@ export function ActionsClient({ client }: ActionsClientProps) {
             </Can>
 
             <Can orgId={client.organizationId} permissions={{ client: ["delete"] }}>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => setShowDeleteDialog(true)}
-                closeOnClick
-              >
+              <DropdownMenuItem variant="destructive" onClick={() => setShowDeleteDialog(true)} closeOnClick>
                 <RiDeleteBinLine />
                 Delete
               </DropdownMenuItem>
@@ -100,19 +106,11 @@ export function ActionsClient({ client }: ActionsClientProps) {
       </Tooltip>
 
       <Can orgId={client.organizationId} permissions={{ client: ["update"] }}>
-        <EditClientDialog
-          client={client}
-          open={showEditDialog}
-          onOpenChange={setShowEditDialog}
-        />
+        <EditClientDialog client={client} open={showEditDialog} onOpenChange={setShowEditDialog} />
       </Can>
 
       <Can orgId={client.organizationId} permissions={{ client: ["delete"] }}>
-        <DeleteClientDialog
-          client={client}
-          open={showDeleteDialog}
-          onOpenChange={setShowDeleteDialog}
-        />
+        <DeleteClientDialog client={client} open={showDeleteDialog} onOpenChange={setShowDeleteDialog} />
       </Can>
     </>
   );

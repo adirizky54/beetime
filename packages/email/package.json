@@ -1,21 +1,25 @@
 {
   "name": "@beetime/email",
   "version": "0.0.1",
-  "type": "module",
   "private": true,
+  "type": "module",
   "exports": {
     ".": "./index.ts"
   },
   "scripts": {
     "dev": "email dev --dir templates --port 3001",
     "clean": "rm -rf .turbo && rm -rf node_modules",
-    "check:types": "tsc --noEmit"
+    "check:format": "oxfmt --check",
+    "check:lint": "oxlint",
+    "check:types": "tsc --noEmit",
+    "fix:format": "oxfmt .",
+    "fix:lint": "oxlint --fix ."
   },
   "dependencies": {
     "@beetime/env": "workspace:*",
-    "react-email": "6.0.1",
+    "react": "catalog:ui",
     "react-dom": "catalog:ui",
-    "react": "catalog:ui"
+    "react-email": "6.0.1"
   },
   "devDependencies": {
     "@react-email/ui": "6.0.1",

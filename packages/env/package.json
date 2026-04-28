@@ -8,7 +8,11 @@
   },
   "scripts": {
     "clean": "rm -rf .turbo && rm -rf node_modules",
-    "check:types": "tsc --noEmit"
+    "check:format": "oxfmt --check",
+    "check:lint": "oxlint",
+    "check:types": "tsc --noEmit",
+    "fix:format": "oxfmt .",
+    "fix:lint": "oxlint --fix ."
   },
   "dependencies": {
     "valibot": "catalog:core"

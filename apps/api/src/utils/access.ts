@@ -4,14 +4,14 @@ import { db } from "@/lib/db";
 
 /**
  * Retrieves the active organization for a given user.
- * 
+ *
  * This function first looks up the user's membership record to find their associated
  * organization, then retrieves the full organization details.
- * 
+ *
  * @param userId - The unique identifier of the user
  * @returns A promise that resolves to the organization object if found, or null if the user
  *          is not a member of any organization
- * 
+ *
  * @example
  * ```typescript
  * const org = await getActiveOrganization('user-123');
@@ -41,7 +41,7 @@ export async function getActiveOrganization(userId: string) {
  * @param organizationId - The organization ID to check
  * @param userId - The user ID to check
  * @returns true if user is a member, false otherwise
- * 
+ *
  * @example
  * ```typescript
  * const isMember = await isMember('org-123', 'user-123');
@@ -52,10 +52,7 @@ export async function getActiveOrganization(userId: string) {
  */
 export async function isMember(organizationId: string, userId: string) {
   const membership = await db.query.members.findFirst({
-    where: and(
-      eq(members.organizationId, organizationId),
-      eq(members.userId, userId)
-    ),
+    where: and(eq(members.organizationId, organizationId), eq(members.userId, userId)),
   });
 
   return !!membership;

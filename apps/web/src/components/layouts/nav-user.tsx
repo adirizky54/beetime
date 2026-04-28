@@ -12,11 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@beetime/ui/components/alert-dialog";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@beetime/ui/components/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@beetime/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,12 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@beetime/ui/components/dropdown-menu";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@beetime/ui/components/sidebar";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@beetime/ui/components/sidebar";
 
 import { auth } from "@/lib/auth";
 
@@ -47,8 +38,8 @@ export function NavUser() {
       fetchOptions: {
         onSuccess: () => {
           navigate({ to: "/login" });
-        }
-      }
+        },
+      },
     });
   };
 
@@ -56,11 +47,7 @@ export function NavUser() {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton size="lg" className="select-none aria-expanded:bg-muted" />
-            }
-          >
+          <DropdownMenuTrigger render={<SidebarMenuButton size="lg" className="select-none aria-expanded:bg-muted" />}>
             <Avatar>
               <AvatarImage src="https://ui.shadcn.com/avatars/shadcn.jpg" alt={data?.user.name} />
               <AvatarFallback>CN</AvatarFallback>
@@ -108,9 +95,7 @@ export function NavUser() {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Sign out</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to sign out of your account?
-              </AlertDialogDescription>
+              <AlertDialogDescription>Are you sure you want to sign out of your account?</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -122,5 +107,5 @@ export function NavUser() {
         </AlertDialog>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

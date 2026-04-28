@@ -50,12 +50,7 @@ export function DataTable<TData>({
                       ? header.column.columnDef.meta.header(header)
                       : {})}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
               })}
@@ -93,9 +88,7 @@ export function DataTable<TData>({
                         <RiInbox2Line />
                       </EmptyMedia>
                       <EmptyTitle>No results found</EmptyTitle>
-                      <EmptyDescription>
-                        We couldn't find any results for your search.
-                      </EmptyDescription>
+                      <EmptyDescription>We couldn't find any results for your search.</EmptyDescription>
                     </EmptyHeader>
                   </Empty>
                 </TableCell>
@@ -125,9 +118,8 @@ export function DataTable<TData>({
         <FrameFooter className="p-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 whitespace-nowrap">
-              <p className="text-muted-foreground text-sm">
-                Page {table.getState().pagination.pageIndex + 1} of{' '}
-                {table.getPageCount().toLocaleString()}
+              <p className="text-sm text-muted-foreground">
+                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount().toLocaleString()}
               </p>
             </div>
 

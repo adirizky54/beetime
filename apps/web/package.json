@@ -1,13 +1,17 @@
 {
   "name": "@beetime/web",
   "version": "0.0.1",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .output",
-    "check:types": "tsc --noEmit"
+    "check:format": "oxfmt --check",
+    "check:lint": "oxlint",
+    "check:types": "tsc --noEmit",
+    "fix:format": "oxfmt .",
+    "fix:lint": "oxlint --fix ."
   },
   "dependencies": {
     "@beetime/schema": "workspace:*",

@@ -26,14 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@beetime/ui/components/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@beetime/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import { RadioGroup, RadioGroupItem } from "@beetime/ui/components/radio-group";
 import { Spinner } from "@beetime/ui/components/spinner";
@@ -132,9 +125,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Edit Project</DialogTitle>
-          <DialogDescription>
-            Update the details of your project.
-          </DialogDescription>
+          <DialogDescription>Update the details of your project.</DialogDescription>
         </DialogHeader>
 
         <form id="edit-project-form" onSubmit={onSubmit}>
@@ -152,9 +143,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -166,7 +155,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="edit-project-description">
                     Description
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Textarea
                     {...field}
@@ -176,9 +165,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                     rows={3}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -190,7 +177,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                 <Field>
                   <FieldLabel htmlFor="edit-project-client">
                     Client
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Combobox
                     id="edit-project-client"
@@ -202,11 +189,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                     value={getClient(field.value)}
                     onValueChange={(item) => field.onChange(item?.id)}
                   >
-                    <ComboboxInput
-                      placeholder="Select client..."
-                      showClear
-                      onBlur={field.onBlur}
-                    />
+                    <ComboboxInput placeholder="Select client..." showClear onBlur={field.onBlur} />
                     <ComboboxContent>
                       <ComboboxEmpty>No client found.</ComboboxEmpty>
                       <ComboboxList>
@@ -268,7 +251,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                     >
                       <ComboboxChips ref={anchor}>
                         <ComboboxValue>
-                          {(values: Array<typeof orgMembers[number]>) => (
+                          {(values: Array<(typeof orgMembers)[number]>) => (
                             <>
                               {values.map((value) => (
                                 <ComboboxChip key={value.id}>{value.name}</ComboboxChip>
@@ -287,7 +270,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                       <ComboboxContent anchor={anchor}>
                         <ComboboxEmpty>No member found.</ComboboxEmpty>
                         <ComboboxList>
-                          {(item: typeof orgMembers[number]) => (
+                          {(item: (typeof orgMembers)[number]) => (
                             <ComboboxItem key={item.id} value={item}>
                               <Avatar size="sm">
                                 <AvatarImage src={item.image ?? undefined} alt={item.name} />
@@ -299,9 +282,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                         </ComboboxList>
                       </ComboboxContent>
                     </Combobox>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />

@@ -47,11 +47,7 @@ class ApiClient {
     return response.json<ResponseApi<T>>();
   }
 
-  async post<T>(
-    path: string,
-    data?: unknown,
-    options?: Options,
-  ): Promise<ResponseApi<T>> {
+  async post<T>(path: string, data?: unknown, options?: Options): Promise<ResponseApi<T>> {
     const response = await this.client.post(path, {
       json: data,
       ...options,
@@ -59,11 +55,7 @@ class ApiClient {
     return response.json<ResponseApi<T>>();
   }
 
-  async postForm<T>(
-    path: string,
-    data: Record<string, string>,
-    options?: Options,
-  ): Promise<ResponseApi<T>> {
+  async postForm<T>(path: string, data: Record<string, string>, options?: Options): Promise<ResponseApi<T>> {
     const formData = new URLSearchParams(data);
     const response = await this.client.post(path, {
       body: formData,
@@ -75,11 +67,7 @@ class ApiClient {
     return response.json<ResponseApi<T>>();
   }
 
-  async put<T>(
-    path: string,
-    data?: unknown,
-    options?: Options,
-  ): Promise<ResponseApi<T>> {
+  async put<T>(path: string, data?: unknown, options?: Options): Promise<ResponseApi<T>> {
     const response = await this.client.put(path, {
       json: data,
       ...options,
@@ -87,11 +75,7 @@ class ApiClient {
     return response.json<ResponseApi<T>>();
   }
 
-  async patch<T>(
-    path: string,
-    data?: unknown,
-    options?: Options,
-  ): Promise<ResponseApi<T>> {
+  async patch<T>(path: string, data?: unknown, options?: Options): Promise<ResponseApi<T>> {
     const response = await this.client.patch(path, {
       json: data,
       ...options,

@@ -12,10 +12,10 @@ import { Skeleton } from "@beetime/ui/components/skeleton";
 import { auth } from "@/lib/auth";
 
 interface StatCardProps {
-  icon: React.ReactNode
-  label: string
-  value: string
-  loading: boolean
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  loading: boolean;
 }
 
 function StatCard({ icon, label, value, loading }: StatCardProps) {
@@ -28,11 +28,7 @@ function StatCard({ icon, label, value, loading }: StatCardProps) {
         </FrameTitle>
       </FrameHeader>
       <FramePanel>
-        {loading ? (
-          <Skeleton className="h-8 w-24" />
-        ) : (
-          <p className="text-2xl font-semibold tracking-tight">{value}</p>
-        )}
+        {loading ? <Skeleton className="h-8 w-24" /> : <p className="text-2xl font-semibold tracking-tight">{value}</p>}
       </FramePanel>
     </Frame>
   );
@@ -64,19 +60,13 @@ export function DashboardStatCards() {
       label: isMember ? "Assigned Tasks" : "Active Members",
       value: "1",
     },
-  ]
+  ];
 
   return (
-    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {cards.map((card) => (
-        <StatCard
-          key={card.label}
-          icon={card.icon}
-          label={card.label}
-          value={card.value}
-          loading={false}
-        />
+        <StatCard key={card.label} icon={card.icon} label={card.label} value={card.value} loading={false} />
       ))}
     </div>
-  )
+  );
 }

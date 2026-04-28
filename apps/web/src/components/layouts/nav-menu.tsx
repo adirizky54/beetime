@@ -42,8 +42,8 @@ export function NavMenu() {
             params: { orgId },
           }),
           icon: <RiCalendarScheduleFill />,
-        }
-      ]
+        },
+      ],
     },
     {
       id: "manage",
@@ -76,7 +76,7 @@ export function NavMenu() {
           }),
           icon: <RiGroupFill />,
         },
-      ]
+      ],
     },
     {
       id: "other",
@@ -90,9 +90,9 @@ export function NavMenu() {
             params: { orgId },
           }),
           icon: <RiSettings3Fill />,
-        }
-      ]
-    }
+        },
+      ],
+    },
   ];
 
   return menu.map((group) => (
@@ -104,13 +104,7 @@ export function NavMenu() {
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton
                 tooltip={item.title}
-                render={(
-                  <Link
-                    {...item.link}
-                    preload={false}
-                    activeOptions={{ exact: true, includeSearch: false }}
-                  />
-                )}
+                render={<Link {...item.link} preload={false} activeOptions={{ exact: true, includeSearch: false }} />}
               >
                 {item.icon}
                 <span>{item.title}</span>
@@ -120,5 +114,5 @@ export function NavMenu() {
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  ))
+  ));
 }

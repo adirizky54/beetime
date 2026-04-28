@@ -12,12 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@beetime/ui/components/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@beetime/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { Textarea } from "@beetime/ui/components/textarea";
@@ -89,9 +84,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Edit Client</DialogTitle>
-          <DialogDescription>
-            Update the details of your client.
-          </DialogDescription>
+          <DialogDescription>Update the details of your client.</DialogDescription>
         </DialogHeader>
 
         <form id="edit-client-form" onSubmit={onSubmit}>
@@ -109,9 +102,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -123,7 +114,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="edit-client-email">
                     Email
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Input
                     {...field}
@@ -135,9 +126,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -149,7 +138,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="edit-client-phone">
                     Phone
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Input
                     {...field}
@@ -161,9 +150,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -175,7 +162,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="edit-client-address">
                     Address
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Textarea
                     {...field}
@@ -186,9 +173,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
                     rows={3}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />

@@ -45,9 +45,9 @@ export function ActionsMember({ member, orgId, currentUserId }: ActionsMemberPro
       <Tooltip>
         <DropdownMenu>
           <TooltipTrigger
-            render={(
+            render={
               <DropdownMenuTrigger
-                render={(
+                render={
                   <Button
                     variant="ghost"
                     size="icon-xs"
@@ -55,9 +55,9 @@ export function ActionsMember({ member, orgId, currentUserId }: ActionsMemberPro
                   >
                     <RiMoreFill className="size-4" />
                   </Button>
-                )}
+                }
               />
-            )}
+            }
           />
           <TooltipContent>Member Actions</TooltipContent>
 
@@ -71,11 +71,7 @@ export function ActionsMember({ member, orgId, currentUserId }: ActionsMemberPro
 
             <Can orgId={orgId} permissions={{ member: ["delete"] }}>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => setShowRemoveDialog(true)}
-                closeOnClick
-              >
+              <DropdownMenuItem variant="destructive" onClick={() => setShowRemoveDialog(true)} closeOnClick>
                 <RiUserUnfollowLine />
                 Remove Member
               </DropdownMenuItem>
@@ -98,7 +94,8 @@ export function ActionsMember({ member, orgId, currentUserId }: ActionsMemberPro
           <AlertDialogHeader>
             <AlertDialogTitle>Remove member?</AlertDialogTitle>
             <AlertDialogDescription>
-              <strong>{member.name}</strong> will lose access to this organization immediately. This action cannot be undone.
+              <strong>{member.name}</strong> will lose access to this organization immediately. This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -7,18 +7,15 @@ export const dateFormatEnum = pgEnum("date_format_enum", [
   "hyphen-separated-mm-dd-yyyy",
   "hyphen-separated-dd-mm-yyyy",
   "slash-separated-mm-dd-yyyy",
-  "slash-separated-dd-mm-yyyy"
+  "slash-separated-dd-mm-yyyy",
 ]);
 
-export const timeFormatEnum = pgEnum("time_format_enum", [
-  "12-hours",
-  "24-hours",
-]);
+export const timeFormatEnum = pgEnum("time_format_enum", ["12-hours", "24-hours"]);
 
 export const intervalFormatEnum = pgEnum("interval_format_enum", [
   "hours-minutes",
   "hours-minutes-colon-separated",
-  "hours-minutes-seconds-colon-separated"
+  "hours-minutes-seconds-colon-separated",
 ]);
 
 export const users = pgTable("users", {

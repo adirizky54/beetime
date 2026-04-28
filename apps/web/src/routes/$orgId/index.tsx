@@ -6,11 +6,7 @@ import * as v from "valibot";
 
 import { Button } from "@beetime/ui/components/button";
 import { Calendar } from "@beetime/ui/components/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@beetime/ui/components/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@beetime/ui/components/popover";
 
 import { AppBody } from "@/components/layouts/app-body";
 import { AppContent } from "@/components/layouts/app-content";
@@ -29,10 +25,7 @@ export const Route = createFileRoute("/$orgId/")({
       v.pipe(v.string(), v.minLength(1, "From is required")),
       format(startOfDay(new Date()), "yyyy-MM-dd"),
     ),
-    to: v.optional(
-      v.pipe(v.string(), v.minLength(1, "To is required")),
-      format(endOfDay(new Date()), "yyyy-MM-dd"),
-    ),
+    to: v.optional(v.pipe(v.string(), v.minLength(1, "To is required")), format(endOfDay(new Date()), "yyyy-MM-dd")),
   }),
   component: RouteComponent,
 });
@@ -85,19 +78,11 @@ function RouteComponent() {
 
   return (
     <AppContent>
-      <AppHeader
-        breadcrumbs={[{ title: "Dashboard", to: "/$orgId", params: { orgId } }]}
-      >
+      <AppHeader breadcrumbs={[{ title: "Dashboard", to: "/$orgId", params: { orgId } }]}>
         <div className="ml-auto">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger
-              render={
-                <Button
-                  variant="outline"
-                  id="date-picker-range"
-                  className="justify-start px-2.5 font-normal"
-                />
-              }
+              render={<Button variant="outline" id="date-picker-range" className="justify-start px-2.5 font-normal" />}
             >
               <RiCalendarLine data-icon="inline-start" />
               {formatDateRange(new Date(search.from), new Date(search.to))}

@@ -1,5 +1,5 @@
-import { createFileRoute, redirect } from "@tanstack/react-router"
-import { auth } from "@/lib/auth"
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { auth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -13,8 +13,8 @@ export const Route = createFileRoute("/")({
       throw redirect({
         to: "/$orgId",
         params: {
-          orgId: session.data.session.activeOrganizationId
-        }
+          orgId: session.data.session.activeOrganizationId,
+        },
       });
     } else {
       const { data: organizations } = await auth.organization.list();
@@ -23,8 +23,8 @@ export const Route = createFileRoute("/")({
         throw redirect({
           to: "/$orgId",
           params: {
-            orgId: organizations[0].id
-          }
+            orgId: organizations[0].id,
+          },
         });
       }
     }
