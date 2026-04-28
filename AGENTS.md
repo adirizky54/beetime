@@ -36,7 +36,7 @@ cp apps/web/.env.example apps/web/.env
 | Variable | Required | Notes |
 |---|---|---|
 | `APP_NAME` | No | Application name; defaults to `"Beetime API"` |
-| `APP_ORIGIN` | Yes | Trusted frontend origin for CORS and Better Auth (e.g. `http://localhost:3000`) |
+| `API_ORIGIN` | Yes | Root URL where your application server is hosted (e.g. `http://localhost:8080`) |
 | `PORT` | No | API server port; defaults to `8080` |
 | `DATABASE_URL` | Yes | PostgreSQL connection string (e.g. `postgresql://postgres:postgres@localhost:5432/postgres`) |
 | `BETTER_AUTH_SECRET` | Yes | Secret key — **must be at least 32 characters** |

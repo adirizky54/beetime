@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin as adminPlugin, organization } from "better-auth/plugins";
 import { nanoid } from "nanoid";
+import { sendVerificationEmail } from "@beetime/email";
 import { env } from "@beetime/env/api";
 
 import { db } from "./db";
@@ -11,7 +12,7 @@ import { toSlug } from "@/utils/string";
 
 export const auth = betterAuth({
   appName: env.APP_NAME,
-  baseURL: env.APP_ORIGIN,
+  baseURL: env.API_ORIGIN,
   basePath: "/api/v1/auth",
   secret: env.BETTER_AUTH_SECRET,
   trustedOrigins: ["http://localhost:*"],
@@ -22,6 +23,18 @@ export const auth = betterAuth({
   disabledPaths: ["/organization/list-members"],
   emailAndPassword: {
     enabled: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendVerificationEmail(env, {
+        user: {
+          name: user.name,
+          email: "delivered@resend.dev",
+        },
+        url,
+      });
+    },
   },
   plugins: [
     adminPlugin({

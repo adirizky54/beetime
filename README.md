@@ -91,7 +91,7 @@ The `@beetime/schema` package is shared between the API and the web app, providi
    | Variable | Description | Default |
    |---|---|---|
    | `APP_NAME` | Application name | `Beetime API` |
-   | `APP_ORIGIN` | Trusted frontend origin (for CORS/auth) | `http://localhost:8080` |
+   | `API_ORIGIN` | Root URL where your application server is hosted | `http://localhost:8080` |
    | `PORT` | API server port | `8080` |
    | `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:postgres@localhost:5432/postgres` |
    | `BETTER_AUTH_SECRET` | Secret key for Better Auth (min. 32 chars) | — |
