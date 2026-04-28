@@ -16,6 +16,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@beetime/email": "workspace:*",
     "@beetime/env": "workspace:*",
     "@beetime/schema": "workspace:*",
     "@hono/valibot-validator": "^0.6.1",

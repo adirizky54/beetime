@@ -1,6 +1,6 @@
+import { createRouter } from "@/lib/app";
 import { authRoutes } from "./auth";
 import { organizationsRoutes } from "./organizations";
-import { createRouter } from "@/lib/app";
 
 export const v1Routes = createRouter();
 

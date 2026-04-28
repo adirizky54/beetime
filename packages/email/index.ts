@@ -1,1 +1,1 @@
-export { EmailVerification } from "./templates/email-verification";
+export { sendEmail, sendVerificationEmail } from "./mailer";

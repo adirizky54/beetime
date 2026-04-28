@@ -77,11 +77,12 @@ const OrgIdClientsIndexRoute = OrgIdClientsIndexRouteImport.update({
   path: "/clients/",
   getParentRoute: () => OrgIdRouteRoute,
 } as any);
-const OrgIdProjectsProjectIdIndexRoute = OrgIdProjectsProjectIdIndexRouteImport.update({
-  id: "/projects/$projectId/",
-  path: "/projects/$projectId/",
-  getParentRoute: () => OrgIdRouteRoute,
-} as any);
+const OrgIdProjectsProjectIdIndexRoute =
+  OrgIdProjectsProjectIdIndexRouteImport.update({
+    id: "/projects/$projectId/",
+    path: "/projects/$projectId/",
+    getParentRoute: () => OrgIdRouteRoute,
+  } as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -286,7 +287,9 @@ const OrgIdRouteRouteChildren: OrgIdRouteRouteChildren = {
   OrgIdProjectsProjectIdIndexRoute: OrgIdProjectsProjectIdIndexRoute,
 };
 
-const OrgIdRouteRouteWithChildren = OrgIdRouteRoute._addFileChildren(OrgIdRouteRouteChildren);
+const OrgIdRouteRouteWithChildren = OrgIdRouteRoute._addFileChildren(
+  OrgIdRouteRouteChildren,
+);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -295,7 +298,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignUpRoute: SignUpRoute,
 };
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>();
 
 import type { getRouter } from "./router.tsx";
 import type { createStart } from "@tanstack/react-start";
