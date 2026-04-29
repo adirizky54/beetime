@@ -26,13 +26,14 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendOnSignUp: true,
-    sendVerificationEmail: async ({ user, url }) => {
+    expiresIn: 3600 * 24, // 24 hours
+    sendVerificationEmail: async ({ user, token }) => {
       await sendVerificationEmail(env, {
         user: {
           name: user.name,
           email: "delivered@resend.dev",
         },
-        url,
+        url: `${env.APP_ORIGIN}/verify-email?token=${token}`,
       });
     },
   },

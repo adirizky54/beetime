@@ -26,7 +26,7 @@ export const EmailVerification = ({ verificationUrl }: EmailVerificationProps) =
         setup.
       </Text>
 
-      <Section className="mt-[32px] mb-[32px] text-center">
+      <Section className="mb-2 text-center">
         <Button
           className="rounded bg-amber-600 px-[16px] py-[12px] text-center text-[16px] font-semibold text-white no-underline"
           href={verificationUrl}
@@ -34,6 +34,8 @@ export const EmailVerification = ({ verificationUrl }: EmailVerificationProps) =
           Verify Email Address
         </Button>
       </Section>
+
+      <Text className="text-center text-sm text-[#1d1c1d]">*This verification email is valid for 24 hours only.</Text>
     </Container>
   </BaseTemplate>
 );

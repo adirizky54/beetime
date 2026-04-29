@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
+import { Route as VerifyEmailRouteImport } from "./routes/verify-email";
 import { Route as SignUpRouteImport } from "./routes/sign-up";
 import { Route as LoginRouteImport } from "./routes/login";
 import { Route as ForgotPasswordRouteImport } from "./routes/forgot-password";
@@ -22,6 +23,11 @@ import { Route as OrgIdMembersIndexRouteImport } from "./routes/$orgId/members/i
 import { Route as OrgIdClientsIndexRouteImport } from "./routes/$orgId/clients/index";
 import { Route as OrgIdProjectsProjectIdIndexRouteImport } from "./routes/$orgId/projects/$projectId/index";
 
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: "/verify-email",
+  path: "/verify-email",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const SignUpRoute = SignUpRouteImport.update({
   id: "/sign-up",
   path: "/sign-up",
@@ -77,11 +83,12 @@ const OrgIdClientsIndexRoute = OrgIdClientsIndexRouteImport.update({
   path: "/clients/",
   getParentRoute: () => OrgIdRouteRoute,
 } as any);
-const OrgIdProjectsProjectIdIndexRoute = OrgIdProjectsProjectIdIndexRouteImport.update({
-  id: "/projects/$projectId/",
-  path: "/projects/$projectId/",
-  getParentRoute: () => OrgIdRouteRoute,
-} as any);
+const OrgIdProjectsProjectIdIndexRoute =
+  OrgIdProjectsProjectIdIndexRouteImport.update({
+    id: "/projects/$projectId/",
+    path: "/projects/$projectId/",
+    getParentRoute: () => OrgIdRouteRoute,
+  } as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
   "/sign-up": typeof SignUpRoute;
+  "/verify-email": typeof VerifyEmailRoute;
   "/$orgId/": typeof OrgIdIndexRoute;
   "/$orgId/clients/": typeof OrgIdClientsIndexRoute;
   "/$orgId/members/": typeof OrgIdMembersIndexRoute;
@@ -102,6 +110,7 @@ export interface FileRoutesByTo {
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
   "/sign-up": typeof SignUpRoute;
+  "/verify-email": typeof VerifyEmailRoute;
   "/$orgId": typeof OrgIdIndexRoute;
   "/$orgId/clients": typeof OrgIdClientsIndexRoute;
   "/$orgId/members": typeof OrgIdMembersIndexRoute;
@@ -117,6 +126,7 @@ export interface FileRoutesById {
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
   "/sign-up": typeof SignUpRoute;
+  "/verify-email": typeof VerifyEmailRoute;
   "/$orgId/": typeof OrgIdIndexRoute;
   "/$orgId/clients/": typeof OrgIdClientsIndexRoute;
   "/$orgId/members/": typeof OrgIdMembersIndexRoute;
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | "/forgot-password"
     | "/login"
     | "/sign-up"
+    | "/verify-email"
     | "/$orgId/"
     | "/$orgId/clients/"
     | "/$orgId/members/"
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | "/forgot-password"
     | "/login"
     | "/sign-up"
+    | "/verify-email"
     | "/$orgId"
     | "/$orgId/clients"
     | "/$orgId/members"
@@ -160,6 +172,7 @@ export interface FileRouteTypes {
     | "/forgot-password"
     | "/login"
     | "/sign-up"
+    | "/verify-email"
     | "/$orgId/"
     | "/$orgId/clients/"
     | "/$orgId/members/"
@@ -175,10 +188,18 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute;
   LoginRoute: typeof LoginRoute;
   SignUpRoute: typeof SignUpRoute;
+  VerifyEmailRoute: typeof VerifyEmailRoute;
 }
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
+    "/verify-email": {
+      id: "/verify-email";
+      path: "/verify-email";
+      fullPath: "/verify-email";
+      preLoaderRoute: typeof VerifyEmailRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/sign-up": {
       id: "/sign-up";
       path: "/sign-up";
@@ -286,7 +307,9 @@ const OrgIdRouteRouteChildren: OrgIdRouteRouteChildren = {
   OrgIdProjectsProjectIdIndexRoute: OrgIdProjectsProjectIdIndexRoute,
 };
 
-const OrgIdRouteRouteWithChildren = OrgIdRouteRoute._addFileChildren(OrgIdRouteRouteChildren);
+const OrgIdRouteRouteWithChildren = OrgIdRouteRoute._addFileChildren(
+  OrgIdRouteRouteChildren,
+);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -294,8 +317,11 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   SignUpRoute: SignUpRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
 };
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>();
 
 import type { getRouter } from "./router.tsx";
 import type { createStart } from "@tanstack/react-start";
