@@ -7,20 +7,22 @@
 ```
 beetime/
 ├── apps/
-│   ├── api/        # @beetime/api  — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
-│   └── web/        # @beetime/web  — Frontend SPA (React + TanStack Router/Query + Vite)
+│   ├── api/        # @beetime/api   — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
+│   └── web/        # @beetime/web   — Frontend SPA (React + TanStack Router/Query + Vite)
 └── packages/
-    ├── schema/     # @beetime/schema — shared Valibot schemas + TypeScript types (no build step)
-    └── ui/         # @beetime/ui    — shared React component library (Shadcn + Tailwind CSS v4, no build step)
+    ├── email/      # @beetime/email  — Transactional email templates and mailer (React Email + Resend)
+    ├── env/        # @beetime/env    — Shared environment variable validation (Valibot, no build step)
+    ├── schema/     # @beetime/schema — Shared Valibot schemas + TypeScript types (no build step)
+    └── ui/         # @beetime/ui    — Shared React component library (Shadcn + Tailwind CSS v4, no build step)
 ```
 
-Key domains: projects, clients, tasks, members, organizations, timesheets. Authentication is handled by **Better Auth** with the organization plugin and role-based access control (RBAC).
+Key domains: projects, clients, tasks, members, organizations, timesheets. Authentication is handled by **Better Auth** with the organization plugin and role-based access control (RBAC). Transactional email (verification, notifications) is handled by **Resend** via the `@beetime/email` package.
 
 ---
 
 ## Setup
 
-**Prerequisites:** Bun ≥ 1.3.13, Node.js ≥ 22.18, a running PostgreSQL instance.
+**Prerequisites:** Bun ≥ 1.3.13, Node.js ≥ 22.18, a running PostgreSQL instance, and a [Resend](https://resend.com) account for transactional email.
 
 ```sh
 # Install all workspace dependencies from the repo root
@@ -40,8 +42,14 @@ cp apps/web/.env.example apps/web/.env
 | `PORT` | No | API server port; defaults to `8080` |
 | `DATABASE_URL` | Yes | PostgreSQL connection string (e.g. `postgresql://postgres:postgres@localhost:5432/postgres`) |
 | `BETTER_AUTH_SECRET` | Yes | Secret key — **must be at least 32 characters** |
+| `RESEND_API_KEY` | Yes | API key from your Resend dashboard |
+| `RESEND_EMAIL_FROM` | Yes | Verified sender address for outgoing emails (e.g. `noreply@yourdomain.com`) |
 
-Env vars are parsed and validated at startup in `apps/api/src/env.ts` via Valibot. The process exits immediately if a required variable is missing or invalid.
+Env vars are parsed and validated at startup via Valibot in `packages/env/src/api.ts`. The process exits immediately if a required variable is missing or invalid. The validated `env` object and `Env` type are imported as:
+
+```ts
+import { env, type Env } from "@beetime/env/api"
+```
 
 ### Web environment variables (`apps/web/.env`)
 
@@ -63,7 +71,7 @@ bun dev
 - API: `http://localhost:8080` (hot-reload via `bun --hot`)
 - Web: `http://localhost:3000` (Vite HMR)
 
-To run a single app:
+To run a single app or package:
 
 ```sh
 # API only
@@ -71,6 +79,10 @@ bun run dev --filter @beetime/api
 
 # Web only
 bun run dev --filter @beetime/web
+
+# Email template preview (React Email dev server)
+bun run dev --filter @beetime/email
+# Opens at http://localhost:3001 — no Resend account needed for local preview
 ```
 
 ---
@@ -107,7 +119,7 @@ Build outputs:
 - `apps/api` → `dist/`
 - `apps/web` → `.output/` (via Nitro/Vinxi) and `.vinxi/`
 
-`build` has upstream dependency (`^build`), so packages are built before apps automatically.
+`build` has an upstream dependency (`^build`), so packages are built before apps automatically.
 
 ---
 
@@ -122,26 +134,49 @@ bun run check:types --filter @beetime/api
 bun run check:types --filter @beetime/web
 bun run check:types --filter @beetime/schema
 bun run check:types --filter @beetime/ui
+bun run check:types --filter @beetime/env
+bun run check:types --filter @beetime/email
 ```
 
 All packages run `tsc --noEmit`. Fix all type errors before committing. Notable strictness flags active across packages:
 
 - `strict: true` — in all packages
-- `noUnusedLocals`, `noUnusedParameters` — in `apps/web` and `packages/schema`
+- `noUnusedLocals`, `noUnusedParameters` — in `apps/web`, `packages/schema`, and `packages/env`
 - `noUncheckedIndexedAccess` — in `packages/schema` (strictest)
-- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web`
-- `verbatimModuleSyntax: true` — in `apps/api` and `packages/schema` (use `import type` for type-only imports)
+- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web` and `packages/env`
+- `verbatimModuleSyntax: true` — in `apps/api`, `packages/schema`, and `packages/env` (use `import type` for type-only imports)
+- `jsx: react-jsx` — in `packages/email` and `packages/ui`
 
 ---
 
 ## Linting and Formatting
 
-**No linting tool is currently configured.** The `check:lint` pipeline task exists as a stub but no package implements it. Do not attempt to run `bun check:lint` — it will succeed vacuously.
+Both linting and formatting are configured and enforced across all packages.
 
-**No formatter is configured.** Follow the existing code style by convention:
+- **Linter:** [oxlint](https://oxc.rs/docs/guide/usage/linter) — root config at `.oxlintrc.json`, with plugins: `eslint`, `typescript`, `import`, `promise`, `unicorn`, `oxc`
+- **Formatter:** [oxfmt](https://github.com/nicolo-ribaudo/oxfmt) — config at `.oxfmtrc.json`
+
+```sh
+# Check everything (format + lint + types)
+bun check
+
+# Check individually
+bun check:format   # formatting only
+bun check:lint     # linting only
+bun check:types    # TypeScript only
+
+# Auto-fix everything
+bun fix
+
+# Auto-fix individually
+bun fix:format     # formatting
+bun fix:lint       # lint auto-fixes
+```
+
+Style conventions (not enforced by tooling, follow by observation):
 
 - 2-space indentation, LF line endings, UTF-8 (enforced by `.editorconfig`)
-- Double quotes for strings in the web app (matches TanStack Router codegen settings: `quoteStyle: "double"`, `semicolons: true`)
+- Double quotes for strings in the web app (matches TanStack Router codegen: `quoteStyle: "double"`, `semicolons: true`)
 - `import type` for type-only imports (required by `verbatimModuleSyntax`)
 - No trailing commas in function parameters (observe the existing style per file)
 
@@ -158,9 +193,9 @@ All packages run `tsc --noEmit`. Fix all type errors before committing. Notable 
 ### General
 
 - **Package manager:** always use `bun` — never `npm` or `pnpm`
-- **Adding a dependency:** `bun add <package> --cwd apps/api` (or `--cwd apps/web`, etc.)
+- **Adding a dependency:** `bun add <package> --cwd apps/api` (or `--cwd apps/web`, `--cwd packages/email`, etc.)
 - **Internal package references:** use `workspace:*` in `package.json` (e.g. `"@beetime/schema": "workspace:*"`)
-- **Workspace package names:** `@beetime/api`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`
+- **Workspace package names:** `@beetime/api`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`, `@beetime/env`, `@beetime/email`
 
 ### API (`apps/api`)
 
@@ -270,6 +305,55 @@ bunx shadcn add <component-name>
 
 Components go into `packages/ui/src/components/` and are consumed as `@beetime/ui/components/<name>`.
 
+### Shared Environment (`packages/env`)
+
+- Consumed as TypeScript source directly — no build step, no compilation required
+- Exports a single subpath: `@beetime/env/api` → `src/api.ts`
+- Parses and validates `process.env` with Valibot at import time — **do not import this in browser code**
+- Usage:
+
+```ts
+import { env, type Env } from "@beetime/env/api"
+// env.DATABASE_URL, env.RESEND_API_KEY, etc.
+```
+
+- To add a new env var: add it to the `EnvSchema` in `packages/env/src/api.ts`, then update `apps/api/.env.example`
+- Uses `verbatimModuleSyntax: true` — use `import type` for type-only imports
+
+### Shared Email (`packages/email`)
+
+- Consumed as TypeScript source directly — no build step
+- Import path: `@beetime/email` → `index.ts`
+- Email templates are React components in `packages/email/templates/`
+- Shared layout primitives live in `packages/email/components/`
+- Depends on `@beetime/env` for Resend credentials at send time
+
+**Adding a new email template:**
+
+1. Create a React component in `packages/email/templates/<name>.tsx`
+2. Add a send function in `packages/email/mailer.ts` that renders the template and calls `sendEmail`
+3. Export the new send function from `packages/email/index.ts`
+4. Preview the template locally:
+
+```sh
+bun run dev --filter @beetime/email
+# Opens React Email dev server at http://localhost:3001
+```
+
+**Send function pattern:**
+
+```ts
+export async function sendWelcomeEmail(
+  env: Pick<Env, "RESEND_API_KEY" | "RESEND_EMAIL_FROM">,
+  options: { user: { email: string; name?: string } },
+) {
+  const component = WelcomeEmail({ name: options.user.name })
+  const html = await render(component)
+  const text = toPlainText(html)
+  return sendEmail(env, { to: options.user.email, subject: "Welcome!", html, text })
+}
+```
+
 ### Shared Schema (`packages/schema`)
 
 - Consumed as TypeScript source directly — no build step, no compilation required
@@ -319,9 +403,11 @@ export type CreateProject = v.InferOutput<typeof CreateProjectSchema>
 
 Before committing any change, ensure:
 
-1. `bun check:types` passes with zero errors across all packages
+1. `bun check` passes with zero errors across all packages (covers format, lint, and types)
 2. No `routeTree.gen.ts` manual edits — this file is auto-generated by the Vite plugin on `bun dev`
 3. New DB schema changes come with a generated migration: `bun db:generate`
-4. New shared types and validation schemas go in `packages/schema`, not duplicated in `apps/`
-5. New reusable UI components go in `packages/ui/src/components/`, not in `apps/web/src/components/ui/`
-6. `import type` is used for type-only imports in all files (required by `verbatimModuleSyntax`)
+4. New env vars are added to `packages/env/src/api.ts` **and** `apps/api/.env.example`
+5. New shared types and validation schemas go in `packages/schema`, not duplicated in `apps/`
+6. New email templates and send functions go in `packages/email`, not inline in `apps/api`
+7. New reusable UI components go in `packages/ui/src/components/`, not in `apps/web/src/components/ui/`
+8. `import type` is used for type-only imports in all files (required by `verbatimModuleSyntax`)
