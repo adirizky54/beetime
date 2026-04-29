@@ -1,11 +1,11 @@
-import { Link, createFileRoute } from "@tanstack/react-router"
-import { valibotResolver } from "@hookform/resolvers/valibot"
-import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
-import * as v from "valibot"
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as v from "valibot";
 
-import { Button } from "@beetime/ui/components/button"
-import { Card, CardContent } from "@beetime/ui/components/card"
+import { Button } from "@beetime/ui/components/button";
+import { Card, CardContent } from "@beetime/ui/components/card";
 import {
   Field,
   FieldDescription,
@@ -13,22 +13,15 @@ import {
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@beetime/ui/components/field"
-import { Input } from "@beetime/ui/components/input"
-import { Spinner } from "@beetime/ui/components/spinner"
-import { auth } from "@/lib/auth"
+} from "@beetime/ui/components/field";
+import { Input } from "@beetime/ui/components/input";
+import { Spinner } from "@beetime/ui/components/spinner";
+import { auth } from "@/lib/auth";
 
 const formSchema = v.pipe(
   v.object({
-    name: v.pipe(
-      v.string(),
-      v.nonEmpty("Please enter your name."),
-    ),
-    email: v.pipe(
-      v.string(),
-      v.nonEmpty("Please enter your email."),
-      v.email()
-    ),
+    name: v.pipe(v.string(), v.nonEmpty("Please enter your name.")),
+    email: v.pipe(v.string(), v.nonEmpty("Please enter your email."), v.email()),
     password: v.pipe(
       v.string(),
       v.trim(),
@@ -37,29 +30,26 @@ const formSchema = v.pipe(
       v.regex(/[a-z]/, "Password must contain at least one lowercase letter"),
       v.regex(/[A-Z]/, "Password must contain at least one uppercase letter"),
       v.regex(/[0-9]/, "Password must contain at least one number"),
-      v.regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>?]/, "Password must contain at least one special character")
+      v.regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>?]/, "Password must contain at least one special character"),
     ),
-    confirm_password: v.pipe(
-      v.string(),
-      v.nonEmpty("Please confirm your password."),
-    ),
+    confirm_password: v.pipe(v.string(), v.nonEmpty("Please confirm your password.")),
   }),
   v.forward(
     v.partialCheck(
       [["password"], ["confirm_password"]],
       (input) => input.password === input.confirm_password,
-      "Passwords do not match."
+      "Passwords do not match.",
     ),
-    ["confirm_password"]
-  )
+    ["confirm_password"],
+  ),
 );
 
 export const Route = createFileRoute("/sign-up")({
   component: RouteComponent,
   head: () => ({
-    meta: [{ title: "Sign Up — Bee Time" }]
-  })
-})
+    meta: [{ title: "Sign Up — Bee Time" }],
+  }),
+});
 
 function RouteComponent() {
   const [loading, setLoading] = useState(false);
@@ -72,40 +62,43 @@ function RouteComponent() {
       email: "",
       password: "",
       confirm_password: "",
-    }
+    },
   });
 
   const onSubmit = form.handleSubmit(async (values) => {
-    await auth.signUp.email({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-      callbackURL: "/"
-    }, {
-      onRequest: () => {
-        form.clearErrors();
-        setLoading(true);
+    await auth.signUp.email(
+      {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        callbackURL: "/",
       },
-      onSuccess: () => {
-        setLoading(false);
+      {
+        onRequest: () => {
+          form.clearErrors();
+          setLoading(true);
+        },
+        onSuccess: () => {
+          setLoading(false);
+        },
+        onError: (err) => {
+          const pattern = /\[body\.(\w+)\]\s([^;]+)/g;
+          let match;
+          let hasMatch = false;
+
+          setLoading(false);
+
+          while ((match = pattern.exec(err.error.message)) !== null) {
+            const field = match[1] as keyof v.InferInput<typeof formSchema>;
+            form.setError(field, { message: match[2].trim() });
+            hasMatch = true;
+          }
+          if (!hasMatch) {
+            form.setError("name", { message: err.error.message });
+          }
+        },
       },
-      onError: (err) => {
-        const pattern = /\[body\.(\w+)\]\s([^;]+)/g;
-        let match;
-        let hasMatch = false;
-
-        setLoading(false);
-
-        while ((match = pattern.exec(err.error.message)) !== null) {
-          const field = match[1] as keyof v.InferInput<typeof formSchema>;
-          form.setError(field, { message: match[2].trim() });
-          hasMatch = true;
-        }
-        if (!hasMatch) {
-          form.setError("name", { message: err.error.message });
-        }
-      }
-    });
+    );
   });
 
   return (
@@ -137,9 +130,7 @@ function RouteComponent() {
                           aria-invalid={fieldState.invalid}
                           required
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -158,9 +149,7 @@ function RouteComponent() {
                           aria-invalid={fieldState.invalid}
                           required
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -180,9 +169,7 @@ function RouteComponent() {
                               aria-invalid={fieldState.invalid}
                               required
                             />
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                           </Field>
                         )}
                       />
@@ -200,9 +187,7 @@ function RouteComponent() {
                               aria-invalid={fieldState.invalid}
                               required
                             />
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                           </Field>
                         )}
                       />
@@ -243,11 +228,10 @@ function RouteComponent() {
             </CardContent>
           </Card>
           <FieldDescription className="px-6 text-center">
-            By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-            and <a href="#">Privacy Policy</a>.
+            By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
           </FieldDescription>
         </div>
       </div>
     </div>
-  )
+  );
 }

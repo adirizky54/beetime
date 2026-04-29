@@ -1,20 +1,20 @@
 import type { PgSelect } from "drizzle-orm/pg-core";
 
 interface PaginationParams {
-  page: number
-  pageSize: number
+  page: number;
+  pageSize: number;
 }
 
 interface PaginationMeta {
-  page: number
-  pageSize: number
-  pageCount: number
-  total: number
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
 }
 
 interface PaginatedResult<T> {
-  data: T[]
-  meta: PaginationMeta
+  data: T[];
+  meta: PaginationMeta;
 }
 
 export async function withPagination<T extends PgSelect>(
@@ -25,10 +25,7 @@ export async function withPagination<T extends PgSelect>(
   const { page, pageSize } = params;
   const offset = (page - 1) * pageSize;
 
-  const [rows, total] = await Promise.all([
-    qb.limit(pageSize).offset(offset),
-    cq,
-  ]);
+  const [rows, total] = await Promise.all([qb.limit(pageSize).offset(offset), cq]);
 
   const pageCount = Math.ceil(total / pageSize) || 1;
 

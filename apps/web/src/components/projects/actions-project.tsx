@@ -1,10 +1,23 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RiArchiveLine, RiDeleteBinLine, RiFileCopyLine, RiHistoryLine, RiMoreFill, RiPencilFill } from "@remixicon/react";
+import {
+  RiArchiveLine,
+  RiDeleteBinLine,
+  RiFileCopyLine,
+  RiHistoryLine,
+  RiMoreFill,
+  RiPencilFill,
+} from "@remixicon/react";
 
 import type { Project } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@beetime/ui/components/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@beetime/ui/components/dropdown-menu";
 import { toastManager } from "@beetime/ui/components/toast";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
@@ -15,7 +28,7 @@ import { projectQueries } from "@/queries/project";
 
 type ActionProjectProps = {
   project: Project;
-}
+};
 
 export function ActionsProject({ project }: ActionProjectProps) {
   const queryClient = useQueryClient();
@@ -30,7 +43,7 @@ export function ActionsProject({ project }: ActionProjectProps) {
     },
     onError: () => {
       toastManager.add({ type: "error", title: "Failed to archive project" });
-    }
+    },
   });
 
   const { mutate: unarchive } = useMutation({
@@ -41,7 +54,7 @@ export function ActionsProject({ project }: ActionProjectProps) {
     },
     onError: () => {
       toastManager.add({ type: "error", title: "Failed to unarchive project" });
-    }
+    },
   });
 
   return (
@@ -49,15 +62,19 @@ export function ActionsProject({ project }: ActionProjectProps) {
       <Tooltip>
         <DropdownMenu>
           <TooltipTrigger
-            render={(
+            render={
               <DropdownMenuTrigger
-                render={(
-                  <Button variant="ghost" size="icon-xs" className="opacity-0 group-hover/table-row:opacity-100 data-popup-open:opacity-100">
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    className="opacity-0 group-hover/table-row:opacity-100 data-popup-open:opacity-100"
+                  >
                     <RiMoreFill className="size-4" />
                   </Button>
-                )}
+                }
               />
-            )}
+            }
           />
           <TooltipContent>Project Actions</TooltipContent>
           <DropdownMenuContent className="min-w-40">
@@ -90,11 +107,7 @@ export function ActionsProject({ project }: ActionProjectProps) {
             </Can>
 
             <Can orgId={project.organizationId} permissions={{ project: ["delete"] }}>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => setShowDeleteDialog(true)}
-                closeOnClick
-              >
+              <DropdownMenuItem variant="destructive" onClick={() => setShowDeleteDialog(true)} closeOnClick>
                 <RiDeleteBinLine />
                 Delete
               </DropdownMenuItem>
@@ -104,20 +117,12 @@ export function ActionsProject({ project }: ActionProjectProps) {
       </Tooltip>
 
       <Can orgId={project.organizationId} permissions={{ project: ["update"] }}>
-        <EditProjectDialog
-          project={project}
-          open={showEditDialog}
-          onOpenChange={setShowEditDialog}
-        />
+        <EditProjectDialog project={project} open={showEditDialog} onOpenChange={setShowEditDialog} />
       </Can>
 
       <Can orgId={project.organizationId} permissions={{ project: ["delete"] }}>
-        <DeleteProjectDialog
-          project={project}
-          open={showDeleteDialog}
-          onOpenChange={setShowDeleteDialog}
-        />
+        <DeleteProjectDialog project={project} open={showDeleteDialog} onOpenChange={setShowDeleteDialog} />
       </Can>
     </>
-  )
+  );
 }

@@ -1,7 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { Client } from "@beetime/schema";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@beetime/ui/components/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@beetime/ui/components/alert-dialog";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { toastManager } from "@beetime/ui/components/toast";
 
@@ -11,7 +20,7 @@ type DeleteClientDialogProps = {
   client: Client;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-}
+};
 
 export function DeleteClientDialog({ client, open, onOpenChange }: DeleteClientDialogProps) {
   const queryClient = useQueryClient();
@@ -39,11 +48,7 @@ export function DeleteClientDialog({ client, open, onOpenChange }: DeleteClientD
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            variant="destructive"
-            disabled={isDeleting}
-            onClick={() => deleteClient()}
-          >
+          <AlertDialogAction variant="destructive" disabled={isDeleting} onClick={() => deleteClient()}>
             {isDeleting && <Spinner data-icon="inline-start" />}
             Delete
           </AlertDialogAction>

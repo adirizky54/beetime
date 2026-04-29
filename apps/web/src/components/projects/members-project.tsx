@@ -1,23 +1,18 @@
 import { RiUserLine } from "@remixicon/react";
 
 import type { Project } from "@beetime/schema";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage
-} from "@beetime/ui/components/avatar";
+import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from "@beetime/ui/components/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
 type MembersProjectProps = {
   project: Project;
-}
+};
 
 export function MembersProject({ project }: MembersProjectProps) {
   return (
     <Tooltip>
       <TooltipTrigger
-        render={(
+        render={
           <AvatarGroup className="inline-flex">
             {project.members.map((member) => (
               <Avatar key={member.id} size="sm">
@@ -28,7 +23,7 @@ export function MembersProject({ project }: MembersProjectProps) {
               </Avatar>
             ))}
           </AvatarGroup>
-        )}
+        }
       />
 
       <TooltipContent className="flex flex-col items-start">
@@ -37,5 +32,5 @@ export function MembersProject({ project }: MembersProjectProps) {
         ))}
       </TooltipContent>
     </Tooltip>
-  )
+  );
 }

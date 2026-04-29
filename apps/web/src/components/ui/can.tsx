@@ -9,12 +9,7 @@ interface CanProps {
   fallback?: React.ReactNode;
 }
 
-export function Can({
-  orgId,
-  permissions,
-  children,
-  fallback = null,
-}: CanProps) {
+export function Can({ orgId, permissions, children, fallback = null }: CanProps) {
   const { data: allowed, isError, isLoading } = usePermission(orgId, permissions);
 
   if (isLoading) {

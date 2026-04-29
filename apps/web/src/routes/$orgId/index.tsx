@@ -23,15 +23,12 @@ export const Route = createFileRoute("/$orgId/")({
   validateSearch: v.object({
     from: v.optional(
       v.pipe(v.string(), v.minLength(1, "From is required")),
-      format(startOfDay(new Date()), "yyyy-MM-dd")
+      format(startOfDay(new Date()), "yyyy-MM-dd"),
     ),
-    to: v.optional(
-      v.pipe(v.string(), v.minLength(1, "To is required")),
-      format(endOfDay(new Date()), "yyyy-MM-dd")
-    ),
+    to: v.optional(v.pipe(v.string(), v.minLength(1, "To is required")), format(endOfDay(new Date()), "yyyy-MM-dd")),
   }),
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const { orgId } = Route.useParams();
@@ -81,14 +78,12 @@ function RouteComponent() {
 
   return (
     <AppContent>
-      <AppHeader
-        breadcrumbs={[
-          { title: "Dashboard", to: "/$orgId", params: { orgId } },
-        ]}
-      >
+      <AppHeader breadcrumbs={[{ title: "Dashboard", to: "/$orgId", params: { orgId } }]}>
         <div className="ml-auto">
           <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger render={<Button variant="outline" id="date-picker-range" className="justify-start px-2.5 font-normal" />}>
+            <PopoverTrigger
+              render={<Button variant="outline" id="date-picker-range" className="justify-start px-2.5 font-normal" />}
+            >
               <RiCalendarLine data-icon="inline-start" />
               {formatDateRange(new Date(search.from), new Date(search.to))}
             </PopoverTrigger>
@@ -100,7 +95,7 @@ function RouteComponent() {
                 disabled={(date) => date > new Date()}
                 selected={{
                   from: new Date(search.from),
-                  to: new Date(search.to)
+                  to: new Date(search.to),
                 }}
                 onSelect={(range) => {
                   if (typeof range !== "undefined" && range.from && range.to) {
@@ -124,5 +119,5 @@ function RouteComponent() {
         <DashboardStatCards />
       </AppBody>
     </AppContent>
-  )
+  );
 }

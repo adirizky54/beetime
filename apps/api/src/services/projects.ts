@@ -22,10 +22,7 @@ export async function listProjects(user: AuthUser, orgId: string, query: Project
 
   if (query.search) {
     const searchPattern = `%${query.search}%`;
-    const searchCondition = or(
-      ilike(projects.name, searchPattern),
-      ilike(projects.description, searchPattern)
-    );
+    const searchCondition = or(ilike(projects.name, searchPattern), ilike(projects.description, searchPattern));
     if (searchCondition) {
       conditions.push(searchCondition);
     }
@@ -36,13 +33,11 @@ export async function listProjects(user: AuthUser, orgId: string, query: Project
     const privacyCondition = or(
       eq(projects.privacy, "public"),
       exists(
-        db.select().from(projectMembers).where(
-          and(
-            eq(projectMembers.projectId, projects.id),
-            eq(projectMembers.userId, user.id)
-          )
-        )
-      )
+        db
+          .select()
+          .from(projectMembers)
+          .where(and(eq(projectMembers.projectId, projects.id), eq(projectMembers.userId, user.id))),
+      ),
     );
     if (privacyCondition) conditions.push(privacyCondition);
   }
@@ -83,21 +78,14 @@ export async function listProjects(user: AuthUser, orgId: string, query: Project
 
   const projectCount = db.$count(projects, and(...conditions));
 
-  const result = await withPagination(
-    projectList,
-    projectCount,
-    { page: query.page, pageSize: query.pageSize }
-  );
+  const result = await withPagination(projectList, projectCount, { page: query.page, pageSize: query.pageSize });
 
   return result;
 }
 
 export async function getProject(user: AuthUser, orgId: string, projectId: string) {
   const project = await db.query.projects.findFirst({
-    where: and(
-      eq(projects.organizationId, orgId),
-      eq(projects.id, projectId),
-    ),
+    where: and(eq(projects.organizationId, orgId), eq(projects.id, projectId)),
     with: {
       client: {
         columns: {
@@ -115,10 +103,7 @@ export async function getProject(user: AuthUser, orgId: string, projectId: strin
   if (project.privacy === "private") {
     if (!user.role?.includes("admin") && !user.role?.includes("owner")) {
       const membership = await db.query.projectMembers.findFirst({
-        where: and(
-          eq(projectMembers.projectId, projectId),
-          eq(projectMembers.userId, user.id)
-        ),
+        where: and(eq(projectMembers.projectId, projectId), eq(projectMembers.userId, user.id)),
       });
       if (!membership) {
         // Return 404 to avoid leaking existence of private projects
@@ -139,25 +124,18 @@ export async function getProjectMembers(projectId: string) {
           id: true,
           name: true,
           image: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
   return members.map((member) => member.user);
 }
 
-export async function createProject(
-  user: AuthUser,
-  orgId: string,
-  data: CreateProjectInput
-) {
+export async function createProject(user: AuthUser, orgId: string, data: CreateProjectInput) {
   if (data.clientId) {
     const client = await db.query.clients.findFirst({
-      where: and(
-        eq(clients.id, data.clientId),
-        eq(clients.organizationId, orgId),
-      ),
+      where: and(eq(clients.id, data.clientId), eq(clients.organizationId, orgId)),
     });
 
     if (client) {
@@ -181,7 +159,7 @@ export async function createProject(
         createdBy: user.id,
       })
       .returning();
-    
+
     if (data.privacy === "public") {
       const orgMembers = await tx.query.members.findMany({
         where: eq(members.organizationId, orgId),
@@ -195,10 +173,7 @@ export async function createProject(
       }
     } else {
       const orgMembers = await tx.query.members.findMany({
-        where: and(
-          eq(members.organizationId, orgId),
-          inArray(members.userId, data.userIds)
-        ),
+        where: and(eq(members.organizationId, orgId), inArray(members.userId, data.userIds)),
       });
 
       const validUserIds = new Set(orgMembers.map((m) => m.userId));
@@ -221,16 +196,9 @@ export async function createProject(
   return project;
 }
 
-export async function updateProject(
-  orgId: string,
-  projectId: string,
-  data: UpdateProjectInput
-) {
+export async function updateProject(orgId: string, projectId: string, data: UpdateProjectInput) {
   const project = await db.query.projects.findFirst({
-    where: and(
-      eq(projects.id, projectId),
-      eq(projects.organizationId, orgId),
-    ),
+    where: and(eq(projects.id, projectId), eq(projects.organizationId, orgId)),
   });
 
   if (!project) {
@@ -239,10 +207,7 @@ export async function updateProject(
 
   if (data.clientId) {
     const client = await db.query.clients.findFirst({
-      where: and(
-        eq(clients.id, data.clientId),
-        eq(clients.organizationId, orgId),
-      ),
+      where: and(eq(clients.id, data.clientId), eq(clients.organizationId, orgId)),
     });
 
     if (client) {
@@ -264,10 +229,7 @@ export async function updateProject(
   let validatedUserIds: string[] | undefined;
   if ((switchingToPrivate || stayingPrivate) && userIds && userIds.length > 0) {
     const orgMemberResults = await db.query.members.findMany({
-      where: and(
-        eq(members.organizationId, orgId),
-        inArray(members.userId, userIds),
-      ),
+      where: and(eq(members.organizationId, orgId), inArray(members.userId, userIds)),
     });
 
     const validUserIdSet = new Set(orgMemberResults.map((m) => m.userId));
@@ -282,11 +244,7 @@ export async function updateProject(
   }
 
   const [updatedProject] = await db.transaction(async (tx) => {
-    const [result] = await tx
-      .update(projects)
-      .set(projectData)
-      .where(eq(projects.id, projectId))
-      .returning();
+    const [result] = await tx.update(projects).set(projectData).where(eq(projects.id, projectId)).returning();
 
     if (switchingToPublic) {
       // Enroll all current org members (existing behavior)
@@ -302,13 +260,9 @@ export async function updateProject(
       }
     } else if (validatedUserIds) {
       // Full replacement: delete all current members, re-insert new list
-      await tx
-        .delete(projectMembers)
-        .where(eq(projectMembers.projectId, projectId));
+      await tx.delete(projectMembers).where(eq(projectMembers.projectId, projectId));
 
-      await tx
-        .insert(projectMembers)
-        .values(validatedUserIds.map((userId) => ({ projectId, userId })));
+      await tx.insert(projectMembers).values(validatedUserIds.map((userId) => ({ projectId, userId })));
     }
 
     return [result];
@@ -319,10 +273,7 @@ export async function updateProject(
 
 export async function deleteProject(orgId: string, projectId: string) {
   const project = await db.query.projects.findFirst({
-    where: and(
-      eq(projects.id, projectId),
-      eq(projects.organizationId, orgId),
-    ),
+    where: and(eq(projects.id, projectId), eq(projects.organizationId, orgId)),
   });
 
   if (!project) {
@@ -334,10 +285,7 @@ export async function deleteProject(orgId: string, projectId: string) {
 
 export async function archiveProject(orgId: string, projectId: string) {
   const project = await db.query.projects.findFirst({
-    where: and(
-      eq(projects.id, projectId),
-      eq(projects.organizationId, orgId),
-    ),
+    where: and(eq(projects.id, projectId), eq(projects.organizationId, orgId)),
   });
 
   if (!project) {
@@ -359,10 +307,7 @@ export async function archiveProject(orgId: string, projectId: string) {
 
 export async function unarchiveProject(orgId: string, projectId: string) {
   const project = await db.query.projects.findFirst({
-    where: and(
-      eq(projects.id, projectId),
-      eq(projects.organizationId, orgId),
-    ),
+    where: and(eq(projects.id, projectId), eq(projects.organizationId, orgId)),
   });
 
   if (!project) {

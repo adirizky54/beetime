@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, uuid, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, index } from "drizzle-orm/pg-core";
 import { projects } from "./projects";
 
 export const tasks = pgTable(
@@ -15,9 +15,7 @@ export const tasks = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [
-    index("tasks_project_id_idx").on(table.projectId),
-  ],
+  (table) => [index("tasks_project_id_idx").on(table.projectId)],
 );
 
 export const tasksRelations = relations(tasks, ({ one }) => ({

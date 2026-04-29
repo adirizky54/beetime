@@ -12,12 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@beetime/ui/components/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@beetime/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { Textarea } from "@beetime/ui/components/textarea";
@@ -89,9 +84,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Create Client</DialogTitle>
-          <DialogDescription>
-            Add a new client to your workspace.
-          </DialogDescription>
+          <DialogDescription>Add a new client to your workspace.</DialogDescription>
         </DialogHeader>
 
         <form id="create-client-form" onSubmit={onSubmit}>
@@ -109,9 +102,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -123,7 +114,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="create-client-email">
                     Email
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Input
                     {...field}
@@ -135,9 +126,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -149,7 +138,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="create-client-phone">
                     Phone
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Input
                     {...field}
@@ -161,9 +150,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -175,7 +162,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="create-client-address">
                     Address
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Textarea
                     {...field}
@@ -186,9 +173,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
                     rows={3}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -196,11 +181,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
         </form>
 
         <DialogFooter>
-          <Button
-            type="submit"
-            form="create-client-form"
-            disabled={createClient.isPending || !form.formState.isValid}
-          >
+          <Button type="submit" form="create-client-form" disabled={createClient.isPending || !form.formState.isValid}>
             {createClient.isPending && <Spinner data-icon="inline-start" />}
             Create Client
           </Button>

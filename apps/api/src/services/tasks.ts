@@ -25,10 +25,7 @@ export async function getTask(projectId: string, taskId: string) {
   return task;
 }
 
-export async function createTask(
-  projectId: string,
-  data: CreateTaskInput
-) {
+export async function createTask(projectId: string, data: CreateTaskInput) {
   const [task] = await db
     .insert(tasks)
     .values({
@@ -40,11 +37,7 @@ export async function createTask(
   return task;
 }
 
-export async function updateTask(
-  projectId: string,
-  taskId: string,
-  data: UpdateTaskInput
-) {
+export async function updateTask(projectId: string, taskId: string, data: UpdateTaskInput) {
   const task = await db.query.tasks.findFirst({
     where: and(eq(tasks.id, taskId), eq(tasks.projectId, projectId)),
   });
@@ -62,10 +55,7 @@ export async function updateTask(
   return updated;
 }
 
-export async function deleteTask(
-  projectId: string,
-  taskId: string
-) {
+export async function deleteTask(projectId: string, taskId: string) {
   const task = await db.query.tasks.findFirst({
     where: and(eq(tasks.id, taskId), eq(tasks.projectId, projectId)),
   });
@@ -74,15 +64,10 @@ export async function deleteTask(
     throw new HTTPException(404, { message: "Task not found" });
   }
 
-  await db
-    .delete(tasks)
-    .where(and(eq(tasks.id, taskId), eq(tasks.projectId, projectId)));
+  await db.delete(tasks).where(and(eq(tasks.id, taskId), eq(tasks.projectId, projectId)));
 }
 
-export async function markTaskDone(
-  projectId: string,
-  taskId: string
-) {
+export async function markTaskDone(projectId: string, taskId: string) {
   const task = await db.query.tasks.findFirst({
     where: and(eq(tasks.id, taskId), eq(tasks.projectId, projectId)),
   });
@@ -100,10 +85,7 @@ export async function markTaskDone(
   return updated;
 }
 
-export async function markTaskUndone(
-  projectId: string,
-  taskId: string
-) {
+export async function markTaskUndone(projectId: string, taskId: string) {
   const task = await db.query.tasks.findFirst({
     where: and(eq(tasks.id, taskId), eq(tasks.projectId, projectId)),
   });

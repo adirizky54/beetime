@@ -1,4 +1,4 @@
-import { cn } from "@beetime/ui/lib/utils"
+import { cn } from "@beetime/ui/lib/utils";
 
 export function AppBody({ className, children, ...props }: React.ComponentProps<"div">) {
   return (

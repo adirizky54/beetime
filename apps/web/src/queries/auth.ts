@@ -12,10 +12,11 @@ export const authQueries = {
   hasPermission: (orgId: string, permissions: Permissions) =>
     queryOptions({
       queryKey: [...authQueries.permissionsKey(), orgId, JSON.stringify(permissions)] as const,
-      queryFn: async () => await auth.organization.hasPermission({
-        organizationId: orgId,
-        permissions,
-      }),
+      queryFn: async () =>
+        await auth.organization.hasPermission({
+          organizationId: orgId,
+          permissions,
+        }),
       select: (response) => response.data?.success ?? false,
     }),
 };

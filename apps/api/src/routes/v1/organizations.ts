@@ -1,4 +1,3 @@
-import * as v from "valibot";
 import {
   ClientAllQuerySchema,
   ClientQuerySchema,
@@ -8,7 +7,7 @@ import {
   MemberQuerySchema,
   ProjectQuerySchema,
   UpdateClientSchema,
-  UpdateProjectSchema
+  UpdateProjectSchema,
 } from "@beetime/schema";
 
 import { createRouter } from "@/lib/app";
@@ -38,43 +37,44 @@ organizationsRoutes.get(
 
     const result = await projectService.listProjects(user, orgId, query);
 
-    return c.json({
-      ...result,
-      message: "Projects retrieved successfully",
-    }, 200);
-  }
+    return c.json(
+      {
+        ...result,
+        message: "Projects retrieved successfully",
+      },
+      200,
+    );
+  },
 );
 
-organizationsRoutes.get(
-  "/projects/:projectId",
-  authorize({ project: ["read"] }),
-  async (c) => {
-    const user = c.get("user")!;
-    const { orgId, projectId } = c.req.param();
-    
-    const project = await projectService.getProject(user, orgId, projectId);
+organizationsRoutes.get("/projects/:projectId", authorize({ project: ["read"] }), async (c) => {
+  const user = c.get("user")!;
+  const { orgId, projectId } = c.req.param();
 
-    return c.json({
+  const project = await projectService.getProject(user, orgId, projectId);
+
+  return c.json(
+    {
       data: project,
       message: "Project retrieved successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
-organizationsRoutes.get(
-  "/projects/:projectId/members",
-  authorize({ project: ["read"] }),
-  async (c) => {
-    const { projectId } = c.req.param();
-    
-    const projectMembers = await projectService.getProjectMembers(projectId);
+organizationsRoutes.get("/projects/:projectId/members", authorize({ project: ["read"] }), async (c) => {
+  const { projectId } = c.req.param();
 
-    return c.json({
+  const projectMembers = await projectService.getProjectMembers(projectId);
+
+  return c.json(
+    {
       data: projectMembers,
       message: "Project members retrieved successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
 organizationsRoutes.post(
   "/projects",
@@ -85,17 +85,16 @@ organizationsRoutes.post(
     const { orgId } = c.req.param();
     const data = c.req.valid("json");
 
-    const project = await projectService.createProject(
-      user,
-      orgId,
-      data
-    );
+    const project = await projectService.createProject(user, orgId, data);
 
-    return c.json({
-      data: project,
-      message: "Project created successfully",
-    }, 201);
-  }
+    return c.json(
+      {
+        data: project,
+        message: "Project created successfully",
+      },
+      201,
+    );
+  },
 );
 
 organizationsRoutes.patch(
@@ -106,63 +105,59 @@ organizationsRoutes.patch(
     const { orgId, projectId } = c.req.param();
     const data = c.req.valid("json");
 
-    const updatedProject = await projectService.updateProject(
-      orgId,
-      projectId,
-      data
-    );
+    const updatedProject = await projectService.updateProject(orgId, projectId, data);
 
-    return c.json({
-      data: updatedProject,
-      message: "Project updated successfully",
-    }, 200);
-  }
+    return c.json(
+      {
+        data: updatedProject,
+        message: "Project updated successfully",
+      },
+      200,
+    );
+  },
 );
 
-organizationsRoutes.delete(
-  "/projects/:projectId",
-  authorize({ project: ["delete"] }),
-  async (c) => {
-    const { orgId, projectId } = c.req.param();
+organizationsRoutes.delete("/projects/:projectId", authorize({ project: ["delete"] }), async (c) => {
+  const { orgId, projectId } = c.req.param();
 
-    await projectService.deleteProject(orgId, projectId);
+  await projectService.deleteProject(orgId, projectId);
 
-    return c.json({
+  return c.json(
+    {
       data: null,
       message: "Project deleted successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
-organizationsRoutes.post(
-  "/projects/:projectId/archive",
-  authorize({ project: ["archive"] }),
-  async (c) => {
-    const { orgId, projectId } = c.req.param();
+organizationsRoutes.post("/projects/:projectId/archive", authorize({ project: ["archive"] }), async (c) => {
+  const { orgId, projectId } = c.req.param();
 
-    const project = await projectService.archiveProject(orgId, projectId);
+  const project = await projectService.archiveProject(orgId, projectId);
 
-    return c.json({
+  return c.json(
+    {
       data: project,
       message: "Project archived successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
-organizationsRoutes.post(
-  "/projects/:projectId/unarchive",
-  authorize({ project: ["archive"] }),
-  async (c) => {
-    const { orgId, projectId } = c.req.param();
+organizationsRoutes.post("/projects/:projectId/unarchive", authorize({ project: ["archive"] }), async (c) => {
+  const { orgId, projectId } = c.req.param();
 
-    const project = await projectService.unarchiveProject(orgId, projectId);
+  const project = await projectService.unarchiveProject(orgId, projectId);
 
-    return c.json({
+  return c.json(
+    {
       data: project,
       message: "Project unarchived successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
 // Client routes under organization
 
@@ -176,11 +171,14 @@ organizationsRoutes.get(
 
     const result = await clientService.listClients(orgId, query);
 
-    return c.json({
-      ...result,
-      message: "Clients retrieved successfully",
-    }, 200);
-  }
+    return c.json(
+      {
+        ...result,
+        message: "Clients retrieved successfully",
+      },
+      200,
+    );
+  },
 );
 
 organizationsRoutes.get(
@@ -193,27 +191,29 @@ organizationsRoutes.get(
 
     const result = await clientService.listClientsAll(orgId, status);
 
-    return c.json({
-      data: result,
-      message: "Clients retrieved successfully",
-    }, 200);
-  }
+    return c.json(
+      {
+        data: result,
+        message: "Clients retrieved successfully",
+      },
+      200,
+    );
+  },
 );
 
-organizationsRoutes.get(
-  "/clients/:clientId",
-  authorize({ client: ["read"] }),
-  async (c) => {
-    const { orgId, clientId } = c.req.param();
+organizationsRoutes.get("/clients/:clientId", authorize({ client: ["read"] }), async (c) => {
+  const { orgId, clientId } = c.req.param();
 
-    const client = await clientService.getClient(orgId, clientId);
+  const client = await clientService.getClient(orgId, clientId);
 
-    return c.json({
+  return c.json(
+    {
       data: client,
       message: "Client retrieved successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
 organizationsRoutes.post(
   "/clients",
@@ -226,11 +226,14 @@ organizationsRoutes.post(
 
     const client = await clientService.createClient(user, orgId, data);
 
-    return c.json({
-      data: client,
-      message: "Client created successfully",
-    }, 201);
-  }
+    return c.json(
+      {
+        data: client,
+        message: "Client created successfully",
+      },
+      201,
+    );
+  },
 );
 
 organizationsRoutes.patch(
@@ -243,57 +246,57 @@ organizationsRoutes.patch(
 
     const client = await clientService.updateClient(orgId, clientId, data);
 
-    return c.json({
-      data: client,
-      message: "Client updated successfully",
-    }, 200);
-  }
+    return c.json(
+      {
+        data: client,
+        message: "Client updated successfully",
+      },
+      200,
+    );
+  },
 );
 
-organizationsRoutes.delete(
-  "/clients/:clientId",
-  authorize({ client: ["delete"] }),
-  async (c) => {
-    const { orgId, clientId } = c.req.param();
+organizationsRoutes.delete("/clients/:clientId", authorize({ client: ["delete"] }), async (c) => {
+  const { orgId, clientId } = c.req.param();
 
-    await clientService.deleteClient(orgId, clientId);
+  await clientService.deleteClient(orgId, clientId);
 
-    return c.json({
+  return c.json(
+    {
       data: null,
       message: "Client deleted successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
-organizationsRoutes.post(
-  "/clients/:clientId/archive",
-  authorize({ client: ["archive"] }),
-  async (c) => {
-    const { orgId, clientId } = c.req.param();
+organizationsRoutes.post("/clients/:clientId/archive", authorize({ client: ["archive"] }), async (c) => {
+  const { orgId, clientId } = c.req.param();
 
-    const client = await clientService.archiveClient(orgId, clientId);
+  const client = await clientService.archiveClient(orgId, clientId);
 
-    return c.json({
+  return c.json(
+    {
       data: client,
       message: "Client archived successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
-organizationsRoutes.post(
-  "/clients/:clientId/unarchive",
-  authorize({ client: ["archive"] }),
-  async (c) => {
-    const { orgId, clientId } = c.req.param();
+organizationsRoutes.post("/clients/:clientId/unarchive", authorize({ client: ["archive"] }), async (c) => {
+  const { orgId, clientId } = c.req.param();
 
-    const client = await clientService.unarchiveClient(orgId, clientId);
+  const client = await clientService.unarchiveClient(orgId, clientId);
 
-    return c.json({
+  return c.json(
+    {
       data: client,
       message: "Client unarchived successfully",
-    }, 200);
-  }
-);
+    },
+    200,
+  );
+});
 
 // Member routes under organization
 
@@ -307,11 +310,14 @@ organizationsRoutes.get(
 
     const result = await memberService.listMembers(orgId, query);
 
-    return c.json({
-      ...result,
-      message: "Members retrieved successfully",
-    }, 200);
-  }
+    return c.json(
+      {
+        ...result,
+        message: "Members retrieved successfully",
+      },
+      200,
+    );
+  },
 );
 
 organizationsRoutes.get(
@@ -324,9 +330,12 @@ organizationsRoutes.get(
 
     const data = await memberService.listMembersAll(orgId, query);
 
-    return c.json({
-      data,
-      message: "Members retrieved successfully",
-    }, 200);
-  }
+    return c.json(
+      {
+        data,
+        message: "Members retrieved successfully",
+      },
+      200,
+    );
+  },
 );

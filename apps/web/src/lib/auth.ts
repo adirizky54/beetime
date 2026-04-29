@@ -12,7 +12,7 @@ export const auth = createAuthClient({
       roles: {
         superadmin,
         user,
-      }
+      },
     }),
     organizationClient({
       ac,
@@ -37,20 +37,16 @@ export const auth = createAuthClient({
               type: ["12-hours", "24-hours"],
             },
             intervalFormat: {
-              type: [
-                "hours-minutes",
-                "hours-minutes-colon-separated",
-                "hours-minutes-seconds-colon-separated"
-              ],
+              type: ["hours-minutes", "hours-minutes-colon-separated", "hours-minutes-seconds-colon-separated"],
             },
-          }
-        }
-      })
-    })
+          },
+        },
+      }),
+    }),
   ],
 });
 
-export type Session = typeof auth.$Infer.Session
+export type Session = typeof auth.$Infer.Session;
 
 export type OrgDateFormat = typeof auth.$Infer.Organization.dateFormat;
 export type OrgTimeFormat = typeof auth.$Infer.Organization.timeFormat;

@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { AppBody } from "@/components/layouts/app-body"
-import { AppContent } from "@/components/layouts/app-content"
-import { AppHeader } from "@/components/layouts/app-header"
+import { createFileRoute } from "@tanstack/react-router";
+import { AppBody } from "@/components/layouts/app-body";
+import { AppContent } from "@/components/layouts/app-content";
+import { AppHeader } from "@/components/layouts/app-header";
 
 export const Route = createFileRoute("/$orgId/projects/$projectId/")({
   head: () => ({
-    meta: [{ title: "Sampe Project — Bee Time" }]
+    meta: [{ title: "Sampe Project — Bee Time" }],
   }),
   component: RouteComponent,
 });
@@ -21,9 +21,7 @@ function RouteComponent() {
           { title: "Sample Project", to: "/$orgId/projects/$projectId", params: { orgId, projectId } },
         ]}
       />
-      <AppBody>
-        test
-      </AppBody>
+      <AppBody>test</AppBody>
     </AppContent>
-  )
+  );
 }

@@ -15,13 +15,29 @@
       "cache": false
     },
     "check": {
-      "dependsOn": ["check:lint", "check:types"]
+      "dependsOn": ["check:format", "check:lint", "check:types"]
+    },
+    "check:format": {
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": []
     },
     "check:lint": {
       "inputs": ["$TURBO_DEFAULT$", "!**/*.md"],
       "outputs": []
     },
     "check:types": {
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.md"],
+      "outputs": []
+    },
+    "fix": {
+      "cache": false,
+      "dependsOn": ["fix:format", "fix:lint"]
+    },
+    "fix:format": {
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": []
+    },
+    "fix:lint": {
       "inputs": ["$TURBO_DEFAULT$", "!**/*.md"],
       "outputs": []
     },

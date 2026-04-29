@@ -26,16 +26,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@beetime/ui/components/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@beetime/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
-import { RadioGroup, RadioGroupItem } from "@beetime/ui/components/radio-group"
+import { RadioGroup, RadioGroupItem } from "@beetime/ui/components/radio-group";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { Textarea } from "@beetime/ui/components/textarea";
 import { toastManager } from "@beetime/ui/components/toast";
@@ -132,9 +125,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Create Project</DialogTitle>
-          <DialogDescription>
-            Add a new project to your workspace.
-          </DialogDescription>
+          <DialogDescription>Add a new project to your workspace.</DialogDescription>
         </DialogHeader>
 
         <form id="create-project-form" onSubmit={onSubmit}>
@@ -152,9 +143,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -166,7 +155,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="create-project-description">
                     Description
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Textarea
                     {...field}
@@ -176,9 +165,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                     rows={3}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -190,7 +177,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="create-project-client">
                     Client
-                    <span className="text-muted-foreground font-normal">(optional)</span>
+                    <span className="font-normal text-muted-foreground">(optional)</span>
                   </FieldLabel>
                   <Combobox
                     id="create-project-client"
@@ -202,11 +189,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                     value={getClient(field.value)}
                     onValueChange={(item) => field.onChange(item?.id)}
                   >
-                    <ComboboxInput
-                      placeholder="Select client..."
-                      showClear
-                      onBlur={field.onBlur}
-                    />
+                    <ComboboxInput placeholder="Select client..." showClear onBlur={field.onBlur} />
                     <ComboboxContent>
                       <ComboboxEmpty>No client found.</ComboboxEmpty>
                       <ComboboxList>
@@ -268,7 +251,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                     >
                       <ComboboxChips ref={anchor}>
                         <ComboboxValue>
-                          {(values: Array<typeof orgMembers[number]>) => (
+                          {(values: Array<(typeof orgMembers)[number]>) => (
                             <>
                               {values.map((value) => (
                                 <ComboboxChip key={value.id}>{value.name}</ComboboxChip>
@@ -287,7 +270,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                       <ComboboxContent anchor={anchor}>
                         <ComboboxEmpty>No member found.</ComboboxEmpty>
                         <ComboboxList>
-                          {(item: typeof orgMembers[number]) => (
+                          {(item: (typeof orgMembers)[number]) => (
                             <ComboboxItem key={item.id} value={item}>
                               <Avatar size="sm">
                                 <AvatarImage src={item.image ?? undefined} alt={item.name} />
@@ -299,9 +282,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                         </ComboboxList>
                       </ComboboxContent>
                     </Combobox>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />

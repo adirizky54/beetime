@@ -5,14 +5,14 @@ import { Button } from "@beetime/ui/components/button";
 
 export function NotFound() {
   return (
-    <section className="bg-background text-foreground relative m-auto flex h-screen w-full items-center justify-center p-16">
+    <section className="relative m-auto flex h-screen w-full items-center justify-center bg-background p-16 text-foreground">
       <div className="relative flex w-full justify-center">
-        <div className="bg-background relative flex min-h-svh w-full flex-col justify-center p-6 md:p-10">
+        <div className="relative flex min-h-svh w-full flex-col justify-center bg-background p-6 md:p-10">
           <div className="relative mx-auto w-full max-w-5xl">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 362 145"
-              className="text-foreground absolute inset-0 h-[50vh] w-full opacity-[0.04] dark:opacity-[0.03]"
+              className="absolute inset-0 h-[50vh] w-full text-foreground opacity-[0.04] dark:opacity-[0.03]"
             >
               <path
                 fill="currentColor"
@@ -25,17 +25,11 @@ export function NotFound() {
                 Page not found
               </h1>
 
-              <p className="text-muted-foreground mt-6 text-lg font-medium text-pretty sm:text-xl/8">
-                Sorry, the page you are looking for could not be found or has
-                been removed.
+              <p className="mt-6 text-lg font-medium text-pretty text-muted-foreground sm:text-xl/8">
+                Sorry, the page you are looking for could not be found or has been removed.
               </p>
 
-              <Button
-                render={<Link to="/" />}
-                size="lg"
-                className="mt-10 w-full md:w-auto"
-                nativeButton={false}
-              >
+              <Button render={<Link to="/" />} size="lg" className="mt-10 w-full md:w-auto" nativeButton={false}>
                 <RiArrowLeftLine />
                 Go Back
               </Button>
@@ -44,5 +38,5 @@ export function NotFound() {
         </div>
       </div>
     </section>
-  )
+  );
 }

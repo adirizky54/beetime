@@ -1,6 +1,5 @@
-
 import { defineConfig } from "drizzle-kit";
-import { env } from "@/env";
+import { env } from "@beetime/env/api";
 
 export default defineConfig({
   out: "./src/database/migrations",
@@ -12,5 +11,5 @@ export default defineConfig({
   migrations: {
     table: "drizzle_migrations",
     schema: "public",
-  }
+  },
 });

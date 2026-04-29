@@ -1,0 +1,24 @@
+{
+  "name": "@beetime/env",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./api": "./src/api.ts"
+  },
+  "scripts": {
+    "clean": "rm -rf .turbo && rm -rf node_modules",
+    "check:format": "oxfmt --check",
+    "check:lint": "oxlint",
+    "check:types": "tsc --noEmit",
+    "fix:format": "oxfmt .",
+    "fix:lint": "oxlint --fix ."
+  },
+  "dependencies": {
+    "valibot": "catalog:core"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:core",
+    "typescript": "catalog:core"
+  }
+}

@@ -15,13 +15,12 @@ export const ClientSchema = v.object({
 });
 
 export const CreateClientSchema = v.object({
-  name: v.pipe(v.string(), v.minLength(1, "Client name is required"), v.maxLength(255, "Client name must not exceed 255 characters")),
-  email: v.nullish(
-    v.pipe(
-      v.string(),
-      v.email("Please enter a valid email address"),
-    ),
+  name: v.pipe(
+    v.string(),
+    v.minLength(1, "Client name is required"),
+    v.maxLength(255, "Client name must not exceed 255 characters"),
   ),
+  email: v.nullish(v.pipe(v.string(), v.email("Please enter a valid email address"))),
   phone: v.nullish(v.string()),
   address: v.nullish(v.pipe(v.string(), v.maxLength(500, "Address must not exceed 500 characters"))),
 });

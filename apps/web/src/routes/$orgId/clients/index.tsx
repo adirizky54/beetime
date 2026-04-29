@@ -7,7 +7,15 @@ import { useMemo, useState } from "react";
 
 import { ClientQuerySchema, type Client } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@beetime/ui/components/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@beetime/ui/components/dropdown-menu";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@beetime/ui/components/input-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
@@ -23,11 +31,11 @@ import { toTitleCase } from "@/utils/string";
 
 export const Route = createFileRoute("/$orgId/clients/")({
   head: () => ({
-    meta: [{ title: "Clients — Bee Time" }]
+    meta: [{ title: "Clients — Bee Time" }],
   }),
   validateSearch: ClientQuerySchema,
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const { orgId } = Route.useParams();
@@ -37,61 +45,64 @@ function RouteComponent() {
   const [searchText, setSearchText] = useState(search.search ?? "");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const { data: clients, isLoading: loadingClients } = useQuery(clientQueries.list(
-    orgId,
-    search
-  ));
+  const { data: clients, isLoading: loadingClients } = useQuery(clientQueries.list(orgId, search));
 
-  const debouncedSetSearch = useDebouncedCallback((_search: string) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        page: 1,
-        search: _search,
-      }),
-    });
-  }, { wait: 500 });
+  const debouncedSetSearch = useDebouncedCallback(
+    (_search: string) => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          page: 1,
+          search: _search,
+        }),
+      });
+    },
+    { wait: 500 },
+  );
 
   const pagination = {
     pageIndex: search.page - 1,
     pageSize: search.pageSize,
   };
 
-  const columns = useMemo<Array<ColumnDef<Client>>>(() => [
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => {
-        const client = row.original;
-        return (
-          <div className="flex items-center gap-2">
-            <span className="font-medium truncate">{client.name}</span>
+  const columns = useMemo<Array<ColumnDef<Client>>>(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Name",
+        cell: ({ row }) => {
+          const client = row.original;
+          return (
+            <div className="flex items-center gap-2">
+              <span className="truncate font-medium">{client.name}</span>
 
-            {client.archivedAt ? (
-              <Tooltip>
-                <TooltipTrigger render={<RiArchiveLine className="size-4 text-muted-foreground" />} />
-                <TooltipContent>Archived</TooltipContent>
-              </Tooltip>
-            ) : null}
+              {client.archivedAt ? (
+                <Tooltip>
+                  <TooltipTrigger render={<RiArchiveLine className="size-4 text-muted-foreground" />} />
+                  <TooltipContent>Archived</TooltipContent>
+                </Tooltip>
+              ) : null}
 
-            <Can orgId={client.organizationId} permissions={{ client: ["update"] }}>
-              <ActionsClient client={client} />
-            </Can>
-          </div>
-        );
-      }
-    },
-    {
-      accessorKey: "email",
-      header: "Email",
-      cell: ({ row }) => row.original.email ?? <span className="text-muted-foreground">—</span>,
-    },
-    {
-      accessorKey: "phone",
-      header: "Phone",
-      cell: ({ row }) => row.original.phone ?? <span className="text-muted-foreground">—</span>,
-    },
-  ], []);
+              <Can orgId={client.organizationId} permissions={{ client: ["update"] }}>
+                <ActionsClient client={client} />
+              </Can>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+        cell: ({ row }) => row.original.email ?? <span className="text-muted-foreground">—</span>,
+      },
+      {
+        accessorKey: "phone",
+        header: "Phone",
+        cell: ({ row }) => row.original.phone ?? <span className="text-muted-foreground">—</span>,
+      },
+    ],
+    [],
+  );
 
   const table = useReactTable({
     columns,
@@ -100,7 +111,7 @@ function RouteComponent() {
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     state: {
-      pagination
+      pagination,
     },
     onPaginationChange: (updater) => {
       const newPagination = typeof updater === "function" ? updater(pagination) : updater;
@@ -122,11 +133,7 @@ function RouteComponent() {
 
   return (
     <AppContent>
-      <AppHeader
-        breadcrumbs={[
-          { title: "Clients", to: "/$orgId/clients", params: { orgId } },
-        ]}
-      >
+      <AppHeader breadcrumbs={[{ title: "Clients", to: "/$orgId/clients", params: { orgId } }]}>
         <Can orgId={orgId} permissions={{ client: ["create"] }}>
           <Button className="ml-auto" size="sm" onClick={() => setCreateDialogOpen(true)}>
             <RiAddLine data-icon="inline-start" />
@@ -137,13 +144,9 @@ function RouteComponent() {
 
       <AppBody>
         <div className="w-full">
-          <div className="flex items-start flex-wrap gap-2.5">
+          <div className="flex flex-wrap items-start gap-2.5">
             <InputGroup className="md:w-56">
-              <InputGroupInput
-                placeholder="Search..."
-                value={searchText}
-                onChange={(e) => onSearch(e.target.value)}
-              />
+              <InputGroupInput placeholder="Search..." value={searchText} onChange={(e) => onSearch(e.target.value)} />
               <InputGroupAddon align="inline-start">
                 <RiSearchLine className="text-muted-foreground" />
               </InputGroupAddon>
@@ -164,9 +167,15 @@ function RouteComponent() {
                       navigate({ search: { ...search, status: value } });
                     }}
                   >
-                    <DropdownMenuRadioItem value="all" closeOnClick>All</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="active" closeOnClick>Active</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="archived" closeOnClick>Archived</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="all" closeOnClick>
+                      All
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="active" closeOnClick>
+                      Active
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="archived" closeOnClick>
+                      Archived
+                    </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
@@ -178,17 +187,13 @@ function RouteComponent() {
           table={table}
           loading={loadingClients}
           row={() => ({
-            className: "group/table-row"
+            className: "group/table-row",
           })}
         />
       </AppBody>
 
       <Can orgId={orgId} permissions={{ client: ["create"] }}>
-        <CreateClientDialog
-          open={createDialogOpen}
-          onOpenChange={setCreateDialogOpen}
-          orgId={orgId}
-        />
+        <CreateClientDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} orgId={orgId} />
       </Can>
     </AppContent>
   );

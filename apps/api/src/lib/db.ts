@@ -1,10 +1,11 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { env } from "@/env";
+import { env } from "@beetime/env/api";
+
 import * as schema from "@/database/schema";
 
 // Disable prefetch as it is not supported for "Transaction" pool mode
-const client = postgres(env.DATABASE_URL, { prepare: false })
+const client = postgres(env.DATABASE_URL, { prepare: false });
 export const db = drizzle({
   client,
   casing: "snake_case",

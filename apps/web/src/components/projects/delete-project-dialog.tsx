@@ -1,7 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { Project } from "@beetime/schema";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@beetime/ui/components/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@beetime/ui/components/alert-dialog";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { toastManager } from "@beetime/ui/components/toast";
 
@@ -11,7 +20,7 @@ type DeleteProjectDialogProps = {
   project: Project;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-}
+};
 
 export function DeleteProjectDialog({ project, open, onOpenChange }: DeleteProjectDialogProps) {
   const queryClient = useQueryClient();
@@ -39,11 +48,7 @@ export function DeleteProjectDialog({ project, open, onOpenChange }: DeleteProje
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            variant="destructive"
-            disabled={isDeleting}
-            onClick={() => deleteProject()}
-          >
+          <AlertDialogAction variant="destructive" disabled={isDeleting} onClick={() => deleteProject()}>
             {isDeleting && <Spinner data-icon="inline-start" />}
             Delete
           </AlertDialogAction>

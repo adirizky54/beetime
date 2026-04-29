@@ -30,7 +30,7 @@ dist
 .nitro
 .tanstack
 .vinxi
-
+.react-email
 
 # Debug
 npm-debug.log*

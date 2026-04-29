@@ -2,8 +2,9 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin as adminPlugin, organization } from "better-auth/plugins";
 import { nanoid } from "nanoid";
+import { sendVerificationEmail } from "@beetime/email";
+import { env } from "@beetime/env/api";
 
-import { env } from "@/env";
 import { db } from "./db";
 import { getActiveOrganization } from "@/utils/access";
 import { ac, admin, member, owner, superadmin, user } from "@/utils/permissions";
@@ -11,7 +12,7 @@ import { toSlug } from "@/utils/string";
 
 export const auth = betterAuth({
   appName: env.APP_NAME,
-  baseURL: env.APP_ORIGIN,
+  baseURL: env.API_ORIGIN,
   basePath: "/api/v1/auth",
   secret: env.BETTER_AUTH_SECRET,
   trustedOrigins: ["http://localhost:*"],
@@ -23,6 +24,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendVerificationEmail(env, {
+        user: {
+          name: user.name,
+          email: "delivered@resend.dev",
+        },
+        url,
+      });
+    },
+  },
   plugins: [
     adminPlugin({
       defaultRole: "user",
@@ -30,7 +43,7 @@ export const auth = betterAuth({
       roles: {
         superadmin,
         user,
-      }
+      },
     }),
     organization({
       ac,
@@ -57,10 +70,10 @@ export const auth = betterAuth({
               type: "string",
               input: true,
               required: true,
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     }),
   ],
   databaseHooks: {
@@ -74,18 +87,16 @@ export const auth = betterAuth({
               slug: toSlug(user.name, nanoid(9)),
               dateFormat: "hyphen-separated-yyyy-mm-dd",
               timeFormat: "24-hours",
-              intervalFormat: "hours-minutes"
+              intervalFormat: "hours-minutes",
             },
           });
         },
-      }
+      },
     },
     session: {
       create: {
         before: async (session) => {
-          const activeOrganization = await getActiveOrganization(
-            session.userId
-          );
+          const activeOrganization = await getActiveOrganization(session.userId);
 
           return {
             data: {
@@ -93,10 +104,10 @@ export const auth = betterAuth({
               activeOrganizationId: activeOrganization?.id,
             },
           };
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 });
 
 // Base session types from Better Auth - plugin-specific fields added at runtime

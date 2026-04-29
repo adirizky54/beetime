@@ -12,12 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@beetime/ui/components/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@beetime/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
 import {
   Select,
   SelectContent,
@@ -85,15 +80,8 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId: _orgId }: 
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="change-role-select">Role</FieldLabel>
-                  <Select
-                    items={roles}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger
-                      id="change-role-select"
-                      aria-invalid={fieldState.invalid}
-                    >
+                  <Select items={roles} value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger id="change-role-select" aria-invalid={fieldState.invalid}>
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                     <SelectContent alignItemWithTrigger={false}>
@@ -106,9 +94,7 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId: _orgId }: 
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -116,11 +102,7 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId: _orgId }: 
         </form>
 
         <DialogFooter>
-          <Button
-            type="submit"
-            form="change-role-form"
-            disabled={!form.formState.isValid || !form.formState.isDirty}
-          >
+          <Button type="submit" form="change-role-form" disabled={!form.formState.isValid || !form.formState.isDirty}>
             Save Changes
           </Button>
         </DialogFooter>

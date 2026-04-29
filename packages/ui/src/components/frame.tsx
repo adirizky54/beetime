@@ -1,9 +1,6 @@
 import { cn } from "@beetime/ui/lib/utils";
 
-export function Frame({
-  className,
-  ...props
-}: React.ComponentProps<"div">): React.ReactElement {
+export function Frame({ className, ...props }: React.ComponentProps<"div">): React.ReactElement {
   return (
     <div
       className={cn(
@@ -17,10 +14,7 @@ export function Frame({
   );
 }
 
-export function FramePanel({
-  className,
-  ...props
-}: React.ComponentProps<"div">): React.ReactElement {
+export function FramePanel({ className, ...props }: React.ComponentProps<"div">): React.ReactElement {
   return (
     <div
       className={cn(
@@ -33,54 +27,20 @@ export function FramePanel({
   );
 }
 
-export function FrameHeader({
-  className,
-  ...props
-}: React.ComponentProps<"header">): React.ReactElement {
+export function FrameHeader({ className, ...props }: React.ComponentProps<"header">): React.ReactElement {
+  return <header className={cn("flex flex-col px-4 py-2.5", className)} data-slot="frame-panel-header" {...props} />;
+}
+
+export function FrameTitle({ className, ...props }: React.ComponentProps<"div">): React.ReactElement {
+  return <div className={cn("text-sm font-medium", className)} data-slot="frame-panel-title" {...props} />;
+}
+
+export function FrameDescription({ className, ...props }: React.ComponentProps<"div">): React.ReactElement {
   return (
-    <header
-      className={cn("flex flex-col px-4 py-2.5", className)}
-      data-slot="frame-panel-header"
-      {...props}
-    />
+    <div className={cn("text-sm text-muted-foreground", className)} data-slot="frame-panel-description" {...props} />
   );
 }
 
-export function FrameTitle({
-  className,
-  ...props
-}: React.ComponentProps<"div">): React.ReactElement {
-  return (
-    <div
-      className={cn("font-medium text-sm", className)}
-      data-slot="frame-panel-title"
-      {...props}
-    />
-  );
-}
-
-export function FrameDescription({
-  className,
-  ...props
-}: React.ComponentProps<"div">): React.ReactElement {
-  return (
-    <div
-      className={cn("text-muted-foreground text-sm", className)}
-      data-slot="frame-panel-description"
-      {...props}
-    />
-  );
-}
-
-export function FrameFooter({
-  className,
-  ...props
-}: React.ComponentProps<"footer">): React.ReactElement {
-  return (
-    <footer
-      className={cn("p-4", className)}
-      data-slot="frame-panel-footer"
-      {...props}
-    />
-  );
+export function FrameFooter({ className, ...props }: React.ComponentProps<"footer">): React.ReactElement {
+  return <footer className={cn("p-4", className)} data-slot="frame-panel-footer" {...props} />;
 }
