@@ -25,6 +25,7 @@ Bee Time is a full-stack, monorepo-based time tracking application. It provides 
 - **Dashboard** — Overview with stat cards and date-range filtering
 - **Multi-organization** — Users can belong to multiple organizations with isolated data
 - **Authentication** — Email/password sign-up, login, and password reset via [Better Auth](https://www.better-auth.com)
+- **Transactional email** — Email verification and notifications powered by [Resend](https://resend.com) and [React Email](https://react.email)
 - **Role-based access control** — Organization-level roles: `owner`, `admin`, and `member`
 - **Settings** — Configurable date, time, and interval formats per organization
 
@@ -38,11 +39,13 @@ beetime/
 │   ├── api/        # REST API — Hono + Bun + Drizzle ORM
 │   └── web/        # Frontend SPA — React + TanStack Router/Query + Vite
 └── packages/
+    ├── email/      # Transactional email templates and mailer (React Email + Resend)
+    ├── env/        # Shared environment variable validation (Valibot)
     ├── schema/     # Shared Valibot validation schemas and TypeScript types
     └── ui/         # Shared React component library (Shadcn UI + Tailwind CSS v4)
 ```
 
-The `@beetime/schema` package is shared between the API and the web app, providing a single source of truth for validation and TypeScript types across the stack.
+The `@beetime/schema` and `@beetime/env` packages are shared across the stack, providing a single source of truth for validation and TypeScript types. `@beetime/email` encapsulates all transactional email logic and React Email templates.
 
 ## Tech Stack
 
@@ -60,6 +63,8 @@ The `@beetime/schema` package is shared between the API and the web app, providi
 | UI components | [Shadcn UI](https://ui.shadcn.com) + [Tailwind CSS v4](https://tailwindcss.com) |
 | Validation | [Valibot](https://valibot.dev) |
 | Forms | [React Hook Form](https://react-hook-form.com) |
+| Transactional email | [React Email](https://react.email) + [Resend](https://resend.com) |
+| Linting & formatting | [oxlint](https://oxc.rs/docs/guide/usage/linter) + [oxfmt](https://github.com/nicolo-ribaudo/oxfmt) |
 
 ## Getting Started
 
@@ -68,6 +73,7 @@ The `@beetime/schema` package is shared between the API and the web app, providi
 - [Bun](https://bun.sh) >= 1.3.13
 - [Node.js](https://nodejs.org) >= 22.18
 - A running [PostgreSQL](https://www.postgresql.org) instance
+- A [Resend](https://resend.com) account for transactional email
 
 ### Installation
 
@@ -95,12 +101,14 @@ The `@beetime/schema` package is shared between the API and the web app, providi
    | `PORT` | API server port | `8080` |
    | `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:postgres@localhost:5432/postgres` |
    | `BETTER_AUTH_SECRET` | Secret key for Better Auth (min. 32 chars) | — |
+   | `RESEND_API_KEY` | API key from your [Resend](https://resend.com) dashboard | — |
+   | `RESEND_EMAIL_FROM` | Sender address for outgoing emails (must be a verified domain) | — |
 
    **`apps/web/.env`**
 
    | Variable | Description | Default |
    |---|---|---|
-   | `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:8080/` |
+   | `VITE_API_BASE_URL` | Backend API base URL (must include trailing slash) | `http://localhost:8080/` |
 
 3. Apply database migrations:
 
@@ -123,6 +131,9 @@ The `@beetime/schema` package is shared between the API and the web app, providi
 > [!TIP]
 > Use `bun db:studio` to open Drizzle Studio, a browser-based database GUI, for inspecting and editing your data during development.
 
+> [!TIP]
+> You can preview email templates locally without a Resend account by running `bun dev --filter @beetime/email`. This starts the React Email dev server at `http://localhost:3001`.
+
 ## Available Scripts
 
 All scripts are run from the monorepo root with `bun <script>`.
@@ -131,9 +142,13 @@ All scripts are run from the monorepo root with `bun <script>`.
 |---|---|
 | `dev` | Start all dev servers in parallel |
 | `build` | Build all apps and packages |
-| `check` | Run lint and type-check |
+| `check` | Run all checks (lint, format, types) |
 | `check:lint` | Run linting only |
+| `check:format` | Run formatting check only |
 | `check:types` | Run TypeScript type-check only |
+| `fix` | Run all auto-fixers (lint + format) |
+| `fix:lint` | Auto-fix lint issues |
+| `fix:format` | Auto-fix formatting issues |
 | `clean` | Remove all build artifacts and `node_modules` |
 | `db:generate` | Generate Drizzle ORM migration files from schema |
 | `db:migrate` | Apply pending database migrations |
