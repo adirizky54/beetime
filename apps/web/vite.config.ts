@@ -13,6 +13,13 @@ const config = defineConfig({
       router: {
         quoteStyle: "double",
         semicolons: true,
+        routeTreeFileHeader: [
+          "/* eslint-disable */",
+          "// @ts-nocheck",
+          "// noinspection JSUnusedGlobalSymbols",
+          "/* oxlint-disable */",
+          "/* oxfmt-ignore */",
+        ],
       },
     }),
     viteReact(),
