@@ -2,6 +2,7 @@ import * as v from "valibot";
 
 const EnvSchema = v.object({
   APP_NAME: v.string(),
+  APP_ORIGIN: v.pipe(v.string(), v.nonEmpty(), v.url()),
   API_ORIGIN: v.pipe(v.string(), v.nonEmpty(), v.url()),
   PORT: v.string(),
   DATABASE_URL: v.pipe(v.string(), v.url()),

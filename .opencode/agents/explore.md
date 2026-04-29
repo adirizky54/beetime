@@ -1,7 +1,6 @@
 ---
 description: performs fast, focused codebase search for non-trivial engineering questions
 mode: subagent
-model: opencode/gpt-5.4-mini
 temperature: 0.1
 ---
 
