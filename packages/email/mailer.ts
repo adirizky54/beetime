@@ -4,6 +4,7 @@ import * as v from "valibot";
 import type { Env } from "@beetime/env/api";
 
 import { EmailVerification } from "./templates/email-verification";
+import { ResetPassword } from "./templates/reset-password";
 
 export interface EmailOptions {
   to: string | string[];
@@ -13,7 +14,7 @@ export interface EmailOptions {
   from?: string;
 }
 
-export function createResendClient(apiKey: string): Resend {
+function createResendClient(apiKey: string): Resend {
   if (!apiKey) {
     throw new Error("RESEND_API_KEY is required");
   }
@@ -92,6 +93,34 @@ export async function sendVerificationEmail(
   return sendEmail(env, {
     to: options.user.email,
     subject: "Verify your email address",
+    html,
+    text,
+  });
+}
+
+/**
+ * Send password reset email.
+ *
+ * @param env Environment variables
+ * @param options User and reset URL (time-limited, 1 hour)
+ */
+export async function sendResetPasswordEmail(
+  env: Pick<Env, "RESEND_API_KEY" | "RESEND_EMAIL_FROM">,
+  options: {
+    user: { email: string; name?: string };
+    url: string;
+  },
+) {
+  const component = ResetPassword({
+    resetUrl: options.url,
+  });
+
+  const html = await render(component);
+  const text = toPlainText(html);
+
+  return sendEmail(env, {
+    to: options.user.email,
+    subject: "Reset your password",
     html,
     text,
   });

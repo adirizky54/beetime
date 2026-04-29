@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin as adminPlugin, organization } from "better-auth/plugins";
 import { nanoid } from "nanoid";
-import { sendVerificationEmail } from "@beetime/email";
+import { sendVerificationEmail, sendResetPasswordEmail } from "@beetime/email";
 import { env } from "@beetime/env/api";
 
 import { db } from "./db";
@@ -23,6 +23,16 @@ export const auth = betterAuth({
   disabledPaths: ["/organization/list-members"],
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, token }) => {
+      await sendResetPasswordEmail(env, {
+        user: {
+          name: user.name,
+          email: "delivered@resend.dev",
+        },
+        url: `${env.APP_ORIGIN}/reset-password?token=${token}`,
+      });
+    },
+    resetPasswordTokenExpiresIn: 3600, // 1 hour
   },
   emailVerification: {
     sendOnSignUp: true,
