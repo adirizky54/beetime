@@ -5,6 +5,7 @@ import { requestId } from "hono/request-id";
 import { secureHeaders } from "hono/secure-headers";
 import { initLogger } from "evlog";
 import { evlog, type EvlogVariables } from "evlog/hono";
+import { env } from "@beetime/env/api";
 
 import type { AuthUser, AuthSession } from "@/lib/auth";
 
@@ -33,7 +34,7 @@ export function createApp() {
   app.use(
     "*",
     cors({
-      origin: ["http://localhost:3000", "http://localhost:3001"],
+      origin: [env.APP_ORIGIN],
       allowHeaders: ["Content-Type", "Authorization"],
       exposeHeaders: ["Content-Length"],
       credentials: true,

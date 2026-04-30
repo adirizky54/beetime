@@ -4,6 +4,7 @@ import * as v from "valibot";
 import type { Env } from "@beetime/env/api";
 
 import { EmailVerification } from "./templates/email-verification";
+import { Invitation } from "./templates/invitation";
 import { ResetPassword } from "./templates/reset-password";
 
 export interface EmailOptions {
@@ -121,6 +122,40 @@ export async function sendResetPasswordEmail(
   return sendEmail(env, {
     to: options.user.email,
     subject: "Reset your password",
+    html,
+    text,
+  });
+}
+
+/**
+ * Send organization invitation email.
+ *
+ * @param env Environment variables
+ * @param options Invitation payload from Better Auth sendInvitationEmail hook
+ */
+export async function sendInvitationEmail(
+  env: Pick<Env, "RESEND_API_KEY" | "RESEND_EMAIL_FROM" | "APP_ORIGIN">,
+  options: {
+    invitation: { id: string; email: string; role: string };
+    inviter: { user: { name: string } };
+    organization: { name: string };
+  },
+) {
+  const acceptUrl = `${env.APP_ORIGIN}/join?token=${options.invitation.id}`;
+
+  const component = Invitation({
+    inviterName: options.inviter.user.name,
+    organizationName: options.organization.name,
+    role: options.invitation.role,
+    acceptUrl,
+  });
+
+  const html = await render(component);
+  const text = toPlainText(html);
+
+  return sendEmail(env, {
+    to: options.invitation.email,
+    subject: `You've been invited to join ${options.organization.name}`,
     html,
     text,
   });
