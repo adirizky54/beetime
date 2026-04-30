@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { Button, Container, Heading, Preview, Section, Text } from "react-email";
+import { Button, Container, Heading, Img, Preview, Section, Text } from "react-email";
 import { BaseTemplate } from "../components/base-template";
 
 interface InvitationProps {
@@ -16,6 +16,14 @@ export const Invitation = ({ inviterName, organizationName, role, acceptUrl }: I
     <BaseTemplate>
       <Preview>You&apos;ve been invited to join {organizationName}</Preview>
       <Container className="mx-auto my-0 px-5 py-0">
+        <Section className="mt-8">
+          <Img
+            src="https://react-email-demo-8tpggc8r2-resend.vercel.app/static/slack-logo.png"
+            width="120"
+            height="36"
+            alt="Slack"
+          />
+        </Section>
         <Heading className="mx-0 my-[30px] p-0 text-4xl leading-[42px] font-bold text-[#1d1c1d]">
           You&apos;ve been invited to join {organizationName}
         </Heading>
