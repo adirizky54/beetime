@@ -1,1 +1,1 @@
-export { sendEmail, sendVerificationEmail, sendResetPasswordEmail } from "./mailer";
+export { sendEmail, sendVerificationEmail, sendResetPasswordEmail, sendInvitationEmail } from "./mailer";

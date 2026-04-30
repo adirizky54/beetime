@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin as adminPlugin, organization } from "better-auth/plugins";
 import { nanoid } from "nanoid";
-import { sendVerificationEmail, sendResetPasswordEmail } from "@beetime/email";
+import { sendVerificationEmail, sendResetPasswordEmail, sendInvitationEmail } from "@beetime/email";
 import { env } from "@beetime/env/api";
 
 import { db } from "./db";
@@ -36,7 +36,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendOnSignUp: true,
-    expiresIn: 3600 * 24, // 24 hours
+    expiresIn: 3600 * 24 * 1, // 1 day
     sendVerificationEmail: async ({ user, token }) => {
       await sendVerificationEmail(env, {
         user: {
@@ -64,6 +64,9 @@ export const auth = betterAuth({
         member,
       },
       organizationLimit: 2,
+      sendInvitationEmail: async ({ invitation, inviter, organization }) => {
+        await sendInvitationEmail(env, { invitation, inviter, organization });
+      },
       schema: {
         organization: {
           additionalFields: {
