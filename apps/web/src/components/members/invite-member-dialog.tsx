@@ -27,11 +27,6 @@ import { toastManager } from "@beetime/ui/components/toast";
 
 import { memberQueries } from "@/queries/member";
 
-const EMAIL_FIELD_ERRORS = [
-  "User is already a member of this organization",
-  "User is already invited to this organization",
-];
-
 const InviteMemberSchema = v.object({
   email: v.pipe(
     v.string(),
@@ -76,12 +71,8 @@ export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDi
       handleOpenChange(false);
     },
     onError: (error) => {
-      const message = error.message ?? "";
-      if (EMAIL_FIELD_ERRORS.includes(message)) {
-        form.setError("email", { type: "manual", message });
-      } else {
-        toastManager.add({ type: "error", title: message || "Something went wrong. Please try again." });
-      }
+      const message = error.message;
+      form.setError("email", { type: "manual", message });
     },
   });
 

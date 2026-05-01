@@ -65,7 +65,14 @@ export const auth = betterAuth({
       },
       organizationLimit: 2,
       sendInvitationEmail: async ({ invitation, inviter, organization }) => {
-        await sendInvitationEmail(env, { invitation, inviter, organization });
+        await sendInvitationEmail(env, {
+          invitation: {
+            ...invitation,
+            email: "delivered@resend.dev",
+          },
+          inviter,
+          organization,
+        });
       },
       schema: {
         organization: {

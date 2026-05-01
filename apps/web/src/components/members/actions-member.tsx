@@ -28,17 +28,11 @@ import { ChangeRoleDialog } from "@/components/members/change-role-dialog";
 type ActionsMemberProps = {
   member: Member;
   orgId: string;
-  currentUserId: string | undefined;
 };
 
-export function ActionsMember({ member, orgId, currentUserId }: ActionsMemberProps) {
+export function ActionsMember({ member, orgId }: ActionsMemberProps) {
   const [showChangeRoleDialog, setShowChangeRoleDialog] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
-
-  // Hide all actions on own row
-  if (member.id === currentUserId && !!currentUserId) {
-    return null;
-  }
 
   return (
     <>
