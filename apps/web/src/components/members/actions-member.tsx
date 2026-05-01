@@ -4,16 +4,6 @@ import { RiMoreFill, RiUserSettingsLine, RiUserUnfollowLine } from "@remixicon/r
 import type { Member } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@beetime/ui/components/alert-dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -24,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/
 
 import { Can } from "@/components/ui/can";
 import { ChangeRoleDialog } from "@/components/members/change-role-dialog";
+import { RemoveMemberDialog } from "@/components/members/remove-member-dialog";
 
 type ActionsMemberProps = {
   member: Member;
@@ -83,29 +74,9 @@ export function ActionsMember({ member, orgId }: ActionsMemberProps) {
         />
       </Can>
 
-      <AlertDialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
-        <AlertDialogContent size="sm">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove member?</AlertDialogTitle>
-            <AlertDialogDescription>
-              <strong>{member.name}</strong> will lose access to this organization immediately. This action cannot be
-              undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={() => {
-                // TODO: wire up mutation when API is ready
-                setShowRemoveDialog(false);
-              }}
-            >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Can orgId={orgId} permissions={{ member: ["delete"] }}>
+        <RemoveMemberDialog member={member} open={showRemoveDialog} onOpenChange={setShowRemoveDialog} orgId={orgId} />
+      </Can>
     </>
   );
 }

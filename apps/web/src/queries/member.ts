@@ -63,4 +63,16 @@ export const memberQueries = {
         if (error) throw error;
       },
     }),
+  removeMemberKey: () => [...memberQueries.all(), "remove-member"] as const,
+  removeMember: (orgId: string) =>
+    mutationOptions({
+      mutationKey: [...memberQueries.removeMemberKey(), orgId] as const,
+      mutationFn: async (memberEmail: string) => {
+        const { error } = await auth.organization.removeMember({
+          memberIdOrEmail: memberEmail,
+          organizationId: orgId,
+        });
+        if (error) throw error;
+      },
+    }),
 };
