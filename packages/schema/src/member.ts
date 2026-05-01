@@ -3,6 +3,7 @@ import { PaginationSchema } from "./utils";
 
 export const MemberSchema = v.object({
   id: v.string(),
+  userId: v.string(),
   name: v.string(),
   email: v.string(),
   role: v.picklist(["owner", "admin", "member"]),

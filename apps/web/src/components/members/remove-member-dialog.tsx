@@ -50,7 +50,7 @@ export function RemoveMemberDialog({ member, open, onOpenChange, orgId }: Remove
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isRemoving}>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={isRemoving} onClick={() => removeMember(member.email)}>
+          <AlertDialogAction variant="destructive" disabled={isRemoving} onClick={() => removeMember(member.id)}>
             {isRemoving && <Spinner data-icon="inline-start" />}
             Remove
           </AlertDialogAction>

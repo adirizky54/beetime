@@ -1,5 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as v from "valibot";
 
 import type { Member } from "@beetime/schema";
@@ -13,6 +14,7 @@ import {
   DialogTitle,
 } from "@beetime/ui/components/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
+import { Spinner } from "@beetime/ui/components/spinner";
 import {
   Select,
   SelectContent,
@@ -21,6 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@beetime/ui/components/select";
+import { toastManager } from "@beetime/ui/components/toast";
+
+import { memberQueries } from "@/queries/member";
 
 const ChangeRoleSchema = v.object({
   role: v.picklist(["owner", "admin", "member"], "Please select a role"),
@@ -41,12 +46,27 @@ const roles = [
   { value: "member", label: "Member" },
 ];
 
-export function ChangeRoleDialog({ member, open, onOpenChange, orgId: _orgId }: ChangeRoleDialogProps) {
+export function ChangeRoleDialog({ member, open, onOpenChange, orgId }: ChangeRoleDialogProps) {
+  const queryClient = useQueryClient();
+
   const form = useForm<ChangeRoleInput>({
     mode: "onChange",
     resolver: valibotResolver(ChangeRoleSchema),
     defaultValues: {
       role: member.role,
+    },
+  });
+
+  const { mutate: updateMemberRole, isPending } = useMutation({
+    ...memberQueries.updateMemberRole(orgId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...memberQueries.listKey(), orgId] });
+      toastManager.add({ type: "success", title: "Role updated" });
+      handleOpenChange(false);
+    },
+    onError: (error) => {
+      const message = error.message ?? "";
+      toastManager.add({ type: "error", title: message || "Something went wrong. Please try again." });
     },
   });
 
@@ -57,9 +77,8 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId: _orgId }: 
     onOpenChange(nextOpen);
   };
 
-  const onSubmit = form.handleSubmit((_values) => {
-    // TODO: wire up mutation when API is ready
-    handleOpenChange(false);
+  const onSubmit = form.handleSubmit((values) => {
+    updateMemberRole({ memberId: member.id, role: values.role });
   });
 
   return (
@@ -102,7 +121,15 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId: _orgId }: 
         </form>
 
         <DialogFooter>
-          <Button type="submit" form="change-role-form" disabled={!form.formState.isValid || !form.formState.isDirty}>
+          <Button type="button" variant="outline" disabled={isPending} onClick={() => handleOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="change-role-form"
+            disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+          >
+            {isPending && <Spinner data-icon="inline-start" />}
             Save Changes
           </Button>
         </DialogFooter>

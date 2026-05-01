@@ -24,7 +24,8 @@ function buildMemberConditions(orgId: string, query: MemberAllQuery) {
 }
 
 const memberFields = {
-  id: users.id,
+  id: members.id,
+  userId: members.userId,
   name: users.name,
   email: users.email,
   image: users.image,
