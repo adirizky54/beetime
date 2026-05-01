@@ -71,6 +71,7 @@ export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDi
     ...memberQueries.invite(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: memberQueries.listKey() });
+      queryClient.invalidateQueries({ queryKey: memberQueries.listInvitationsKey(orgId) });
       toastManager.add({ type: "success", title: "Invitation sent" });
       handleOpenChange(false);
     },
