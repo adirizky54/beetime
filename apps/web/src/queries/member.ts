@@ -1,6 +1,7 @@
-import { keepPreviousData, queryOptions } from "@tanstack/react-query";
+import { keepPreviousData, mutationOptions, queryOptions } from "@tanstack/react-query";
 import type { Member, MemberQuery, MemberAllQuery } from "@beetime/schema";
 
+import { auth } from "@/lib/auth";
 import { api } from "@/lib/api";
 
 export const memberQueries = {
@@ -26,6 +27,19 @@ export const memberQueries = {
           searchParams,
           signal,
         });
+      },
+    }),
+  inviteKey: () => [...memberQueries.all(), "invite"] as const,
+  invite: (orgId: string) =>
+    mutationOptions({
+      mutationKey: [...memberQueries.inviteKey(), orgId] as const,
+      mutationFn: async (data: { email: string; role: "admin" | "member" }) => {
+        const { error } = await auth.organization.inviteMember({
+          email: data.email,
+          role: data.role,
+          organizationId: orgId,
+        });
+        if (error) throw error;
       },
     }),
 };
