@@ -46,6 +46,7 @@ interface InviteMemberDialogProps {
 }
 
 const roles = [
+  { value: "owner", label: "Owner" },
   { value: "admin", label: "Admin" },
   { value: "member", label: "Member" },
 ];

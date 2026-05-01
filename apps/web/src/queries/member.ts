@@ -33,7 +33,7 @@ export const memberQueries = {
   invite: (orgId: string) =>
     mutationOptions({
       mutationKey: [...memberQueries.inviteKey(), orgId] as const,
-      mutationFn: async (data: { email: string; role: "admin" | "member" }) => {
+      mutationFn: async (data: { email: string; role: Member["role"] }) => {
         const { error } = await auth.organization.inviteMember({
           email: data.email,
           role: data.role,
@@ -67,9 +67,22 @@ export const memberQueries = {
   removeMember: (orgId: string) =>
     mutationOptions({
       mutationKey: [...memberQueries.removeMemberKey(), orgId] as const,
-      mutationFn: async (memberEmail: string) => {
+      mutationFn: async (memberId: string) => {
         const { error } = await auth.organization.removeMember({
-          memberIdOrEmail: memberEmail,
+          memberIdOrEmail: memberId,
+          organizationId: orgId,
+        });
+        if (error) throw error;
+      },
+    }),
+  updateMemberRoleKey: () => [...memberQueries.all(), "update-member-role"] as const,
+  updateMemberRole: (orgId: string) =>
+    mutationOptions({
+      mutationKey: [...memberQueries.updateMemberRoleKey(), orgId] as const,
+      mutationFn: async (data: { memberId: string; role: Member["role"] }) => {
+        const { error } = await auth.organization.updateMemberRole({
+          memberId: data.memberId,
+          role: data.role,
           organizationId: orgId,
         });
         if (error) throw error;
