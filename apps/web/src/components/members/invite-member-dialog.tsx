@@ -1,5 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as v from "valibot";
 
 import { Button } from "@beetime/ui/components/button";
@@ -21,6 +22,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@beetime/ui/components/select";
+import { Spinner } from "@beetime/ui/components/spinner";
+import { toastManager } from "@beetime/ui/components/toast";
+
+import { memberQueries } from "@/queries/member";
+
+const EMAIL_FIELD_ERRORS = [
+  "User is already a member of this organization",
+  "User is already invited to this organization",
+];
 
 const InviteMemberSchema = v.object({
   email: v.pipe(
@@ -45,7 +55,9 @@ const roles = [
   { value: "member", label: "Member" },
 ];
 
-export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: InviteMemberDialogProps) {
+export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDialogProps) {
+  const queryClient = useQueryClient();
+
   const form = useForm<InviteMemberInput>({
     mode: "onChange",
     resolver: valibotResolver(InviteMemberSchema),
@@ -55,16 +67,34 @@ export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: Invite
     },
   });
 
+  const invite = useMutation({
+    ...memberQueries.invite(orgId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: memberQueries.listKey() });
+      toastManager.add({ type: "success", title: "Invitation sent" });
+      handleOpenChange(false);
+    },
+    onError: (error) => {
+      const message = error.message ?? "";
+      if (EMAIL_FIELD_ERRORS.includes(message)) {
+        form.setError("email", { type: "manual", message });
+      } else {
+        toastManager.add({ type: "error", title: message || "Something went wrong. Please try again." });
+      }
+    },
+  });
+
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       form.reset();
+      invite.reset();
     }
     onOpenChange(nextOpen);
   };
 
-  const onSubmit = form.handleSubmit((_values) => {
-    // TODO: wire up mutation when API is ready
-    handleOpenChange(false);
+  const onSubmit = form.handleSubmit((values) => {
+    form.clearErrors();
+    invite.mutate(values);
   });
 
   return (
@@ -124,7 +154,8 @@ export function InviteMemberDialog({ open, onOpenChange, orgId: _orgId }: Invite
         </form>
 
         <DialogFooter>
-          <Button type="submit" form="invite-member-form" disabled={!form.formState.isValid}>
+          <Button type="submit" form="invite-member-form" disabled={invite.isPending || !form.formState.isValid}>
+            {invite.isPending && <Spinner data-icon="inline-start" />}
             Send Invite
           </Button>
         </DialogFooter>
