@@ -4,17 +4,6 @@ import type { Member, MemberQuery, MemberAllQuery } from "@beetime/schema";
 import { auth } from "@/lib/auth";
 import { api } from "@/lib/api";
 
-export type OrgInvitation = {
-  id: string;
-  organizationId: string;
-  email: string;
-  role: "owner" | "admin" | "member";
-  status: "pending" | "accepted" | "rejected" | "canceled";
-  inviterId: string;
-  expiresAt: string;
-  createdAt: string;
-};
-
 export const memberQueries = {
   all: () => ["members"] as const,
   listKey: () => [...memberQueries.all(), "list"] as const,
@@ -62,7 +51,7 @@ export const memberQueries = {
           query: { organizationId: orgId },
         });
         if (error) throw error;
-        return (data ?? []) as unknown as OrgInvitation[];
+        return data;
       },
     }),
   cancelInvitationKey: () => [...memberQueries.all(), "cancel-invitation"] as const,

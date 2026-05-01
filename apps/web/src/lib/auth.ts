@@ -51,3 +51,4 @@ export type Session = typeof auth.$Infer.Session;
 export type OrgDateFormat = typeof auth.$Infer.Organization.dateFormat;
 export type OrgTimeFormat = typeof auth.$Infer.Organization.timeFormat;
 export type OrgIntervalFormat = typeof auth.$Infer.Organization.intervalFormat;
+export type Invitation = typeof auth.$Infer.Invitation;

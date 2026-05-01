@@ -1,4 +1,4 @@
-import { RiAddLine, RiMailSendLine, RiSearchLine, RiShieldUserLine } from "@remixicon/react";
+import { RiAddLine, RiLock2Line, RiSearchLine, RiShieldUserLine } from "@remixicon/react";
 import { useDebouncedCallback } from "@tanstack/react-pacer/debouncer";
 import { createFileRoute } from "@tanstack/react-router";
 import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
@@ -30,22 +30,23 @@ import { AppHeader } from "@/components/layouts/app-header";
 import { ActionsMember } from "@/components/members/actions-member";
 import { ActionsInvitation } from "@/components/members/actions-invitation";
 import { InviteMemberDialog } from "@/components/members/invite-member-dialog";
-import { auth } from "@/lib/auth";
-import { memberQueries, type OrgInvitation } from "@/queries/member";
+import { auth, type Invitation } from "@/lib/auth";
+import { memberQueries } from "@/queries/member";
 import { useFormatDate } from "@/hooks/use-format-date";
 import { getInitials, toTitleCase } from "@/utils/string";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
 const MembersPageSearchSchema = v.object({
   ...MemberQuerySchema.entries,
-  tab: v.optional(v.picklist(["members", "invitations"])),
+  tab: v.optional(v.picklist(["members", "invitations"]), "members"),
 });
 
-function JoinedDateCell({ date }: { date: string }) {
+function JoinedDateCell({ date }: { date: Date | string }) {
   const formatted = useFormatDate(date, "datetime");
   return <span className="text-muted-foreground">{formatted}</span>;
 }
 
-function InvitationDateCell({ date }: { date: string }) {
+function InvitationDateCell({ date }: { date: Date | string }) {
   const formatted = useFormatDate(date, "datetime");
   return <span className="text-muted-foreground">{formatted}</span>;
 }
@@ -58,46 +59,23 @@ export const Route = createFileRoute("/$orgId/members/")({
   component: RouteComponent,
 });
 
-function getRoleBadgeClassName(role: Member["role"] | OrgInvitation["role"]) {
-  switch (role) {
-    case "owner":
-      return "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400";
-    case "admin":
-      return "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400";
-    case "member":
-      return undefined;
-  }
-}
-
-function getStatusBadgeClassName(status: OrgInvitation["status"]) {
-  switch (status) {
-    case "pending":
-      return "border-yellow-500/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400";
-    case "accepted":
-      return "border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400";
-    case "rejected":
-      return "border-destructive/30 bg-destructive/10 text-destructive";
-    case "canceled":
-      return undefined;
-  }
-}
-
 function RouteComponent() {
   const { orgId } = Route.useParams();
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
-
-  const activeTab = search.tab ?? "members";
 
   const { data: session } = auth.useSession();
 
   const [searchText, setSearchText] = useState(search.search ?? "");
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
-  const { data: members, isLoading: loadingMembers } = useQuery(memberQueries.list(orgId, search));
+  const { data: members, isLoading: loadingMembers } = useQuery({
+    ...memberQueries.list(orgId, search),
+    enabled: search.tab === "members",
+  });
   const { data: invitations, isLoading: loadingInvitations } = useQuery({
     ...memberQueries.listInvitations(orgId),
-    enabled: activeTab === "invitations",
+    enabled: search.tab === "invitations",
   });
 
   const debouncedSetSearch = useDebouncedCallback(
@@ -124,19 +102,24 @@ function RouteComponent() {
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => {
-          const m = row.original;
+          const member = row.original;
           return (
             <div className="flex items-center gap-2">
               <Avatar size="sm">
-                <AvatarImage src={m.image ?? undefined} alt={m.name} />
-                <AvatarFallback>{getInitials(m.name)}</AvatarFallback>
+                <AvatarImage src={member.image ?? undefined} alt={member.name} />
+                <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
               </Avatar>
 
-              <span className="truncate font-medium">{m.name}</span>
+              <span className="truncate font-medium">{member.name}</span>
 
-              {m.banned && <Badge variant="destructive">Banned</Badge>}
+              {member.banned ? (
+                <Tooltip>
+                  <TooltipTrigger render={<RiLock2Line className="size-4 text-destructive" />} />
+                  <TooltipContent>Banned</TooltipContent>
+                </Tooltip>
+              ) : null}
 
-              <ActionsMember member={m} orgId={orgId} currentUserId={session?.user.id} />
+              {member.id !== session?.user.id ? <ActionsMember member={member} orgId={orgId} /> : null}
             </div>
           );
         },
@@ -151,11 +134,13 @@ function RouteComponent() {
         header: "Role",
         cell: ({ row }) => {
           const role = row.original.role;
-          return (
-            <Badge variant="outline" className={getRoleBadgeClassName(role)}>
-              {toTitleCase(role)}
-            </Badge>
-          );
+          const variant = {
+            owner: "default",
+            admin: "info",
+            member: "outline",
+          } as const;
+
+          return <Badge variant={variant[role]}>{toTitleCase(role)}</Badge>;
         },
       },
       {
@@ -167,7 +152,7 @@ function RouteComponent() {
     [orgId, session?.user.id],
   );
 
-  const invitationColumns = useMemo<Array<ColumnDef<OrgInvitation>>>(
+  const invitationColumns = useMemo<Array<ColumnDef<Invitation>>>(
     () => [
       {
         accessorKey: "email",
@@ -187,11 +172,13 @@ function RouteComponent() {
         header: "Role",
         cell: ({ row }) => {
           const role = row.original.role;
-          return (
-            <Badge variant="outline" className={getRoleBadgeClassName(role)}>
-              {toTitleCase(role)}
-            </Badge>
-          );
+          const variant = {
+            owner: "default",
+            admin: "info",
+            member: "outline",
+          } as const;
+
+          return <Badge variant={variant[role]}>{toTitleCase(role)}</Badge>;
         },
       },
       {
@@ -199,11 +186,14 @@ function RouteComponent() {
         header: "Status",
         cell: ({ row }) => {
           const status = row.original.status;
-          return (
-            <Badge variant="outline" className={getStatusBadgeClassName(status)}>
-              {toTitleCase(status)}
-            </Badge>
-          );
+          const variant = {
+            pending: "warning",
+            accepted: "success",
+            rejected: "error",
+            canceled: "secondary",
+          } as const;
+
+          return <Badge variant={variant[status]}>{toTitleCase(status)}</Badge>;
         },
       },
       {
@@ -263,24 +253,17 @@ function RouteComponent() {
 
       <AppBody>
         <Tabs
-          value={activeTab}
+          value={search.tab}
           onValueChange={(value) => {
-            if (value === "members" || value === "invitations") {
-              navigate({ search: (prev) => ({ ...prev, tab: value === "members" ? undefined : value }) });
-            }
+            navigate({ search: (prev) => ({ ...prev, tab: value }) });
           }}
         >
-          <Can orgId={orgId} permissions={{ invitation: ["cancel"] }}>
-            <TabsList variant="line">
-              <TabsTrigger value="members">Members</TabsTrigger>
-              <TabsTrigger value="invitations">
-                <RiMailSendLine data-icon="inline-start" />
-                Invitations
-              </TabsTrigger>
-            </TabsList>
-          </Can>
+          <TabsList variant="line">
+            <TabsTrigger value="members">Members</TabsTrigger>
+            <TabsTrigger value="invitations">Invitations</TabsTrigger>
+          </TabsList>
 
-          <TabsContent value="members">
+          <TabsContent value="members" className="flex flex-col gap-4">
             <div className="w-full">
               <div className="flex flex-wrap items-start gap-2.5">
                 <InputGroup className="md:w-56">
@@ -337,18 +320,9 @@ function RouteComponent() {
             />
           </TabsContent>
 
-          <Can orgId={orgId} permissions={{ invitation: ["cancel"] }}>
-            <TabsContent value="invitations">
-              <DataTable
-                table={invitationsTable}
-                loading={loadingInvitations}
-                hidePagination
-                row={() => ({
-                  className: "group/table-row",
-                })}
-              />
-            </TabsContent>
-          </Can>
+          <TabsContent value="invitations">
+            <DataTable table={invitationsTable} loading={loadingInvitations} hidePagination />
+          </TabsContent>
         </Tabs>
       </AppBody>
 

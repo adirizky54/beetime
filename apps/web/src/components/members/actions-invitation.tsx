@@ -23,10 +23,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/
 import { toastManager } from "@beetime/ui/components/toast";
 
 import { Can } from "@/components/ui/can";
-import { memberQueries, type OrgInvitation } from "@/queries/member";
+import { memberQueries } from "@/queries/member";
+import type { Invitation } from "@/lib/auth";
 
 type ActionsInvitationProps = {
-  invitation: OrgInvitation;
+  invitation: Invitation;
   orgId: string;
 };
 

@@ -6,6 +6,10 @@
   "file_scan_exclusions": ["**/routeTree.gen.ts"],
   "languages": {
     "CSS": {
+      "language_servers": [
+        "tailwindcss-intellisense-css",
+        "!vscode-css-language-server",
+      ],
       "format_on_save": "on",
       "prettier": {
         "allowed": false,
@@ -90,6 +94,14 @@
           "fixKind": "safe_fix",
           "run": "onType",
           "unusedDisableDirectives": "deny",
+        },
+      },
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "classFunctions": ["cva", "cn"],
+        "experimental": {
+          "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"],
         },
       },
     },

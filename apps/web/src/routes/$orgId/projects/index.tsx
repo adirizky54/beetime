@@ -13,7 +13,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
 import { ProjectQuerySchema, type Project } from "@beetime/schema";
-import { Badge } from "@beetime/ui/components/badge";
 import { Button } from "@beetime/ui/components/button";
 import {
   DropdownMenu,
@@ -92,6 +91,19 @@ function RouteComponent() {
                   {project.name}
                 </Link>
 
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      project.privacy === "public" ? (
+                        <RiGlobalLine className="size-4 text-muted-foreground" />
+                      ) : (
+                        <RiLock2Line className="size-4 text-muted-foreground" />
+                      )
+                    }
+                  />
+                  <TooltipContent>{toTitleCase(project.privacy)}</TooltipContent>
+                </Tooltip>
+
                 {project.archivedAt ? (
                   <Tooltip>
                     <TooltipTrigger render={<RiArchiveLine className="size-4 text-muted-foreground" />} />
@@ -108,25 +120,6 @@ function RouteComponent() {
         },
       },
       {
-        accessorKey: "privacy",
-        header: "Privacy",
-        cell: ({ row }) => {
-          const privacy = row.original.privacy;
-          const publicClassName =
-            "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-400";
-          const privateClassName =
-            "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-400";
-
-          return (
-            <Badge className={privacy === "public" ? publicClassName : privateClassName}>
-              {privacy === "public" ? <RiGlobalLine data-icon="inline-start" /> : null}
-              {privacy === "private" ? <RiLock2Line data-icon="inline-start" /> : null}
-              {toTitleCase(row.original.privacy)}
-            </Badge>
-          );
-        },
-      },
-      {
         accessorKey: "members",
         header: "Members",
         meta: {
@@ -138,13 +131,6 @@ function RouteComponent() {
           }),
         },
         cell: ({ row }) => <MembersProject project={row.original} />,
-      },
-      {
-        accessorKey: "archivedAt",
-        header: "Status",
-        cell: ({ row }) => {
-          return row.original.archivedAt ? "Archived" : "Active";
-        },
       },
     ],
     [orgId],
