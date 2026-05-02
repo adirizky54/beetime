@@ -27,6 +27,21 @@ import { auth } from "@/lib/auth";
 import { invitationQueries } from "@/queries/invitation";
 import { toTitleCase } from "@/utils/string";
 
+const roleVariant = {
+  owner: "default",
+  admin: "info",
+  member: "outline",
+} as const;
+
+function normalizeErrorMessage(error: unknown): string {
+  if (!(error instanceof Error)) return "This invitation is invalid or has expired.";
+  const msg = error.message.toLowerCase();
+  if (msg.includes("fetch") || msg.includes("network") || msg.includes("connection")) {
+    return "Unable to reach the server. Check your connection and try again.";
+  }
+  return error.message;
+}
+
 export const Route = createFileRoute("/organization-invitations")({
   head: () => ({
     meta: [{ title: "Invitation — Bee Time" }],
@@ -98,23 +113,17 @@ function InvitationDetails({ token }: { token: string }) {
     },
   });
 
-  const roleVariant = {
-    owner: "default",
-    admin: "info",
-    member: "outline",
-  } as const;
-
   const isBusy = accept.isPending || reject.isPending;
 
   return (
     <>
       <div className="flex flex-col items-center gap-3 text-center">
         <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
-          <RiBuildingLine className="size-6 text-primary" />
+          <RiBuildingLine className="size-6 text-primary" aria-hidden="true" />
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-sm text-muted-foreground">You've been invited to join</p>
-          <h1 className="text-2xl font-bold">{data.organizationName}</h1>
+          <h1 className="text-2xl font-bold break-words">{data.organizationName}</h1>
         </div>
       </div>
 
@@ -123,7 +132,7 @@ function InvitationDetails({ token }: { token: string }) {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground">Invited by</span>
-          <span className="truncate text-sm font-medium">{data.inviterEmail}</span>
+          <span className="min-w-0 truncate text-sm font-medium">{data.inviterEmail}</span>
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground">Role</span>
@@ -133,7 +142,7 @@ function InvitationDetails({ token }: { token: string }) {
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground">Expires</span>
-          <span className="text-sm">{format(new Date(data.expiresAt), "d MMM, yyyy")}</span>
+          <span className="text-sm font-medium">{format(new Date(data.expiresAt), "d MMM yyyy")}</span>
         </div>
       </div>
 
@@ -143,6 +152,7 @@ function InvitationDetails({ token }: { token: string }) {
           Accept invitation
         </Button>
         <Button variant="outline" disabled={isBusy} onClick={() => setShowDeclineDialog(true)}>
+          {reject.isPending && <Spinner data-icon="inline-start" />}
           Decline
         </Button>
       </div>
@@ -151,7 +161,7 @@ function InvitationDetails({ token }: { token: string }) {
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
             <AlertDialogTitle>Decline invitation?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="break-words">
               You will not be able to join <strong>{data.organizationName}</strong> using this invitation.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -188,7 +198,7 @@ function InvitationErrorCard({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center gap-4 text-center">
       <div className="flex size-12 items-center justify-center rounded-xl bg-destructive/10">
-        <RiErrorWarningLine className="size-6 text-destructive" />
+        <RiErrorWarningLine className="size-6 text-destructive" aria-hidden="true" />
       </div>
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Invalid invitation</h1>
@@ -204,9 +214,7 @@ function InvitationErrorCard({ message }: { message: string }) {
 function InvitationError({ error }: ErrorComponentProps) {
   return (
     <InvitationLayout>
-      <InvitationErrorCard
-        message={error instanceof Error ? error.message : "This invitation is invalid or has expired."}
-      />
+      <InvitationErrorCard message={normalizeErrorMessage(error)} />
     </InvitationLayout>
   );
 }
