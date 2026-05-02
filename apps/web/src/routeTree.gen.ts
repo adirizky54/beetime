@@ -16,6 +16,7 @@ import { Route as rootRouteImport } from "./routes/__root";
 import { Route as VerifyEmailRouteImport } from "./routes/verify-email";
 import { Route as SignUpRouteImport } from "./routes/sign-up";
 import { Route as ResetPasswordRouteImport } from "./routes/reset-password";
+import { Route as OrganizationInvitationsRouteImport } from "./routes/organization-invitations";
 import { Route as LoginRouteImport } from "./routes/login";
 import { Route as ForgotPasswordRouteImport } from "./routes/forgot-password";
 import { Route as OrgIdRouteRouteImport } from "./routes/$orgId/route";
@@ -41,6 +42,11 @@ const SignUpRoute = SignUpRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: "/reset-password",
   path: "/reset-password",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const OrganizationInvitationsRoute = OrganizationInvitationsRouteImport.update({
+  id: "/organization-invitations",
+  path: "/organization-invitations",
   getParentRoute: () => rootRouteImport,
 } as any);
 const LoginRoute = LoginRouteImport.update({
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   "/$orgId": typeof OrgIdRouteRouteWithChildren;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
+  "/organization-invitations": typeof OrganizationInvitationsRoute;
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
+  "/organization-invitations": typeof OrganizationInvitationsRoute;
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   "/$orgId": typeof OrgIdRouteRouteWithChildren;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
+  "/organization-invitations": typeof OrganizationInvitationsRoute;
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | "/$orgId"
     | "/forgot-password"
     | "/login"
+    | "/organization-invitations"
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | "/"
     | "/forgot-password"
     | "/login"
+    | "/organization-invitations"
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | "/$orgId"
     | "/forgot-password"
     | "/login"
+    | "/organization-invitations"
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
@@ -203,6 +215,7 @@ export interface RootRouteChildren {
   OrgIdRouteRoute: typeof OrgIdRouteRouteWithChildren;
   ForgotPasswordRoute: typeof ForgotPasswordRoute;
   LoginRoute: typeof LoginRoute;
+  OrganizationInvitationsRoute: typeof OrganizationInvitationsRoute;
   ResetPasswordRoute: typeof ResetPasswordRoute;
   SignUpRoute: typeof SignUpRoute;
   VerifyEmailRoute: typeof VerifyEmailRoute;
@@ -229,6 +242,13 @@ declare module "@tanstack/react-router" {
       path: "/reset-password";
       fullPath: "/reset-password";
       preLoaderRoute: typeof ResetPasswordRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/organization-invitations": {
+      id: "/organization-invitations";
+      path: "/organization-invitations";
+      fullPath: "/organization-invitations";
+      preLoaderRoute: typeof OrganizationInvitationsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/login": {
@@ -340,6 +360,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrgIdRouteRoute: OrgIdRouteRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  OrganizationInvitationsRoute: OrganizationInvitationsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignUpRoute: SignUpRoute,
   VerifyEmailRoute: VerifyEmailRoute,

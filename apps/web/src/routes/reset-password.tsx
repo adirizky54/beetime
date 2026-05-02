@@ -106,7 +106,9 @@ function RouteComponent() {
                           <RiLockPasswordLine className="size-5 text-primary" />
                         </div>
                         <h1 className="text-2xl font-bold">Set new password</h1>
-                        <p className="text-balance text-muted-foreground">Choose a strong password for your account.</p>
+                        <p className="text-balance text-muted-foreground">
+                          Enter your new password below. Choose a strong password for your account.
+                        </p>
                       </div>
                       <Controller
                         name="password"
