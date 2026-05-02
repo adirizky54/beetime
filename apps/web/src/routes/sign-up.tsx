@@ -49,9 +49,13 @@ export const Route = createFileRoute("/sign-up")({
   head: () => ({
     meta: [{ title: "Sign Up — Bee Time" }],
   }),
+  validateSearch: v.object({
+    redirectTo: v.optional(v.string()),
+  }),
 });
 
 function RouteComponent() {
+  const { redirectTo } = Route.useSearch();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<v.InferInput<typeof formSchema>>({
@@ -71,7 +75,7 @@ function RouteComponent() {
         name: values.name,
         email: values.email,
         password: values.password,
-        callbackURL: "/",
+        callbackURL: redirectTo ?? "/",
       },
       {
         onRequest: () => {
@@ -214,7 +218,10 @@ function RouteComponent() {
                     </Button>
                   </Field>
                   <FieldDescription className="text-center">
-                    Already have an account? <Link to="/login">Sign in</Link>
+                    Already have an account?{" "}
+                    <Link to="/login" search={{ redirectTo }}>
+                      Sign in
+                    </Link>
                   </FieldDescription>
                 </FieldGroup>
               </form>

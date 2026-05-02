@@ -141,7 +141,7 @@ export async function sendInvitationEmail(
     organization: { name: string };
   },
 ) {
-  const acceptUrl = `${env.APP_ORIGIN}/join?token=${options.invitation.id}`;
+  const acceptUrl = `${env.APP_ORIGIN}/organization-invitations?token=${options.invitation.id}`;
 
   const component = Invitation({
     inviterName: options.inviter.user.name,
