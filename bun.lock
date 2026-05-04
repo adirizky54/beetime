@@ -59,6 +59,7 @@
         "react": "catalog:ui",
         "react-dom": "catalog:ui",
         "react-hook-form": "^7.74.0",
+        "slugify": "^1.6.9",
         "tailwindcss": "^4.2.4",
         "valibot": "catalog:core",
       },

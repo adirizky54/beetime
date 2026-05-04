@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { SidebarProvider } from "@beetime/ui/components/sidebar";
+
 import { AppSidebar } from "@/components/layouts/app-sidebar";
 import { OrgAccessDenied } from "@/components/errors/org-access-denied";
 import { auth } from "@/lib/auth";

@@ -1,5 +1,5 @@
 import { RiAddLine, RiArrowDownSLine, RiClockwise2Line } from "@remixicon/react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 
 import {
   DropdownMenu,
@@ -57,7 +57,7 @@ export function OrgSwitcher() {
               ))}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem className="gap-2 p-2" render={<Link to="/create-organization" />}>
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <RiAddLine className="size-4" />
               </div>

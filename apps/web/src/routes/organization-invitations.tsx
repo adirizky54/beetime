@@ -3,7 +3,6 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { format } from "date-fns";
-import type { ReactNode } from "react";
 import { useState } from "react";
 import * as v from "valibot";
 
@@ -17,21 +16,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@beetime/ui/components/alert-dialog";
-import { Badge } from "@beetime/ui/components/badge";
 import { Button } from "@beetime/ui/components/button";
-import { Card, CardContent } from "@beetime/ui/components/card";
 import { Skeleton } from "@beetime/ui/components/skeleton";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { toastManager } from "@beetime/ui/components/toast";
+
+import { MinimalLayout } from "@/components/layouts/minimal-layout";
 import { auth } from "@/lib/auth";
 import { invitationQueries } from "@/queries/invitation";
 import { toTitleCase } from "@/utils/string";
-
-const roleVariant = {
-  owner: "default",
-  admin: "info",
-  member: "outline",
-} as const;
 
 function normalizeErrorMessage(error: unknown): string {
   if (!(error instanceof Error)) return "This invitation is invalid or has expired.";
@@ -73,16 +66,20 @@ function RouteComponent() {
 
   if (!token) {
     return (
-      <InvitationLayout>
-        <InvitationErrorCard message="No invitation token found in the URL. Please check the link in your email." />
-      </InvitationLayout>
+      <MinimalLayout>
+        <div className="w-full max-w-md">
+          <InvitationErrorCard message="No invitation token found in the URL. Please check the link in your email." />
+        </div>
+      </MinimalLayout>
     );
   }
 
   return (
-    <InvitationLayout>
-      <InvitationDetails token={token} />
-    </InvitationLayout>
+    <MinimalLayout>
+      <div className="w-full max-w-md">
+        <InvitationDetails token={token} />
+      </div>
+    </MinimalLayout>
   );
 }
 
@@ -136,9 +133,7 @@ function InvitationDetails({ token }: { token: string }) {
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground">Role</span>
-          <Badge variant={roleVariant[data.role as keyof typeof roleVariant] ?? "outline"}>
-            {toTitleCase(data.role)}
-          </Badge>
+          <span className="text-sm font-medium">{toTitleCase(data.role)}</span>
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground">Expires</span>
@@ -158,10 +153,10 @@ function InvitationDetails({ token }: { token: string }) {
       </div>
 
       <AlertDialog open={showDeclineDialog} onOpenChange={setShowDeclineDialog}>
-        <AlertDialogContent size="sm">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Decline invitation?</AlertDialogTitle>
-            <AlertDialogDescription className="break-words">
+            <AlertDialogDescription>
               You will not be able to join <strong>{data.organizationName}</strong> using this invitation.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -179,18 +174,6 @@ function InvitationDetails({ token }: { token: string }) {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
-}
-
-function InvitationLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
-      <div className="w-full max-w-md">
-        <Card className="overflow-hidden">
-          <CardContent className="p-6 md:p-8">{children}</CardContent>
-        </Card>
-      </div>
-    </div>
   );
 }
 
@@ -213,42 +196,46 @@ function InvitationErrorCard({ message }: { message: string }) {
 
 function InvitationError({ error }: ErrorComponentProps) {
   return (
-    <InvitationLayout>
-      <InvitationErrorCard message={normalizeErrorMessage(error)} />
-    </InvitationLayout>
+    <MinimalLayout>
+      <div className="w-full max-w-md">
+        <InvitationErrorCard message={normalizeErrorMessage(error)} />
+      </div>
+    </MinimalLayout>
   );
 }
 
 function InvitationSkeleton() {
   return (
-    <InvitationLayout>
-      <div className="flex flex-col items-center gap-3">
-        <Skeleton className="size-12 rounded-xl" />
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-7 w-44" />
-      </div>
-
-      <div className="my-6 h-px bg-muted" />
-
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-4 w-16" />
-          <Skeleton className="h-4 w-32" />
+    <MinimalLayout>
+      <div className="w-full max-w-md">
+        <div className="flex flex-col items-center gap-3">
+          <Skeleton className="size-12 rounded-xl" />
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-7 w-44" />
         </div>
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-4 w-10" />
-          <Skeleton className="h-5 w-16 rounded-full" />
-        </div>
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-4 w-14" />
-          <Skeleton className="h-4 w-24" />
-        </div>
-      </div>
 
-      <div className="mt-6 flex flex-col gap-2">
-        <Skeleton className="h-9 w-full rounded-md" />
-        <Skeleton className="h-9 w-full rounded-md" />
+        <div className="my-6 h-px bg-muted" />
+
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-10" />
+            <Skeleton className="h-5 w-16 rounded-full" />
+          </div>
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-14" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-2">
+          <Skeleton className="h-9 w-full rounded-md" />
+          <Skeleton className="h-9 w-full rounded-md" />
+        </div>
       </div>
-    </InvitationLayout>
+    </MinimalLayout>
   );
 }

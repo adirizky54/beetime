@@ -26,6 +26,8 @@ export const Route = createFileRoute("/")({
             orgId: organizations[0].id,
           },
         });
+      } else {
+        throw redirect({ to: "/create-organization" });
       }
     }
   },

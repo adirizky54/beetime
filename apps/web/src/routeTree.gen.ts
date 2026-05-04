@@ -19,6 +19,7 @@ import { Route as ResetPasswordRouteImport } from "./routes/reset-password";
 import { Route as OrganizationInvitationsRouteImport } from "./routes/organization-invitations";
 import { Route as LoginRouteImport } from "./routes/login";
 import { Route as ForgotPasswordRouteImport } from "./routes/forgot-password";
+import { Route as CreateOrganizationRouteImport } from "./routes/create-organization";
 import { Route as OrgIdRouteRouteImport } from "./routes/$orgId/route";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as OrgIdIndexRouteImport } from "./routes/$orgId/index";
@@ -57,6 +58,11 @@ const LoginRoute = LoginRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: "/forgot-password",
   path: "/forgot-password",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
+  id: "/create-organization",
+  path: "/create-organization",
   getParentRoute: () => rootRouteImport,
 } as any);
 const OrgIdRouteRoute = OrgIdRouteRouteImport.update({
@@ -109,6 +115,7 @@ const OrgIdProjectsProjectIdIndexRoute =
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/$orgId": typeof OrgIdRouteRouteWithChildren;
+  "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
   "/organization-invitations": typeof OrganizationInvitationsRoute;
@@ -125,6 +132,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
   "/organization-invitations": typeof OrganizationInvitationsRoute;
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/$orgId": typeof OrgIdRouteRouteWithChildren;
+  "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
   "/organization-invitations": typeof OrganizationInvitationsRoute;
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
   fullPaths:
     | "/"
     | "/$orgId"
+    | "/create-organization"
     | "/forgot-password"
     | "/login"
     | "/organization-invitations"
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
+    | "/create-organization"
     | "/forgot-password"
     | "/login"
     | "/organization-invitations"
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | "__root__"
     | "/"
     | "/$orgId"
+    | "/create-organization"
     | "/forgot-password"
     | "/login"
     | "/organization-invitations"
@@ -213,6 +225,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   OrgIdRouteRoute: typeof OrgIdRouteRouteWithChildren;
+  CreateOrganizationRoute: typeof CreateOrganizationRoute;
   ForgotPasswordRoute: typeof ForgotPasswordRoute;
   LoginRoute: typeof LoginRoute;
   OrganizationInvitationsRoute: typeof OrganizationInvitationsRoute;
@@ -263,6 +276,13 @@ declare module "@tanstack/react-router" {
       path: "/forgot-password";
       fullPath: "/forgot-password";
       preLoaderRoute: typeof ForgotPasswordRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/create-organization": {
+      id: "/create-organization";
+      path: "/create-organization";
+      fullPath: "/create-organization";
+      preLoaderRoute: typeof CreateOrganizationRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/$orgId": {
@@ -358,6 +378,7 @@ const OrgIdRouteRouteWithChildren = OrgIdRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   OrgIdRouteRoute: OrgIdRouteRouteWithChildren,
+  CreateOrganizationRoute: CreateOrganizationRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   OrganizationInvitationsRoute: OrganizationInvitationsRoute,
