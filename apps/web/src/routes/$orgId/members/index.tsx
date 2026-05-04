@@ -21,6 +21,7 @@ import {
 } from "@beetime/ui/components/dropdown-menu";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@beetime/ui/components/input-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@beetime/ui/components/tabs";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
 import { Can } from "@/components/ui/can";
 import { DataTable } from "@/components/ui/data-table";
@@ -32,9 +33,9 @@ import { ActionsInvitation } from "@/components/members/actions-invitation";
 import { InviteMemberDialog } from "@/components/members/invite-member-dialog";
 import { auth, type Invitation } from "@/lib/auth";
 import { memberQueries } from "@/queries/member";
+import { invitationQueries } from "@/queries/invitation";
 import { useFormatDate } from "@/hooks/use-format-date";
 import { getInitials, toTitleCase } from "@/utils/string";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
 const MembersPageSearchSchema = v.object({
   ...MemberQuerySchema.entries,
@@ -74,7 +75,7 @@ function RouteComponent() {
     enabled: search.tab === "members",
   });
   const { data: invitations, isLoading: loadingInvitations } = useQuery({
-    ...memberQueries.listInvitations(orgId),
+    ...invitationQueries.list(orgId),
     enabled: search.tab === "invitations",
   });
 
@@ -119,7 +120,7 @@ function RouteComponent() {
                 </Tooltip>
               ) : null}
 
-              {member.id !== session?.user.id ? <ActionsMember member={member} orgId={orgId} /> : null}
+              {member.userId !== session?.user.id ? <ActionsMember member={member} orgId={orgId} /> : null}
             </div>
           );
         },
@@ -132,16 +133,7 @@ function RouteComponent() {
       {
         accessorKey: "role",
         header: "Role",
-        cell: ({ row }) => {
-          const role = row.original.role;
-          const variant = {
-            owner: "default",
-            admin: "info",
-            member: "outline",
-          } as const;
-
-          return <Badge variant={variant[role]}>{toTitleCase(role)}</Badge>;
-        },
+        cell: ({ row }) => toTitleCase(row.original.role),
       },
       {
         accessorKey: "createdAt",
@@ -170,16 +162,7 @@ function RouteComponent() {
       {
         accessorKey: "role",
         header: "Role",
-        cell: ({ row }) => {
-          const role = row.original.role;
-          const variant = {
-            owner: "default",
-            admin: "info",
-            member: "outline",
-          } as const;
-
-          return <Badge variant={variant[role]}>{toTitleCase(role)}</Badge>;
-        },
+        cell: ({ row }) => toTitleCase(row.original.role),
       },
       {
         accessorKey: "status",

@@ -42,27 +42,6 @@ export const memberQueries = {
         if (error) throw error;
       },
     }),
-  listInvitationsKey: (orgId: string) => [...memberQueries.all(), "list-invitations", orgId] as const,
-  listInvitations: (orgId: string) =>
-    queryOptions({
-      queryKey: memberQueries.listInvitationsKey(orgId),
-      queryFn: async () => {
-        const { data, error } = await auth.organization.listInvitations({
-          query: { organizationId: orgId },
-        });
-        if (error) throw error;
-        return data;
-      },
-    }),
-  cancelInvitationKey: () => [...memberQueries.all(), "cancel-invitation"] as const,
-  cancelInvitation: (orgId: string) =>
-    mutationOptions({
-      mutationKey: [...memberQueries.cancelInvitationKey(), orgId] as const,
-      mutationFn: async (invitationId: string) => {
-        const { error } = await auth.organization.cancelInvitation({ invitationId });
-        if (error) throw error;
-      },
-    }),
   removeMemberKey: () => [...memberQueries.all(), "remove-member"] as const,
   removeMember: (orgId: string) =>
     mutationOptions({

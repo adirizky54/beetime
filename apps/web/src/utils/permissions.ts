@@ -4,7 +4,7 @@ export const statement = {
   user: ["create", "list", "set-role", "ban", "impersonate", "delete", "set-password", "get", "update"],
   session: ["list", "revoke", "delete"],
   organization: ["update", "delete"],
-  member: ["create", "update", "delete"],
+  member: ["create", "read", "update", "delete"],
   invitation: ["create", "cancel"],
   project: ["create", "read", "update", "delete", "archive"],
   client: ["create", "read", "update", "delete", "archive"],
@@ -27,7 +27,7 @@ export const user = ac.newRole({
 
 export const admin = ac.newRole({
   organization: ["update"],
-  member: ["create", "update", "delete"],
+  member: ["create", "read", "update", "delete"],
   invitation: ["create", "cancel"],
   project: ["create", "read", "update", "delete", "archive"],
   client: ["create", "read", "update", "delete", "archive"],
@@ -36,7 +36,7 @@ export const admin = ac.newRole({
 
 export const owner = ac.newRole({
   organization: ["update", "delete"],
-  member: ["create", "update", "delete"],
+  member: ["create", "read", "update", "delete"],
   invitation: ["create", "cancel"],
   project: ["create", "read", "update", "delete", "archive"],
   client: ["create", "read", "update", "delete", "archive"],
@@ -45,7 +45,7 @@ export const owner = ac.newRole({
 
 export const member = ac.newRole({
   organization: [],
-  member: [],
+  member: ["read"],
   invitation: [],
   project: ["read"],
   client: ["read"],

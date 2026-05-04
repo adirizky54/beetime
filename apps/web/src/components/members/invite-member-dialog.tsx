@@ -26,6 +26,7 @@ import { Spinner } from "@beetime/ui/components/spinner";
 import { toastManager } from "@beetime/ui/components/toast";
 
 import { memberQueries } from "@/queries/member";
+import { invitationQueries } from "@/queries/invitation";
 
 const InviteMemberSchema = v.object({
   email: v.pipe(
@@ -67,7 +68,7 @@ export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDi
     ...memberQueries.invite(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: memberQueries.listKey() });
-      queryClient.invalidateQueries({ queryKey: memberQueries.listInvitationsKey(orgId) });
+      queryClient.invalidateQueries({ queryKey: invitationQueries.listKey(orgId) });
       toastManager.add({ type: "success", title: "Invitation sent" });
       handleOpenChange(false);
     },

@@ -23,8 +23,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/
 import { toastManager } from "@beetime/ui/components/toast";
 
 import { Can } from "@/components/ui/can";
-import { memberQueries } from "@/queries/member";
 import type { Invitation } from "@/lib/auth";
+import { invitationQueries } from "@/queries/invitation";
 
 type ActionsInvitationProps = {
   invitation: Invitation;
@@ -36,9 +36,9 @@ export function ActionsInvitation({ invitation, orgId }: ActionsInvitationProps)
   const queryClient = useQueryClient();
 
   const cancelInvitation = useMutation({
-    ...memberQueries.cancelInvitation(orgId),
+    ...invitationQueries.cancel(orgId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: memberQueries.listInvitationsKey(orgId) });
+      queryClient.invalidateQueries({ queryKey: invitationQueries.listKey(orgId) });
       toastManager.add({ type: "success", title: "Invitation cancelled" });
       setShowCancelDialog(false);
     },

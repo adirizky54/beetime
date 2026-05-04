@@ -4,6 +4,18 @@ import { auth } from "@/lib/auth";
 
 export const invitationQueries = {
   all: () => ["invitations"] as const,
+  listKey: (orgId: string) => [...invitationQueries.all(), "list", orgId] as const,
+  list: (orgId: string) =>
+    queryOptions({
+      queryKey: invitationQueries.listKey(orgId),
+      queryFn: async () => {
+        const { data, error } = await auth.organization.listInvitations({
+          query: { organizationId: orgId },
+        });
+        if (error) throw error;
+        return data;
+      },
+    }),
   getKey: (token: string) => [...invitationQueries.all(), "get", token] as const,
   get: (token: string) =>
     queryOptions({
@@ -15,6 +27,15 @@ export const invitationQueries = {
         return data;
       },
       retry: false,
+    }),
+  cancelKey: () => [...invitationQueries.all(), "cancel"] as const,
+  cancel: (orgId: string) =>
+    mutationOptions({
+      mutationKey: [...invitationQueries.cancelKey(), orgId] as const,
+      mutationFn: async (invitationId: string) => {
+        const { error } = await auth.organization.cancelInvitation({ invitationId });
+        if (error) throw error;
+      },
     }),
   acceptKey: () => [...invitationQueries.all(), "accept"] as const,
   accept: () =>

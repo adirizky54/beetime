@@ -43,7 +43,7 @@ export const owner = ac.newRole({
 
 export const member = ac.newRole({
   organization: [],
-  member: [],
+  member: ["read"],
   invitation: [],
   project: ["read"],
   client: ["read"],
