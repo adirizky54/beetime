@@ -1,4 +1,5 @@
 import { format, isSameDay, isSameMonth, isSameYear, isToday } from "date-fns";
+import slugify from "slugify";
 
 /**
  * Formats a date range into a human-readable string.
@@ -35,4 +36,14 @@ export function getInitials(name: string) {
 
 export function toTitleCase(str: string) {
   return str.replace(/\w\S*/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+}
+
+export function toSlug(text: string, suffix?: string) {
+  return (
+    slugify(text, {
+      lower: true,
+      strict: true,
+      trim: false,
+    }) + (suffix ? `-${suffix}` : "")
+  );
 }
