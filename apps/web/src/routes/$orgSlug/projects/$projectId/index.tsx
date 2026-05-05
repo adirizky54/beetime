@@ -3,7 +3,7 @@ import { AppBody } from "@/components/layouts/app-body";
 import { AppContent } from "@/components/layouts/app-content";
 import { AppHeader } from "@/components/layouts/app-header";
 
-export const Route = createFileRoute("/$orgId/projects/$projectId/")({
+export const Route = createFileRoute("/$orgSlug/projects/$projectId/")({
   head: () => ({
     meta: [{ title: "Sampe Project — Bee Time" }],
   }),
@@ -11,14 +11,14 @@ export const Route = createFileRoute("/$orgId/projects/$projectId/")({
 });
 
 function RouteComponent() {
-  const { orgId, projectId } = Route.useParams();
+  const { orgSlug, projectId } = Route.useParams();
 
   return (
     <AppContent>
       <AppHeader
         breadcrumbs={[
-          { title: "Projects", to: "/$orgId/projects", params: { orgId } },
-          { title: "Sample Project", to: "/$orgId/projects/$projectId", params: { orgId, projectId } },
+          { title: "Projects", to: "/$orgSlug/projects", params: { orgSlug } },
+          { title: "Sample Project", to: "/$orgSlug/projects/$projectId", params: { orgSlug, projectId } },
         ]}
       />
       <AppBody>test</AppBody>

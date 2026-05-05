@@ -89,8 +89,8 @@ function InvitationDetails({ token }: { token: string }) {
 
   const accept = useMutation({
     ...invitationQueries.accept(),
-    onSuccess: (result) => {
-      navigate({ to: "/$orgId", params: { orgId: result.invitation.organizationId } });
+    onSuccess: () => {
+      navigate({ to: "/" });
     },
     onError: (err) => {
       toastManager.add({ type: "error", title: err.message || "Failed to accept invitation." });

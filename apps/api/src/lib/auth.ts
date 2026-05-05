@@ -101,16 +101,18 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          await auth.api.createOrganization({
-            body: {
-              userId: user.id,
-              name: `${user.name}'s Organization`,
-              slug: toSlug(user.name, nanoid(9)),
-              dateFormat: "hyphen-separated-yyyy-mm-dd",
-              timeFormat: "24-hours",
-              intervalFormat: "hours-minutes",
-            },
-          });
+          if (user.role === "user") {
+            await auth.api.createOrganization({
+              body: {
+                userId: user.id,
+                name: `${user.name}'s Organization`,
+                slug: toSlug(user.name, nanoid(9)),
+                dateFormat: "hyphen-separated-yyyy-mm-dd",
+                timeFormat: "24-hours",
+                intervalFormat: "hours-minutes",
+              },
+            });
+          }
         },
       },
     },

@@ -52,7 +52,7 @@ function InvitationDateCell({ date }: { date: Date | string }) {
   return <span className="text-muted-foreground">{formatted}</span>;
 }
 
-export const Route = createFileRoute("/$orgId/members/")({
+export const Route = createFileRoute("/$orgSlug/members/")({
   head: () => ({
     meta: [{ title: "Members — Bee Time" }],
   }),
@@ -61,8 +61,8 @@ export const Route = createFileRoute("/$orgId/members/")({
 });
 
 function RouteComponent() {
-  const { user } = Route.useRouteContext();
-  const { orgId } = Route.useParams();
+  const { organization, user } = Route.useRouteContext();
+  const { orgSlug } = Route.useParams();
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
 
@@ -70,11 +70,11 @@ function RouteComponent() {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const { data: members, isLoading: loadingMembers } = useQuery({
-    ...memberQueries.list(orgId, search),
+    ...memberQueries.list(organization.id, search),
     enabled: search.tab === "members",
   });
   const { data: invitations, isLoading: loadingInvitations } = useQuery({
-    ...invitationQueries.list(orgId),
+    ...invitationQueries.list(organization.id),
     enabled: search.tab === "invitations",
   });
 
@@ -119,7 +119,7 @@ function RouteComponent() {
                 </Tooltip>
               ) : null}
 
-              {member.userId !== user?.id ? <ActionsMember member={member} orgId={orgId} /> : null}
+              {member.userId !== user?.id ? <ActionsMember member={member} orgId={organization.id} /> : null}
             </div>
           );
         },
@@ -140,7 +140,7 @@ function RouteComponent() {
         cell: ({ row }) => <JoinedDateCell date={row.original.createdAt} />,
       },
     ],
-    [orgId, user?.id],
+    [organization.id, user?.id],
   );
 
   const invitationColumns = useMemo<Array<ColumnDef<Invitation>>>(
@@ -153,7 +153,7 @@ function RouteComponent() {
           return (
             <div className="flex items-center gap-2">
               <span className="truncate font-medium">{inv.email}</span>
-              <ActionsInvitation invitation={inv} orgId={orgId} />
+              <ActionsInvitation invitation={inv} orgId={organization.id} />
             </div>
           );
         },
@@ -189,7 +189,7 @@ function RouteComponent() {
         cell: ({ row }) => <InvitationDateCell date={row.original.expiresAt} />,
       },
     ],
-    [orgId],
+    [organization.id],
   );
 
   const membersTable = useReactTable({
@@ -224,8 +224,8 @@ function RouteComponent() {
 
   return (
     <AppContent>
-      <AppHeader breadcrumbs={[{ title: "Members", to: "/$orgId/members", params: { orgId } }]}>
-        <Can orgId={orgId} permissions={{ member: ["create"] }}>
+      <AppHeader breadcrumbs={[{ title: "Members", to: "/$orgSlug/members", params: { orgSlug } }]}>
+        <Can orgId={organization.id} permissions={{ member: ["create"] }}>
           <Button className="ml-auto" size="sm" onClick={() => setInviteDialogOpen(true)}>
             <RiAddLine data-icon="inline-start" />
             Invite Member
@@ -308,8 +308,8 @@ function RouteComponent() {
         </Tabs>
       </AppBody>
 
-      <Can orgId={orgId} permissions={{ member: ["create"] }}>
-        <InviteMemberDialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen} orgId={orgId} />
+      <Can orgId={organization.id} permissions={{ member: ["create"] }}>
+        <InviteMemberDialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen} orgId={organization.id} />
       </Can>
     </AppContent>
   );

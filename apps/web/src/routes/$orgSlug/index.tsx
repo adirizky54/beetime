@@ -16,7 +16,7 @@ import { DashboardStatCards } from "@/components/dashboard/stat-cards";
 import { useMount } from "@/hooks/use-mount";
 import { formatDateRange } from "@/utils/string";
 
-export const Route = createFileRoute("/$orgId/")({
+export const Route = createFileRoute("/$orgSlug/")({
   head: () => ({
     meta: [{ title: "Dashboard — Bee Time" }],
   }),
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/$orgId/")({
 });
 
 function RouteComponent() {
-  const { orgId } = Route.useParams();
+  const { orgSlug } = Route.useParams();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -78,7 +78,7 @@ function RouteComponent() {
 
   return (
     <AppContent>
-      <AppHeader breadcrumbs={[{ title: "Dashboard", to: "/$orgId", params: { orgId } }]}>
+      <AppHeader breadcrumbs={[{ title: "Dashboard", to: "/$orgSlug", params: { orgSlug } }]}>
         <div className="ml-auto">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger

@@ -18,7 +18,7 @@ import {
 } from "@beetime/ui/components/sidebar";
 
 export function NavMenu() {
-  const { orgId } = useParams({ from: "/$orgId" });
+  const { orgSlug } = useParams({ from: "/$orgSlug" });
 
   const menu = [
     {
@@ -29,8 +29,8 @@ export function NavMenu() {
           id: "dashboard",
           title: "Dashboard",
           link: linkOptions({
-            to: "/$orgId",
-            params: { orgId },
+            to: "/$orgSlug",
+            params: { orgSlug },
           }),
           icon: <RiDashboardFill />,
         },
@@ -38,8 +38,8 @@ export function NavMenu() {
           id: "timesheet",
           title: "Timesheet",
           link: linkOptions({
-            to: "/$orgId/timesheet",
-            params: { orgId },
+            to: "/$orgSlug/timesheet",
+            params: { orgSlug },
           }),
           icon: <RiCalendarScheduleFill />,
         },
@@ -53,8 +53,8 @@ export function NavMenu() {
           id: "projects",
           title: "Projects",
           link: linkOptions({
-            to: "/$orgId/projects",
-            params: { orgId },
+            to: "/$orgSlug/projects",
+            params: { orgSlug },
           }),
           icon: <RiFolder3Fill />,
         },
@@ -62,8 +62,8 @@ export function NavMenu() {
           id: "clients",
           title: "Clients",
           link: linkOptions({
-            to: "/$orgId/clients",
-            params: { orgId },
+            to: "/$orgSlug/clients",
+            params: { orgSlug },
           }),
           icon: <RiAccountCircleFill />,
         },
@@ -71,8 +71,8 @@ export function NavMenu() {
           id: "members",
           title: "Members",
           link: linkOptions({
-            to: "/$orgId/members",
-            params: { orgId },
+            to: "/$orgSlug/members",
+            params: { orgSlug },
           }),
           icon: <RiGroupFill />,
         },
@@ -86,8 +86,8 @@ export function NavMenu() {
           id: "settings",
           title: "Settings",
           link: linkOptions({
-            to: "/$orgId/settings",
-            params: { orgId },
+            to: "/$orgSlug/settings",
+            params: { orgSlug },
           }),
           icon: <RiSettings3Fill />,
         },

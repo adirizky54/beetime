@@ -266,7 +266,7 @@ const result = await db.query.clients.findMany({
 - Routes live in `src/routes/`
 - `routeTree.gen.ts` is **auto-generated** — never edit it manually. It is read-only in VS Code by project settings.
 - Every route file exports a `Route` constant: `export const Route = createFileRoute("/<path>")({ ... })`
-- Dynamic segments use `$` prefix: `$orgId/`, `$projectId/`
+- Dynamic segments use `$` prefix: `$orgSlug/`, `$projectId/`
 - Layout routes use `component` with an `<Outlet />` inside
 - Auth guards and organization setup go in `beforeLoad`
 

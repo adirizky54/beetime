@@ -8,12 +8,13 @@ import { TooltipProvider } from "@beetime/ui/components/tooltip";
 import { AnchoredToastProvider, ToastProvider } from "@beetime/ui/components/toast";
 
 import { NotFound } from "@/components/errors/not-found";
-import { auth, type Session, type User } from "@/lib/auth";
+import { auth, type Organization, type Session, type User } from "@/lib/auth";
 
 type RouterContext = {
   queryClient: QueryClient;
   session: Session | null;
   user: User | null;
+  organization: Organization | null;
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({

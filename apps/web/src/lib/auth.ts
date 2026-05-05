@@ -48,7 +48,7 @@ export const auth = createAuthClient({
 
 export type Session = (typeof auth.$Infer.Session)["session"];
 export type User = (typeof auth.$Infer.Session)["user"];
-
+export type Organization = typeof auth.$Infer.Organization;
 export type OrgDateFormat = typeof auth.$Infer.Organization.dateFormat;
 export type OrgTimeFormat = typeof auth.$Infer.Organization.timeFormat;
 export type OrgIntervalFormat = typeof auth.$Infer.Organization.intervalFormat;

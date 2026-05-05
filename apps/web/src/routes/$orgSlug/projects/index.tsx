@@ -1,11 +1,18 @@
-import { RiAddLine, RiArchiveLine, RiCheckboxBlankCircleLine, RiSearchLine } from "@remixicon/react";
+import {
+  RiAddLine,
+  RiArchiveLine,
+  RiCheckboxBlankCircleLine,
+  RiGlobalLine,
+  RiLock2Line,
+  RiSearchLine,
+} from "@remixicon/react";
 import { useDebouncedCallback } from "@tanstack/react-pacer/debouncer";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
-import { ClientQuerySchema, type Client } from "@beetime/schema";
+import { ProjectQuerySchema, type Project } from "@beetime/schema";
 import { Button } from "@beetime/ui/components/button";
 import {
   DropdownMenu,
@@ -24,28 +31,30 @@ import { DataTable } from "@/components/ui/data-table";
 import { AppBody } from "@/components/layouts/app-body";
 import { AppContent } from "@/components/layouts/app-content";
 import { AppHeader } from "@/components/layouts/app-header";
-import { CreateClientDialog } from "@/components/clients/create-client-dialog";
-import { ActionsClient } from "@/components/clients/actions-client";
-import { clientQueries } from "@/queries/client";
+import { CreateProjectDialog } from "@/components/projects/create-project-dialog";
+import { ActionsProject } from "@/components/projects/actions-project";
+import { MembersProject } from "@/components/projects/members-project";
+import { projectQueries } from "@/queries/project";
 import { toTitleCase } from "@/utils/string";
 
-export const Route = createFileRoute("/$orgId/clients/")({
+export const Route = createFileRoute("/$orgSlug/projects/")({
   head: () => ({
-    meta: [{ title: "Clients — Bee Time" }],
+    meta: [{ title: "Projects — Bee Time" }],
   }),
-  validateSearch: ClientQuerySchema,
+  validateSearch: ProjectQuerySchema,
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { orgId } = Route.useParams();
+  const { organization } = Route.useRouteContext();
+  const { orgSlug } = Route.useParams();
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
 
   const [searchText, setSearchText] = useState(search.search ?? "");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const { data: clients, isLoading: loadingClients } = useQuery(clientQueries.list(orgId, search));
+  const { data: projects, isLoading: loadingProjects } = useQuery(projectQueries.list(organization.id, search));
 
   const debouncedSetSearch = useDebouncedCallback(
     (_search: string) => {
@@ -65,49 +74,73 @@ function RouteComponent() {
     pageSize: search.pageSize,
   };
 
-  const columns = useMemo<Array<ColumnDef<Client>>>(
+  const columns = useMemo<Array<ColumnDef<Project>>>(
     () => [
       {
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => {
-          const client = row.original;
+          const project = row.original;
           return (
-            <div className="flex items-center gap-2">
-              <span className="truncate font-medium">{client.name}</span>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/$orgSlug/projects/$projectId"
+                  params={{ orgSlug, projectId: project.id }}
+                  className="truncate font-medium hover:underline"
+                >
+                  {project.name}
+                </Link>
 
-              {client.archivedAt ? (
                 <Tooltip>
-                  <TooltipTrigger render={<RiArchiveLine className="size-4 text-muted-foreground" />} />
-                  <TooltipContent>Archived</TooltipContent>
+                  <TooltipTrigger
+                    render={
+                      project.privacy === "public" ? (
+                        <RiGlobalLine className="size-4 text-muted-foreground" />
+                      ) : (
+                        <RiLock2Line className="size-4 text-muted-foreground" />
+                      )
+                    }
+                  />
+                  <TooltipContent>{toTitleCase(project.privacy)}</TooltipContent>
                 </Tooltip>
-              ) : null}
 
-              <Can orgId={client.organizationId} permissions={{ client: ["update"] }}>
-                <ActionsClient client={client} />
-              </Can>
+                {project.archivedAt ? (
+                  <Tooltip>
+                    <TooltipTrigger render={<RiArchiveLine className="size-4 text-muted-foreground" />} />
+                    <TooltipContent>Archived</TooltipContent>
+                  </Tooltip>
+                ) : null}
+
+                <Can orgId={project.organizationId} permissions={{ project: ["update"] }}>
+                  <ActionsProject project={project} />
+                </Can>
+              </div>
             </div>
           );
         },
       },
       {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => row.original.email ?? <span className="text-muted-foreground">—</span>,
-      },
-      {
-        accessorKey: "phone",
-        header: "Phone",
-        cell: ({ row }) => row.original.phone ?? <span className="text-muted-foreground">—</span>,
+        accessorKey: "members",
+        header: "Members",
+        meta: {
+          header: () => ({
+            className: "text-right",
+          }),
+          cell: () => ({
+            className: "text-right",
+          }),
+        },
+        cell: ({ row }) => <MembersProject project={row.original} />,
       },
     ],
-    [],
+    [orgSlug],
   );
 
   const table = useReactTable({
     columns,
-    data: clients?.data ?? [],
-    pageCount: clients?.meta?.pageCount ?? 0,
+    data: projects?.data ?? [],
+    pageCount: projects?.meta?.pageCount ?? 0,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     state: {
@@ -133,11 +166,11 @@ function RouteComponent() {
 
   return (
     <AppContent>
-      <AppHeader breadcrumbs={[{ title: "Clients", to: "/$orgId/clients", params: { orgId } }]}>
-        <Can orgId={orgId} permissions={{ client: ["create"] }}>
+      <AppHeader breadcrumbs={[{ title: "Projects", to: "/$orgSlug/projects", params: { orgSlug } }]}>
+        <Can orgId={organization.id} permissions={{ project: ["create"] }}>
           <Button className="ml-auto" size="sm" onClick={() => setCreateDialogOpen(true)}>
             <RiAddLine data-icon="inline-start" />
-            Create Client
+            Create Project
           </Button>
         </Can>
       </AppHeader>
@@ -185,15 +218,15 @@ function RouteComponent() {
 
         <DataTable
           table={table}
-          loading={loadingClients}
+          loading={loadingProjects}
           row={() => ({
             className: "group/table-row",
           })}
         />
       </AppBody>
 
-      <Can orgId={orgId} permissions={{ client: ["create"] }}>
-        <CreateClientDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} orgId={orgId} />
+      <Can orgId={organization.id} permissions={{ project: ["create"] }}>
+        <CreateProjectDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} orgId={organization.id} />
       </Can>
     </AppContent>
   );

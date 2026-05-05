@@ -20,15 +20,15 @@ import { Route as OrganizationInvitationsRouteImport } from "./routes/organizati
 import { Route as LoginRouteImport } from "./routes/login";
 import { Route as ForgotPasswordRouteImport } from "./routes/forgot-password";
 import { Route as CreateOrganizationRouteImport } from "./routes/create-organization";
-import { Route as OrgIdRouteRouteImport } from "./routes/$orgId/route";
+import { Route as OrgSlugRouteRouteImport } from "./routes/$orgSlug/route";
 import { Route as IndexRouteImport } from "./routes/index";
-import { Route as OrgIdIndexRouteImport } from "./routes/$orgId/index";
-import { Route as OrgIdTimesheetIndexRouteImport } from "./routes/$orgId/timesheet/index";
-import { Route as OrgIdSettingsIndexRouteImport } from "./routes/$orgId/settings/index";
-import { Route as OrgIdProjectsIndexRouteImport } from "./routes/$orgId/projects/index";
-import { Route as OrgIdMembersIndexRouteImport } from "./routes/$orgId/members/index";
-import { Route as OrgIdClientsIndexRouteImport } from "./routes/$orgId/clients/index";
-import { Route as OrgIdProjectsProjectIdIndexRouteImport } from "./routes/$orgId/projects/$projectId/index";
+import { Route as OrgSlugIndexRouteImport } from "./routes/$orgSlug/index";
+import { Route as OrgSlugTimesheetIndexRouteImport } from "./routes/$orgSlug/timesheet/index";
+import { Route as OrgSlugSettingsIndexRouteImport } from "./routes/$orgSlug/settings/index";
+import { Route as OrgSlugProjectsIndexRouteImport } from "./routes/$orgSlug/projects/index";
+import { Route as OrgSlugMembersIndexRouteImport } from "./routes/$orgSlug/members/index";
+import { Route as OrgSlugClientsIndexRouteImport } from "./routes/$orgSlug/clients/index";
+import { Route as OrgSlugProjectsProjectIdIndexRouteImport } from "./routes/$orgSlug/projects/$projectId/index";
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: "/verify-email",
@@ -65,9 +65,9 @@ const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
   path: "/create-organization",
   getParentRoute: () => rootRouteImport,
 } as any);
-const OrgIdRouteRoute = OrgIdRouteRouteImport.update({
-  id: "/$orgId",
-  path: "/$orgId",
+const OrgSlugRouteRoute = OrgSlugRouteRouteImport.update({
+  id: "/$orgSlug",
+  path: "/$orgSlug",
   getParentRoute: () => rootRouteImport,
 } as any);
 const IndexRoute = IndexRouteImport.update({
@@ -75,46 +75,46 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any);
-const OrgIdIndexRoute = OrgIdIndexRouteImport.update({
+const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
   id: "/",
   path: "/",
-  getParentRoute: () => OrgIdRouteRoute,
+  getParentRoute: () => OrgSlugRouteRoute,
 } as any);
-const OrgIdTimesheetIndexRoute = OrgIdTimesheetIndexRouteImport.update({
+const OrgSlugTimesheetIndexRoute = OrgSlugTimesheetIndexRouteImport.update({
   id: "/timesheet/",
   path: "/timesheet/",
-  getParentRoute: () => OrgIdRouteRoute,
+  getParentRoute: () => OrgSlugRouteRoute,
 } as any);
-const OrgIdSettingsIndexRoute = OrgIdSettingsIndexRouteImport.update({
+const OrgSlugSettingsIndexRoute = OrgSlugSettingsIndexRouteImport.update({
   id: "/settings/",
   path: "/settings/",
-  getParentRoute: () => OrgIdRouteRoute,
+  getParentRoute: () => OrgSlugRouteRoute,
 } as any);
-const OrgIdProjectsIndexRoute = OrgIdProjectsIndexRouteImport.update({
+const OrgSlugProjectsIndexRoute = OrgSlugProjectsIndexRouteImport.update({
   id: "/projects/",
   path: "/projects/",
-  getParentRoute: () => OrgIdRouteRoute,
+  getParentRoute: () => OrgSlugRouteRoute,
 } as any);
-const OrgIdMembersIndexRoute = OrgIdMembersIndexRouteImport.update({
+const OrgSlugMembersIndexRoute = OrgSlugMembersIndexRouteImport.update({
   id: "/members/",
   path: "/members/",
-  getParentRoute: () => OrgIdRouteRoute,
+  getParentRoute: () => OrgSlugRouteRoute,
 } as any);
-const OrgIdClientsIndexRoute = OrgIdClientsIndexRouteImport.update({
+const OrgSlugClientsIndexRoute = OrgSlugClientsIndexRouteImport.update({
   id: "/clients/",
   path: "/clients/",
-  getParentRoute: () => OrgIdRouteRoute,
+  getParentRoute: () => OrgSlugRouteRoute,
 } as any);
-const OrgIdProjectsProjectIdIndexRoute =
-  OrgIdProjectsProjectIdIndexRouteImport.update({
+const OrgSlugProjectsProjectIdIndexRoute =
+  OrgSlugProjectsProjectIdIndexRouteImport.update({
     id: "/projects/$projectId/",
     path: "/projects/$projectId/",
-    getParentRoute: () => OrgIdRouteRoute,
+    getParentRoute: () => OrgSlugRouteRoute,
   } as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
-  "/$orgId": typeof OrgIdRouteRouteWithChildren;
+  "/$orgSlug": typeof OrgSlugRouteRouteWithChildren;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -122,13 +122,13 @@ export interface FileRoutesByFullPath {
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
-  "/$orgId/": typeof OrgIdIndexRoute;
-  "/$orgId/clients/": typeof OrgIdClientsIndexRoute;
-  "/$orgId/members/": typeof OrgIdMembersIndexRoute;
-  "/$orgId/projects/": typeof OrgIdProjectsIndexRoute;
-  "/$orgId/settings/": typeof OrgIdSettingsIndexRoute;
-  "/$orgId/timesheet/": typeof OrgIdTimesheetIndexRoute;
-  "/$orgId/projects/$projectId/": typeof OrgIdProjectsProjectIdIndexRoute;
+  "/$orgSlug/": typeof OrgSlugIndexRoute;
+  "/$orgSlug/clients/": typeof OrgSlugClientsIndexRoute;
+  "/$orgSlug/members/": typeof OrgSlugMembersIndexRoute;
+  "/$orgSlug/projects/": typeof OrgSlugProjectsIndexRoute;
+  "/$orgSlug/settings/": typeof OrgSlugSettingsIndexRoute;
+  "/$orgSlug/timesheet/": typeof OrgSlugTimesheetIndexRoute;
+  "/$orgSlug/projects/$projectId/": typeof OrgSlugProjectsProjectIdIndexRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
@@ -139,18 +139,18 @@ export interface FileRoutesByTo {
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
-  "/$orgId": typeof OrgIdIndexRoute;
-  "/$orgId/clients": typeof OrgIdClientsIndexRoute;
-  "/$orgId/members": typeof OrgIdMembersIndexRoute;
-  "/$orgId/projects": typeof OrgIdProjectsIndexRoute;
-  "/$orgId/settings": typeof OrgIdSettingsIndexRoute;
-  "/$orgId/timesheet": typeof OrgIdTimesheetIndexRoute;
-  "/$orgId/projects/$projectId": typeof OrgIdProjectsProjectIdIndexRoute;
+  "/$orgSlug": typeof OrgSlugIndexRoute;
+  "/$orgSlug/clients": typeof OrgSlugClientsIndexRoute;
+  "/$orgSlug/members": typeof OrgSlugMembersIndexRoute;
+  "/$orgSlug/projects": typeof OrgSlugProjectsIndexRoute;
+  "/$orgSlug/settings": typeof OrgSlugSettingsIndexRoute;
+  "/$orgSlug/timesheet": typeof OrgSlugTimesheetIndexRoute;
+  "/$orgSlug/projects/$projectId": typeof OrgSlugProjectsProjectIdIndexRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
-  "/$orgId": typeof OrgIdRouteRouteWithChildren;
+  "/$orgSlug": typeof OrgSlugRouteRouteWithChildren;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -158,19 +158,19 @@ export interface FileRoutesById {
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
-  "/$orgId/": typeof OrgIdIndexRoute;
-  "/$orgId/clients/": typeof OrgIdClientsIndexRoute;
-  "/$orgId/members/": typeof OrgIdMembersIndexRoute;
-  "/$orgId/projects/": typeof OrgIdProjectsIndexRoute;
-  "/$orgId/settings/": typeof OrgIdSettingsIndexRoute;
-  "/$orgId/timesheet/": typeof OrgIdTimesheetIndexRoute;
-  "/$orgId/projects/$projectId/": typeof OrgIdProjectsProjectIdIndexRoute;
+  "/$orgSlug/": typeof OrgSlugIndexRoute;
+  "/$orgSlug/clients/": typeof OrgSlugClientsIndexRoute;
+  "/$orgSlug/members/": typeof OrgSlugMembersIndexRoute;
+  "/$orgSlug/projects/": typeof OrgSlugProjectsIndexRoute;
+  "/$orgSlug/settings/": typeof OrgSlugSettingsIndexRoute;
+  "/$orgSlug/timesheet/": typeof OrgSlugTimesheetIndexRoute;
+  "/$orgSlug/projects/$projectId/": typeof OrgSlugProjectsProjectIdIndexRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | "/"
-    | "/$orgId"
+    | "/$orgSlug"
     | "/create-organization"
     | "/forgot-password"
     | "/login"
@@ -178,13 +178,13 @@ export interface FileRouteTypes {
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
-    | "/$orgId/"
-    | "/$orgId/clients/"
-    | "/$orgId/members/"
-    | "/$orgId/projects/"
-    | "/$orgId/settings/"
-    | "/$orgId/timesheet/"
-    | "/$orgId/projects/$projectId/";
+    | "/$orgSlug/"
+    | "/$orgSlug/clients/"
+    | "/$orgSlug/members/"
+    | "/$orgSlug/projects/"
+    | "/$orgSlug/settings/"
+    | "/$orgSlug/timesheet/"
+    | "/$orgSlug/projects/$projectId/";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
@@ -195,17 +195,17 @@ export interface FileRouteTypes {
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
-    | "/$orgId"
-    | "/$orgId/clients"
-    | "/$orgId/members"
-    | "/$orgId/projects"
-    | "/$orgId/settings"
-    | "/$orgId/timesheet"
-    | "/$orgId/projects/$projectId";
+    | "/$orgSlug"
+    | "/$orgSlug/clients"
+    | "/$orgSlug/members"
+    | "/$orgSlug/projects"
+    | "/$orgSlug/settings"
+    | "/$orgSlug/timesheet"
+    | "/$orgSlug/projects/$projectId";
   id:
     | "__root__"
     | "/"
-    | "/$orgId"
+    | "/$orgSlug"
     | "/create-organization"
     | "/forgot-password"
     | "/login"
@@ -213,18 +213,18 @@ export interface FileRouteTypes {
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
-    | "/$orgId/"
-    | "/$orgId/clients/"
-    | "/$orgId/members/"
-    | "/$orgId/projects/"
-    | "/$orgId/settings/"
-    | "/$orgId/timesheet/"
-    | "/$orgId/projects/$projectId/";
+    | "/$orgSlug/"
+    | "/$orgSlug/clients/"
+    | "/$orgSlug/members/"
+    | "/$orgSlug/projects/"
+    | "/$orgSlug/settings/"
+    | "/$orgSlug/timesheet/"
+    | "/$orgSlug/projects/$projectId/";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  OrgIdRouteRoute: typeof OrgIdRouteRouteWithChildren;
+  OrgSlugRouteRoute: typeof OrgSlugRouteRouteWithChildren;
   CreateOrganizationRoute: typeof CreateOrganizationRoute;
   ForgotPasswordRoute: typeof ForgotPasswordRoute;
   LoginRoute: typeof LoginRoute;
@@ -285,11 +285,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof CreateOrganizationRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/$orgId": {
-      id: "/$orgId";
-      path: "/$orgId";
-      fullPath: "/$orgId";
-      preLoaderRoute: typeof OrgIdRouteRouteImport;
+    "/$orgSlug": {
+      id: "/$orgSlug";
+      path: "/$orgSlug";
+      fullPath: "/$orgSlug";
+      preLoaderRoute: typeof OrgSlugRouteRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/": {
@@ -299,85 +299,85 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/$orgId/": {
-      id: "/$orgId/";
+    "/$orgSlug/": {
+      id: "/$orgSlug/";
       path: "/";
-      fullPath: "/$orgId/";
-      preLoaderRoute: typeof OrgIdIndexRouteImport;
-      parentRoute: typeof OrgIdRouteRoute;
+      fullPath: "/$orgSlug/";
+      preLoaderRoute: typeof OrgSlugIndexRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
     };
-    "/$orgId/timesheet/": {
-      id: "/$orgId/timesheet/";
+    "/$orgSlug/timesheet/": {
+      id: "/$orgSlug/timesheet/";
       path: "/timesheet";
-      fullPath: "/$orgId/timesheet/";
-      preLoaderRoute: typeof OrgIdTimesheetIndexRouteImport;
-      parentRoute: typeof OrgIdRouteRoute;
+      fullPath: "/$orgSlug/timesheet/";
+      preLoaderRoute: typeof OrgSlugTimesheetIndexRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
     };
-    "/$orgId/settings/": {
-      id: "/$orgId/settings/";
+    "/$orgSlug/settings/": {
+      id: "/$orgSlug/settings/";
       path: "/settings";
-      fullPath: "/$orgId/settings/";
-      preLoaderRoute: typeof OrgIdSettingsIndexRouteImport;
-      parentRoute: typeof OrgIdRouteRoute;
+      fullPath: "/$orgSlug/settings/";
+      preLoaderRoute: typeof OrgSlugSettingsIndexRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
     };
-    "/$orgId/projects/": {
-      id: "/$orgId/projects/";
+    "/$orgSlug/projects/": {
+      id: "/$orgSlug/projects/";
       path: "/projects";
-      fullPath: "/$orgId/projects/";
-      preLoaderRoute: typeof OrgIdProjectsIndexRouteImport;
-      parentRoute: typeof OrgIdRouteRoute;
+      fullPath: "/$orgSlug/projects/";
+      preLoaderRoute: typeof OrgSlugProjectsIndexRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
     };
-    "/$orgId/members/": {
-      id: "/$orgId/members/";
+    "/$orgSlug/members/": {
+      id: "/$orgSlug/members/";
       path: "/members";
-      fullPath: "/$orgId/members/";
-      preLoaderRoute: typeof OrgIdMembersIndexRouteImport;
-      parentRoute: typeof OrgIdRouteRoute;
+      fullPath: "/$orgSlug/members/";
+      preLoaderRoute: typeof OrgSlugMembersIndexRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
     };
-    "/$orgId/clients/": {
-      id: "/$orgId/clients/";
+    "/$orgSlug/clients/": {
+      id: "/$orgSlug/clients/";
       path: "/clients";
-      fullPath: "/$orgId/clients/";
-      preLoaderRoute: typeof OrgIdClientsIndexRouteImport;
-      parentRoute: typeof OrgIdRouteRoute;
+      fullPath: "/$orgSlug/clients/";
+      preLoaderRoute: typeof OrgSlugClientsIndexRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
     };
-    "/$orgId/projects/$projectId/": {
-      id: "/$orgId/projects/$projectId/";
+    "/$orgSlug/projects/$projectId/": {
+      id: "/$orgSlug/projects/$projectId/";
       path: "/projects/$projectId";
-      fullPath: "/$orgId/projects/$projectId/";
-      preLoaderRoute: typeof OrgIdProjectsProjectIdIndexRouteImport;
-      parentRoute: typeof OrgIdRouteRoute;
+      fullPath: "/$orgSlug/projects/$projectId/";
+      preLoaderRoute: typeof OrgSlugProjectsProjectIdIndexRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
     };
   }
 }
 
-interface OrgIdRouteRouteChildren {
-  OrgIdIndexRoute: typeof OrgIdIndexRoute;
-  OrgIdClientsIndexRoute: typeof OrgIdClientsIndexRoute;
-  OrgIdMembersIndexRoute: typeof OrgIdMembersIndexRoute;
-  OrgIdProjectsIndexRoute: typeof OrgIdProjectsIndexRoute;
-  OrgIdSettingsIndexRoute: typeof OrgIdSettingsIndexRoute;
-  OrgIdTimesheetIndexRoute: typeof OrgIdTimesheetIndexRoute;
-  OrgIdProjectsProjectIdIndexRoute: typeof OrgIdProjectsProjectIdIndexRoute;
+interface OrgSlugRouteRouteChildren {
+  OrgSlugIndexRoute: typeof OrgSlugIndexRoute;
+  OrgSlugClientsIndexRoute: typeof OrgSlugClientsIndexRoute;
+  OrgSlugMembersIndexRoute: typeof OrgSlugMembersIndexRoute;
+  OrgSlugProjectsIndexRoute: typeof OrgSlugProjectsIndexRoute;
+  OrgSlugSettingsIndexRoute: typeof OrgSlugSettingsIndexRoute;
+  OrgSlugTimesheetIndexRoute: typeof OrgSlugTimesheetIndexRoute;
+  OrgSlugProjectsProjectIdIndexRoute: typeof OrgSlugProjectsProjectIdIndexRoute;
 }
 
-const OrgIdRouteRouteChildren: OrgIdRouteRouteChildren = {
-  OrgIdIndexRoute: OrgIdIndexRoute,
-  OrgIdClientsIndexRoute: OrgIdClientsIndexRoute,
-  OrgIdMembersIndexRoute: OrgIdMembersIndexRoute,
-  OrgIdProjectsIndexRoute: OrgIdProjectsIndexRoute,
-  OrgIdSettingsIndexRoute: OrgIdSettingsIndexRoute,
-  OrgIdTimesheetIndexRoute: OrgIdTimesheetIndexRoute,
-  OrgIdProjectsProjectIdIndexRoute: OrgIdProjectsProjectIdIndexRoute,
+const OrgSlugRouteRouteChildren: OrgSlugRouteRouteChildren = {
+  OrgSlugIndexRoute: OrgSlugIndexRoute,
+  OrgSlugClientsIndexRoute: OrgSlugClientsIndexRoute,
+  OrgSlugMembersIndexRoute: OrgSlugMembersIndexRoute,
+  OrgSlugProjectsIndexRoute: OrgSlugProjectsIndexRoute,
+  OrgSlugSettingsIndexRoute: OrgSlugSettingsIndexRoute,
+  OrgSlugTimesheetIndexRoute: OrgSlugTimesheetIndexRoute,
+  OrgSlugProjectsProjectIdIndexRoute: OrgSlugProjectsProjectIdIndexRoute,
 };
 
-const OrgIdRouteRouteWithChildren = OrgIdRouteRoute._addFileChildren(
-  OrgIdRouteRouteChildren,
+const OrgSlugRouteRouteWithChildren = OrgSlugRouteRoute._addFileChildren(
+  OrgSlugRouteRouteChildren,
 );
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  OrgIdRouteRoute: OrgIdRouteRouteWithChildren,
+  OrgSlugRouteRoute: OrgSlugRouteRouteWithChildren,
   CreateOrganizationRoute: CreateOrganizationRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
