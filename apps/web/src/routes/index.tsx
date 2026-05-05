@@ -2,18 +2,16 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { auth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: async () => {
-    const session = await auth.getSession();
-
-    if (!session.data) {
+  beforeLoad: async ({ context }) => {
+    if (!context.session) {
       throw redirect({ to: "/login" });
     }
 
-    if (session.data.session.activeOrganizationId) {
+    if (context.session.activeOrganizationId) {
       throw redirect({
         to: "/$orgId",
         params: {
-          orgId: session.data.session.activeOrganizationId,
+          orgId: context.session.activeOrganizationId,
         },
       });
     } else {

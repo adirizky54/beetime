@@ -1,18 +1,22 @@
 import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import type { QueryClient } from "@tanstack/react-query";
 
 import appCss from "@beetime/ui/globals.css?url";
 import { TooltipProvider } from "@beetime/ui/components/tooltip";
 import { AnchoredToastProvider, ToastProvider } from "@beetime/ui/components/toast";
 
-import type { QueryClient } from "@tanstack/react-query";
-
 import { NotFound } from "@/components/errors/not-found";
+import { auth, type Session, type User } from "@/lib/auth";
 
-export const Route = createRootRouteWithContext<{
+type RouterContext = {
   queryClient: QueryClient;
-}>()({
+  session: Session | null;
+  user: User | null;
+};
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -24,6 +28,13 @@ export const Route = createRootRouteWithContext<{
       { rel: "icon", href: "/favicon.ico" },
     ],
   }),
+  beforeLoad: async () => {
+    const session = await auth.getSession();
+    return {
+      session: session.data?.session ?? null,
+      user: session.data?.user ?? null,
+    };
+  },
   shellComponent: RootDocument,
   notFoundComponent: NotFound,
   ssr: false,

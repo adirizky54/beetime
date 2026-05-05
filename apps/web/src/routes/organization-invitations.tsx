@@ -22,7 +22,6 @@ import { Spinner } from "@beetime/ui/components/spinner";
 import { toastManager } from "@beetime/ui/components/toast";
 
 import { MinimalLayout } from "@/components/layouts/minimal-layout";
-import { auth } from "@/lib/auth";
 import { invitationQueries } from "@/queries/invitation";
 import { toTitleCase } from "@/utils/string";
 
@@ -42,9 +41,8 @@ export const Route = createFileRoute("/organization-invitations")({
   validateSearch: v.object({
     token: v.optional(v.string()),
   }),
-  beforeLoad: async ({ location }) => {
-    const session = await auth.getSession();
-    if (!session.data) {
+  beforeLoad: async ({ context }) => {
+    if (!context.session) {
       throw redirect({
         to: "/login",
         search: { redirectTo: location.href },
