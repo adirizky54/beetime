@@ -23,8 +23,8 @@ export const user = ac.newRole({
   session: [],
 });
 
-export const admin = ac.newRole({
-  organization: ["update"],
+export const owner = ac.newRole({
+  organization: ["update", "delete"],
   member: ["create", "read", "update", "delete"],
   invitation: ["create", "cancel"],
   project: ["create", "read", "update", "delete", "archive"],
@@ -32,8 +32,8 @@ export const admin = ac.newRole({
   task: ["create", "read", "update", "delete"],
 });
 
-export const owner = ac.newRole({
-  organization: ["update", "delete"],
+export const admin = ac.newRole({
+  organization: ["update"],
   member: ["create", "read", "update", "delete"],
   invitation: ["create", "cancel"],
   project: ["create", "read", "update", "delete", "archive"],

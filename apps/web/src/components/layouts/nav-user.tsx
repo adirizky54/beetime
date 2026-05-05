@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RiAccountCircleLine, RiExpandUpDownLine, RiLogoutBoxLine } from "@remixicon/react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 
 import {
   AlertDialog,
@@ -29,7 +29,8 @@ import { auth } from "@/lib/auth";
 export function NavUser() {
   const navigate = useNavigate();
   const { isMobile } = useSidebar();
-  const { data } = auth.useSession();
+  const { user } = useRouteContext({ from: "__root__" });
+
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
 
   const signOut = () => {
@@ -49,12 +50,12 @@ export function NavUser() {
         <DropdownMenu>
           <DropdownMenuTrigger render={<SidebarMenuButton size="lg" className="select-none aria-expanded:bg-muted" />}>
             <Avatar>
-              <AvatarImage src="https://ui.shadcn.com/avatars/shadcn.jpg" alt={data?.user.name} />
+              <AvatarImage src="https://ui.shadcn.com/avatars/shadcn.jpg" alt={user?.name} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{data?.user.name}</span>
-              <span className="truncate text-xs">{data?.user.email}</span>
+              <span className="truncate font-medium">{user?.name}</span>
+              <span className="truncate text-xs">{user?.email}</span>
             </div>
             <RiExpandUpDownLine className="ml-auto size-4" />
           </DropdownMenuTrigger>
@@ -68,12 +69,12 @@ export function NavUser() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar>
-                    <AvatarImage src="https://ui.shadcn.com/avatars/shadcn.jpg" alt={data?.user.name} />
+                    <AvatarImage src="https://ui.shadcn.com/avatars/shadcn.jpg" alt={user?.name} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{data?.user.name}</span>
-                    <span className="truncate text-xs">{data?.user.email}</span>
+                    <span className="truncate font-medium">{user?.name}</span>
+                    <span className="truncate text-xs">{user?.email}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>

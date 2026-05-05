@@ -6,14 +6,12 @@ import { OrgAccessDenied } from "@/components/errors/org-access-denied";
 import { auth } from "@/lib/auth";
 
 export const Route = createFileRoute("/$orgId")({
-  beforeLoad: async ({ params }) => {
-    const session = await auth.getSession();
-
-    if (!session.data) {
+  beforeLoad: async ({ context, params }) => {
+    if (!context.session) {
       throw redirect({ to: "/login" });
     }
 
-    if (session.data.session.activeOrganizationId !== params.orgId) {
+    if (context.session.activeOrganizationId !== params.orgId) {
       const { error } = await auth.organization.setActive({ organizationId: params.orgId });
 
       if (error && error.code === "USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION") {

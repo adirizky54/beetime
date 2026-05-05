@@ -31,7 +31,7 @@ import { AppHeader } from "@/components/layouts/app-header";
 import { ActionsMember } from "@/components/members/actions-member";
 import { ActionsInvitation } from "@/components/members/actions-invitation";
 import { InviteMemberDialog } from "@/components/members/invite-member-dialog";
-import { auth, type Invitation } from "@/lib/auth";
+import type { Invitation } from "@/lib/auth";
 import { memberQueries } from "@/queries/member";
 import { invitationQueries } from "@/queries/invitation";
 import { useFormatDate } from "@/hooks/use-format-date";
@@ -61,11 +61,10 @@ export const Route = createFileRoute("/$orgId/members/")({
 });
 
 function RouteComponent() {
+  const { user } = Route.useRouteContext();
   const { orgId } = Route.useParams();
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
-
-  const { data: session } = auth.useSession();
 
   const [searchText, setSearchText] = useState(search.search ?? "");
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
@@ -120,7 +119,7 @@ function RouteComponent() {
                 </Tooltip>
               ) : null}
 
-              {member.userId !== session?.user.id ? <ActionsMember member={member} orgId={orgId} /> : null}
+              {member.userId !== user?.id ? <ActionsMember member={member} orgId={orgId} /> : null}
             </div>
           );
         },
@@ -141,7 +140,7 @@ function RouteComponent() {
         cell: ({ row }) => <JoinedDateCell date={row.original.createdAt} />,
       },
     ],
-    [orgId, session?.user.id],
+    [orgId, user?.id],
   );
 
   const invitationColumns = useMemo<Array<ColumnDef<Invitation>>>(
