@@ -411,3 +411,19 @@ Before committing any change, ensure:
 6. New email templates and send functions go in `packages/email`, not inline in `apps/api`
 7. New reusable UI components go in `packages/ui/src/components/`, not in `apps/web/src/components/ui/`
 8. `import type` is used for type-only imports in all files (required by `verbatimModuleSyntax`)
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues (`adirizky54/beetime`). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default label vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
