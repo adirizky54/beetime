@@ -19,14 +19,14 @@ export function OrgSwitcher() {
   const { data: organizations } = auth.useListOrganizations();
   const { data: activeOrganization } = auth.useActiveOrganization();
 
-  const setActiveOrganization = async (orgId: string) => {
+  const setActiveOrganization = async (orgSlug: string) => {
     navigate({
-      to: "/$orgId",
-      params: { orgId },
+      to: "/$orgSlug",
+      params: { orgSlug },
     });
 
     await auth.organization.setActive({
-      organizationId: orgId,
+      organizationSlug: orgSlug,
     });
   };
 
@@ -48,7 +48,7 @@ export function OrgSwitcher() {
             <DropdownMenuGroup>
               <DropdownMenuLabel className="text-xs text-muted-foreground">Switch Organizations</DropdownMenuLabel>
               {organizations?.map((org) => (
-                <DropdownMenuItem key={org.id} className="gap-2 p-2" onClick={() => setActiveOrganization(org.id)}>
+                <DropdownMenuItem key={org.id} className="gap-2 p-2" onClick={() => setActiveOrganization(org.slug)}>
                   <div className="flex size-6 items-center justify-center rounded-xs border">
                     <RiClockwise2Line className="size-4 shrink-0" />
                   </div>

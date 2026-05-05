@@ -8,20 +8,28 @@ export const Route = createFileRoute("/")({
     }
 
     if (context.session.activeOrganizationId) {
-      throw redirect({
-        to: "/$orgId",
-        params: {
-          orgId: context.session.activeOrganizationId,
+      const org = await auth.organization.getFullOrganization({
+        query: {
+          organizationId: context.session.activeOrganizationId,
         },
       });
+
+      if (org.data) {
+        throw redirect({
+          to: "/$orgSlug",
+          params: {
+            orgSlug: org.data.slug,
+          },
+        });
+      }
     } else {
       const { data: organizations } = await auth.organization.list();
 
       if (Array.isArray(organizations) && organizations.length > 0) {
         throw redirect({
-          to: "/$orgId",
+          to: "/$orgSlug",
           params: {
-            orgId: organizations[0].id,
+            orgSlug: organizations[0].slug,
           },
         });
       } else {

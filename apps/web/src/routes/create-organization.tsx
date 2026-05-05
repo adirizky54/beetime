@@ -45,7 +45,7 @@ function RouteComponent() {
   const mutation = useMutation({
     ...organizationQueries.create(),
     onSuccess: (data) => {
-      void navigate({ to: "/$orgId", params: { orgId: data.id } });
+      void navigate({ to: "/$orgSlug", params: { orgSlug: data.slug } });
     },
   });
 

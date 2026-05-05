@@ -1,13 +1,14 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import type { Session, User } from "./lib/auth";
+import type { Organization, Session, User } from "./lib/auth";
 import { routeTree } from "./routeTree.gen";
 
 type RouterContext = {
   queryClient: QueryClient;
   session: Session | null;
   user: User | null;
+  organization: Organization | null;
 };
 
 export function getRouter() {
@@ -29,6 +30,7 @@ export function getRouter() {
       queryClient,
       session: null,
       user: null,
+      organization: null,
     } satisfies RouterContext,
     scrollRestoration: true,
     defaultPreload: "intent",

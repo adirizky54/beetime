@@ -258,7 +258,7 @@ Cards are used sparingly, not as the default content wrapper. The Frame componen
 
 ### Navigation
 
-The app shell uses a collapsible inset sidebar (16rem expanded, 3rem icon-only collapsed), persistent across all `/$orgId/*` routes.
+The app shell uses a collapsible inset sidebar (16rem expanded, 3rem icon-only collapsed), persistent across all `/$orgSlug/*` routes.
 
 - **Sidebar background:** Warm Parchment (`oklch(0.988 0.003 106.5)`), one step warmer than the content background.
 - **Nav items:** 2rem height, px-2.5, rounded-md. Default state: Warm Ash text, no background. Hover: Warm Stone background, darker foreground. Active: Warm Stone background, Warm Ink foreground, font-weight 500. No amber fill on active items (the sidebar primary uses Harvest Amber Deep for icons only, not backgrounds).
