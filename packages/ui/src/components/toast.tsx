@@ -22,7 +22,7 @@ const TOAST_ICONS = {
 
 type SwipeDirection = "up" | "down" | "left" | "right";
 
-function getSwipeDirection(position: ToastPosition): Array<SwipeDirection> {
+function getSwipeDirection(position: ToastPosition): SwipeDirection[] {
   const verticalDirection: SwipeDirection = position.startsWith("top") ? "up" : "down";
 
   if (position.includes("center")) {
@@ -46,12 +46,18 @@ function upsertReplayClassName(toast: { type?: string; updateKey?: number }): st
   return isEven ? "animate-toast-success-even" : "animate-toast-success-odd";
 }
 
-function Toasts({ position }: { position: ToastPosition }): React.ReactElement {
+function Toasts({
+  position,
+  portalProps,
+}: {
+  position: ToastPosition;
+  portalProps?: React.ComponentProps<typeof Toast.Portal>;
+}): React.ReactElement {
   const { toasts } = Toast.useToastManager();
   const swipeDirection = getSwipeDirection(position);
 
   return (
-    <Toast.Portal data-slot="toast-portal">
+    <Toast.Portal data-slot="toast-portal" {...portalProps}>
       <Toast.Viewport
         className={cn(
           "fixed z-60 mx-auto flex w-[calc(100%-var(--toast-inset)*2)] max-w-90 [--toast-inset:--spacing(4)] sm:[--toast-inset:--spacing(8)]",
@@ -148,15 +154,19 @@ function Toasts({ position }: { position: ToastPosition }): React.ReactElement {
   );
 }
 
-function AnchoredToasts(): React.ReactElement {
+function AnchoredToasts({
+  portalProps,
+}: {
+  portalProps?: React.ComponentProps<typeof Toast.Portal>;
+}): React.ReactElement {
   const { toasts } = Toast.useToastManager();
 
   return (
-    <Toast.Portal data-slot="toast-portal-anchored">
+    <Toast.Portal data-slot="toast-portal-anchored" {...portalProps}>
       <Toast.Viewport className="outline-none" data-slot="toast-viewport-anchored">
         {toasts.map((toast) => {
           const Icon = toast.type ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS] : null;
-          const tooltipStyle = (toast.data as { tooltipStyle?: boolean }).tooltipStyle ?? false;
+          const tooltipStyle = (toast.data as { tooltipStyle?: boolean })?.tooltipStyle ?? false;
           const positionerProps = toast.positionerProps;
 
           if (!positionerProps?.anchor) {
@@ -227,26 +237,36 @@ export type ToastPosition = "top-left" | "top-center" | "top-right" | "bottom-le
 
 export interface ToastProviderProps extends Toast.Provider.Props {
   position?: ToastPosition;
+  portalProps?: React.ComponentProps<typeof Toast.Portal>;
 }
 
 export function ToastProvider({
   children,
   position = "bottom-right",
+  portalProps,
   ...props
 }: ToastProviderProps): React.ReactElement {
   return (
     <Toast.Provider toastManager={toastManager} {...props}>
       {children}
-      <Toasts position={position} />
+      <Toasts portalProps={portalProps} position={position} />
     </Toast.Provider>
   );
 }
 
-export function AnchoredToastProvider({ children, ...props }: Toast.Provider.Props): React.ReactElement {
+export interface AnchoredToastProviderProps extends Toast.Provider.Props {
+  portalProps?: React.ComponentProps<typeof Toast.Portal>;
+}
+
+export function AnchoredToastProvider({
+  children,
+  portalProps,
+  ...props
+}: AnchoredToastProviderProps): React.ReactElement {
   return (
     <Toast.Provider toastManager={anchoredToastManager} {...props}>
       {children}
-      <AnchoredToasts />
+      <AnchoredToasts portalProps={portalProps} />
     </Toast.Provider>
   );
 }

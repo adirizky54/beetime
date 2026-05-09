@@ -32,7 +32,7 @@
     "better-auth": "^1.6.9",
     "date-fns": "^4.1.0",
     "ky": "^2.0.2",
-    "nitro": "^3.0.260415-beta",
+    "nitro": "latest",
     "react": "catalog:ui",
     "react-dom": "catalog:ui",
     "react-hook-form": "^7.74.0",

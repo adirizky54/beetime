@@ -4,8 +4,8 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 
 import appCss from "@beetime/ui/globals.css?url";
+import { ToastProvider } from "@beetime/ui/components/toast";
 import { TooltipProvider } from "@beetime/ui/components/tooltip";
-import { AnchoredToastProvider, ToastProvider } from "@beetime/ui/components/toast";
 
 import { NotFound } from "@/components/errors/not-found";
 import { auth, type Organization, type Session, type User } from "@/lib/auth";
@@ -38,7 +38,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   },
   shellComponent: RootDocument,
   notFoundComponent: NotFound,
-  ssr: false,
+  // ssr: false,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -49,9 +49,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ToastProvider>
-          <AnchoredToastProvider>
-            <TooltipProvider>{children}</TooltipProvider>
-          </AnchoredToastProvider>
+          <TooltipProvider>{children}</TooltipProvider>
         </ToastProvider>
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />
