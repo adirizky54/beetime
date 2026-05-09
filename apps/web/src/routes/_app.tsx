@@ -1,8 +1,12 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+
+import { AnchoredToastProvider, ToastProvider } from "@beetime/ui/components/toast";
+import { TooltipProvider } from "@beetime/ui/components/tooltip";
+
 import { auth } from "@/lib/auth";
 import { useMount } from "@/hooks/use-mount";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_app")({
   beforeLoad: async ({ context }) => {
     if (!context.session) {
       throw redirect({ to: "/login" });
@@ -24,7 +28,7 @@ function RouteComponent() {
       });
 
       if (!org.error) {
-        void navigate({
+        navigate({
           to: "/$orgSlug",
           params: {
             orgSlug: org.data.slug,
@@ -47,5 +51,13 @@ function RouteComponent() {
     }
   });
 
-  return null;
+  return (
+    <ToastProvider>
+      <AnchoredToastProvider>
+        <TooltipProvider>
+          <Outlet />
+        </TooltipProvider>
+      </AnchoredToastProvider>
+    </ToastProvider>
+  );
 }
