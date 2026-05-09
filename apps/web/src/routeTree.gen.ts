@@ -20,8 +20,8 @@ import { Route as OrganizationInvitationsRouteImport } from "./routes/organizati
 import { Route as LoginRouteImport } from "./routes/login";
 import { Route as ForgotPasswordRouteImport } from "./routes/forgot-password";
 import { Route as CreateOrganizationRouteImport } from "./routes/create-organization";
+import { Route as AppRouteImport } from "./routes/_app";
 import { Route as OrgSlugRouteRouteImport } from "./routes/$orgSlug/route";
-import { Route as IndexRouteImport } from "./routes/index";
 import { Route as OrgSlugIndexRouteImport } from "./routes/$orgSlug/index";
 import { Route as OrgSlugTimesheetIndexRouteImport } from "./routes/$orgSlug/timesheet/index";
 import { Route as OrgSlugSettingsIndexRouteImport } from "./routes/$orgSlug/settings/index";
@@ -65,14 +65,13 @@ const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
   path: "/create-organization",
   getParentRoute: () => rootRouteImport,
 } as any);
+const AppRoute = AppRouteImport.update({
+  id: "/_app",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const OrgSlugRouteRoute = OrgSlugRouteRouteImport.update({
   id: "/$orgSlug",
   path: "/$orgSlug",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any);
 const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
@@ -113,8 +112,8 @@ const OrgSlugProjectsProjectIdIndexRoute =
   } as any);
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
   "/$orgSlug": typeof OrgSlugRouteRouteWithChildren;
+  "/": typeof AppRoute;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -131,7 +130,7 @@ export interface FileRoutesByFullPath {
   "/$orgSlug/projects/$projectId/": typeof OrgSlugProjectsProjectIdIndexRoute;
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
+  "/": typeof AppRoute;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -149,8 +148,8 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
   "/$orgSlug": typeof OrgSlugRouteRouteWithChildren;
+  "/_app": typeof AppRoute;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -169,8 +168,8 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | "/"
     | "/$orgSlug"
+    | "/"
     | "/create-organization"
     | "/forgot-password"
     | "/login"
@@ -204,8 +203,8 @@ export interface FileRouteTypes {
     | "/$orgSlug/projects/$projectId";
   id:
     | "__root__"
-    | "/"
     | "/$orgSlug"
+    | "/_app"
     | "/create-organization"
     | "/forgot-password"
     | "/login"
@@ -223,8 +222,8 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
   OrgSlugRouteRoute: typeof OrgSlugRouteRouteWithChildren;
+  AppRoute: typeof AppRoute;
   CreateOrganizationRoute: typeof CreateOrganizationRoute;
   ForgotPasswordRoute: typeof ForgotPasswordRoute;
   LoginRoute: typeof LoginRoute;
@@ -285,18 +284,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof CreateOrganizationRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/_app": {
+      id: "/_app";
+      path: "";
+      fullPath: "/";
+      preLoaderRoute: typeof AppRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/$orgSlug": {
       id: "/$orgSlug";
       path: "/$orgSlug";
       fullPath: "/$orgSlug";
       preLoaderRoute: typeof OrgSlugRouteRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/$orgSlug/": {
@@ -376,8 +375,8 @@ const OrgSlugRouteRouteWithChildren = OrgSlugRouteRoute._addFileChildren(
 );
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   OrgSlugRouteRoute: OrgSlugRouteRouteWithChildren,
+  AppRoute: AppRoute,
   CreateOrganizationRoute: CreateOrganizationRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
