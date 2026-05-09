@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -45,13 +45,18 @@ const formSchema = v.pipe(
 );
 
 export const Route = createFileRoute("/sign-up")({
-  component: RouteComponent,
   head: () => ({
     meta: [{ title: "Sign Up — Bee Time" }],
   }),
   validateSearch: v.object({
     redirectTo: v.optional(v.string()),
   }),
+  beforeLoad: async ({ context }) => {
+    if (context.session) {
+      throw redirect({ to: "/" });
+    }
+  },
+  component: RouteComponent,
 });
 
 function RouteComponent() {

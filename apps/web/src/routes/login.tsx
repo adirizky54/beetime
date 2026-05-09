@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -19,13 +19,18 @@ import { Spinner } from "@beetime/ui/components/spinner";
 import { auth } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
-  component: RouteComponent,
   head: () => ({
     meta: [{ title: "Login — Bee Time" }],
   }),
   validateSearch: v.object({
     redirectTo: v.optional(v.string()),
   }),
+  beforeLoad: async ({ context }) => {
+    if (context.session) {
+      throw redirect({ to: "/" });
+    }
+  },
+  component: RouteComponent,
 });
 
 const formSchema = v.object({

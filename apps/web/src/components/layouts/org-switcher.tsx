@@ -1,5 +1,5 @@
 import { RiAddLine, RiArrowDownSLine, RiClockwise2Line } from "@remixicon/react";
-import { useNavigate, Link } from "@tanstack/react-router";
+import { useNavigate, Link, useRouteContext } from "@tanstack/react-router";
 
 import {
   DropdownMenu,
@@ -16,8 +16,9 @@ import { auth } from "@/lib/auth";
 
 export function OrgSwitcher() {
   const navigate = useNavigate();
+  const { organization } = useRouteContext({ from: "/$orgSlug" });
+
   const { data: organizations } = auth.useListOrganizations();
-  const { data: activeOrganization } = auth.useActiveOrganization();
 
   const setActiveOrganization = async (orgSlug: string) => {
     navigate({
@@ -39,7 +40,7 @@ export function OrgSwitcher() {
               <RiClockwise2Line className="size-3" />
             </div>
             <div className="grid flex-1">
-              <span className="truncate font-medium">{activeOrganization?.name}</span>
+              <span className="truncate font-medium">{organization?.name}</span>
             </div>
             <RiArrowDownSLine className="opacity-50 group-data-popup-open/menu-button:rotate-180" />
           </DropdownMenuTrigger>

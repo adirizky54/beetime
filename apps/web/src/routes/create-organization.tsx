@@ -1,5 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -21,6 +21,11 @@ export const Route = createFileRoute("/create-organization")({
   head: () => ({
     meta: [{ title: "Create Organization — Bee Time" }],
   }),
+  beforeLoad: async ({ context }) => {
+    if (!context.session) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: RouteComponent,
 });
 
