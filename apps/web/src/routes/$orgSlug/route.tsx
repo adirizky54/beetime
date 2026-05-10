@@ -35,7 +35,7 @@ export const Route = createFileRoute("/$orgSlug")({
         name: org.data.name,
         slug: org.data.slug,
         createdAt: org.data.createdAt,
-        dateFormatted: org.data.dateFormat,
+        dateFormat: org.data.dateFormat,
         intervalFormat: org.data.intervalFormat,
         timeFormat: org.data.timeFormat,
       },

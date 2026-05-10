@@ -35,6 +35,7 @@ import { CreateProjectDialog } from "@/components/projects/create-project-dialog
 import { ActionsProject } from "@/components/projects/actions-project";
 import { MembersProject } from "@/components/projects/members-project";
 import { projectQueries } from "@/queries/project";
+import { formatDate } from "@/utils/time";
 import { toTitleCase } from "@/utils/string";
 
 export const Route = createFileRoute("/$orgSlug/projects/")({
@@ -133,8 +134,13 @@ function RouteComponent() {
         },
         cell: ({ row }) => <MembersProject project={row.original} />,
       },
+      {
+        accessorKey: "createdAt",
+        header: "Created at",
+        cell: ({ row }) => formatDate(row.original.createdAt, organization.dateFormat),
+      },
     ],
-    [orgSlug],
+    [orgSlug, organization.dateFormat],
   );
 
   const table = useReactTable({

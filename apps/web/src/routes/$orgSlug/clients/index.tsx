@@ -27,6 +27,7 @@ import { AppHeader } from "@/components/layouts/app-header";
 import { CreateClientDialog } from "@/components/clients/create-client-dialog";
 import { ActionsClient } from "@/components/clients/actions-client";
 import { clientQueries } from "@/queries/client";
+import { formatDate } from "@/utils/time";
 import { toTitleCase } from "@/utils/string";
 
 export const Route = createFileRoute("/$orgSlug/clients/")({
@@ -101,8 +102,13 @@ function RouteComponent() {
         header: "Phone",
         cell: ({ row }) => row.original.phone ?? <span className="text-muted-foreground">—</span>,
       },
+      {
+        accessorKey: "createdAt",
+        header: "Created at",
+        cell: ({ row }) => formatDate(row.original.createdAt, organization.dateFormat),
+      },
     ],
-    [],
+    [organization.dateFormat],
   );
 
   const table = useReactTable({

@@ -1,5 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useCanGoBack, useRouter } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -33,13 +33,15 @@ const formSchema = v.pick(CreateOrganizationSchema, ["name", "slug"]);
 type FormValues = v.InferInput<typeof formSchema>;
 
 function RouteComponent() {
+  const router = useRouter();
   const navigate = Route.useNavigate();
+  const canGoBack = useCanGoBack();
   const { data: organizations } = auth.useListOrganizations();
 
   const slugManuallyEdited = useRef(false);
 
   const form = useForm<FormValues>({
-    mode: "all",
+    mode: "onChange",
     resolver: valibotResolver(formSchema),
     defaultValues: {
       name: "",
@@ -64,6 +66,14 @@ function RouteComponent() {
   const onChangeSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
     slugManuallyEdited.current = true;
     form.setValue("slug", toSlug(e.target.value));
+  };
+
+  const onBack = () => {
+    if (canGoBack) {
+      router.history.back();
+    } else {
+      navigate({ to: "/" });
+    }
   };
 
   const onSubmit = form.handleSubmit((values) => {
@@ -133,12 +143,12 @@ function RouteComponent() {
 
             <Field orientation="horizontal" className="justify-end">
               {hasOrganizations && (
-                <Button variant="outline" nativeButton={false} render={<Link to="/" />}>
+                <Button type="button" variant="outline" onClick={onBack}>
                   Go Back
                 </Button>
               )}
 
-              <Button type="submit" disabled={mutation.isPending}>
+              <Button type="submit" disabled={!form.formState.isValid || mutation.isPending}>
                 {mutation.isPending && <Spinner data-icon="inline-start" />}
                 Create Organization
               </Button>
