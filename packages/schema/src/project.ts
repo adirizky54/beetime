@@ -31,7 +31,7 @@ export const CreateProjectSchema = v.pipe(
     userIds: v.array(v.string()),
   }),
   v.forward(
-    v.check((input) => input.privacy === "private" && input.userIds.length === 0, "Please select at least one member"),
+    v.check((input) => input.privacy !== "private" || input.userIds.length > 0, "Please select at least one member"),
     ["userIds"],
   ),
 );
@@ -45,10 +45,7 @@ export const UpdateProjectSchema = v.pipe(
     userIds: v.array(v.string()),
   }),
   v.forward(
-    v.check(
-      (input) => input.privacy === "private" && (input.userIds === undefined || input.userIds.length === 0),
-      "Please select at least one member",
-    ),
+    v.check((input) => input.privacy !== "private" || input.userIds.length > 0, "Please select at least one member"),
     ["userIds"],
   ),
 );
