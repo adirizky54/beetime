@@ -34,23 +34,13 @@ import { InviteMemberDialog } from "@/components/members/invite-member-dialog";
 import type { Invitation } from "@/lib/auth";
 import { memberQueries } from "@/queries/member";
 import { invitationQueries } from "@/queries/invitation";
-import { useFormatDate } from "@/hooks/use-format-date";
+import { formatDateTime } from "@/utils/time";
 import { getInitials, toTitleCase } from "@/utils/string";
 
 const MembersPageSearchSchema = v.object({
   ...MemberQuerySchema.entries,
   tab: v.optional(v.picklist(["members", "invitations"]), "members"),
 });
-
-function JoinedDateCell({ date }: { date: Date | string }) {
-  const formatted = useFormatDate(date, "datetime");
-  return <span className="text-muted-foreground">{formatted}</span>;
-}
-
-function InvitationDateCell({ date }: { date: Date | string }) {
-  const formatted = useFormatDate(date, "datetime");
-  return <span className="text-muted-foreground">{formatted}</span>;
-}
 
 export const Route = createFileRoute("/$orgSlug/members/")({
   head: () => ({
@@ -127,7 +117,6 @@ function RouteComponent() {
       {
         accessorKey: "email",
         header: "Email",
-        cell: ({ row }) => <span className="text-muted-foreground">{row.original.email}</span>,
       },
       {
         accessorKey: "role",
@@ -137,7 +126,7 @@ function RouteComponent() {
       {
         accessorKey: "createdAt",
         header: "Joined at",
-        cell: ({ row }) => <JoinedDateCell date={row.original.createdAt} />,
+        cell: ({ row }) => formatDateTime(row.original.createdAt, organization.dateFormat, organization.timeFormat),
       },
     ],
     [organization.id, user?.id],
@@ -181,12 +170,12 @@ function RouteComponent() {
       {
         accessorKey: "createdAt",
         header: "Invited at",
-        cell: ({ row }) => <InvitationDateCell date={row.original.createdAt} />,
+        cell: ({ row }) => formatDateTime(row.original.createdAt, organization.dateFormat, organization.timeFormat),
       },
       {
         accessorKey: "expiresAt",
         header: "Expires at",
-        cell: ({ row }) => <InvitationDateCell date={row.original.expiresAt} />,
+        cell: ({ row }) => formatDateTime(row.original.expiresAt, organization.dateFormat, organization.timeFormat),
       },
     ],
     [organization.id],
