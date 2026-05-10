@@ -12,18 +12,25 @@ import {
 } from "@beetime/ui/components/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
-import { Can } from "@/components/ui/can";
 import { ChangeRoleDialog } from "@/components/members/change-role-dialog";
 import { RemoveMemberDialog } from "@/components/members/remove-member-dialog";
 
 type ActionsMemberProps = {
+  canUpdate: boolean;
+  canDelete: boolean;
   member: Member;
   orgId: string;
 };
 
-export function ActionsMember({ member, orgId }: ActionsMemberProps) {
+export function ActionsMember({ canUpdate, canDelete, member, orgId }: ActionsMemberProps) {
   const [showChangeRoleDialog, setShowChangeRoleDialog] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+
+  const canShowActions = canUpdate || canDelete;
+
+  if (!canShowActions) {
+    return null;
+  }
 
   return (
     <>
@@ -47,36 +54,38 @@ export function ActionsMember({ member, orgId }: ActionsMemberProps) {
           <TooltipContent>Member Actions</TooltipContent>
 
           <DropdownMenuContent className="min-w-40">
-            <Can orgId={orgId} permissions={{ member: ["update"] }}>
+            {canUpdate ? (
               <DropdownMenuItem onClick={() => setShowChangeRoleDialog(true)} closeOnClick>
                 <RiUserSettingsLine />
                 Change Role...
               </DropdownMenuItem>
-            </Can>
+            ) : null}
 
-            <Can orgId={orgId} permissions={{ member: ["delete"] }}>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={() => setShowRemoveDialog(true)} closeOnClick>
-                <RiUserUnfollowLine />
-                Remove Member
-              </DropdownMenuItem>
-            </Can>
+            {canDelete ? (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={() => setShowRemoveDialog(true)} closeOnClick>
+                  <RiUserUnfollowLine />
+                  Remove Member
+                </DropdownMenuItem>
+              </>
+            ) : null}
           </DropdownMenuContent>
         </DropdownMenu>
       </Tooltip>
 
-      <Can orgId={orgId} permissions={{ member: ["update"] }}>
+      {canUpdate ? (
         <ChangeRoleDialog
           member={member}
           open={showChangeRoleDialog}
           onOpenChange={setShowChangeRoleDialog}
           orgId={orgId}
         />
-      </Can>
+      ) : null}
 
-      <Can orgId={orgId} permissions={{ member: ["delete"] }}>
+      {canDelete ? (
         <RemoveMemberDialog member={member} open={showRemoveDialog} onOpenChange={setShowRemoveDialog} orgId={orgId} />
-      </Can>
+      ) : null}
     </>
   );
 }

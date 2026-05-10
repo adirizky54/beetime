@@ -140,7 +140,7 @@ function RouteComponent() {
         cell: ({ row }) => formatDate(row.original.createdAt, organization.dateFormat),
       },
     ],
-    [orgSlug, organization.dateFormat],
+    [],
   );
 
   const table = useReactTable({

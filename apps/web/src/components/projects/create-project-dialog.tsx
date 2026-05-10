@@ -2,7 +2,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { CreateProjectSchema, type Client, type CreateProjectInput } from "@beetime/schema";
+import { CreateProjectSchema, type Client, type CreateProjectInput, type Member } from "@beetime/schema";
 import { Avatar, AvatarFallback, AvatarImage } from "@beetime/ui/components/avatar";
 import { Button } from "@beetime/ui/components/button";
 import {
@@ -117,7 +117,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
   };
 
   const getMembers = (userIds: Array<string>) => {
-    return orgMembers.filter((m) => userIds.includes(m.id));
+    return orgMembers.filter((m) => userIds.includes(m.userId));
   };
 
   return (
@@ -245,16 +245,16 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                       name={field.name}
                       items={orgMembers}
                       value={getMembers(field.value)}
-                      onValueChange={(items) => field.onChange(items.map((m) => m.id))}
+                      onValueChange={(items) => field.onChange(items.map((m) => m.userId))}
                       itemToStringLabel={(item) => item.name}
-                      itemToStringValue={(item) => item.id}
+                      itemToStringValue={(item) => item.userId}
                     >
                       <ComboboxChips ref={anchor}>
                         <ComboboxValue>
-                          {(values: Array<(typeof orgMembers)[number]>) => (
+                          {(values: Member[]) => (
                             <>
                               {values.map((value) => (
-                                <ComboboxChip key={value.id}>{value.name}</ComboboxChip>
+                                <ComboboxChip key={value.userId}>{value.name}</ComboboxChip>
                               ))}
                               <ComboboxChipsInput
                                 ref={field.ref}
@@ -270,7 +270,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
                       <ComboboxContent anchor={anchor}>
                         <ComboboxEmpty>No member found.</ComboboxEmpty>
                         <ComboboxList>
-                          {(item: (typeof orgMembers)[number]) => (
+                          {(item: Member) => (
                             <ComboboxItem key={item.id} value={item}>
                               <Avatar size="sm">
                                 <AvatarImage src={item.image ?? undefined} alt={item.name} />

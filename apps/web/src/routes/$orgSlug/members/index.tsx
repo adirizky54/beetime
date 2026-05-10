@@ -36,6 +36,7 @@ import { memberQueries } from "@/queries/member";
 import { invitationQueries } from "@/queries/invitation";
 import { formatDateTime } from "@/utils/time";
 import { getInitials, toTitleCase } from "@/utils/string";
+import { usePermission } from "@/hooks/use-permission";
 
 const MembersPageSearchSchema = v.object({
   ...MemberQuerySchema.entries,
@@ -55,6 +56,9 @@ function RouteComponent() {
   const { orgSlug } = Route.useParams();
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
+
+  const { data: canUpdate } = usePermission(organization.id, { member: ["update"] });
+  const { data: canDelete } = usePermission(organization.id, { member: ["delete"] });
 
   const [searchText, setSearchText] = useState(search.search ?? "");
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
@@ -109,7 +113,14 @@ function RouteComponent() {
                 </Tooltip>
               ) : null}
 
-              {member.userId !== user?.id ? <ActionsMember member={member} orgId={organization.id} /> : null}
+              {member.userId !== user?.id ? (
+                <ActionsMember
+                  canUpdate={Boolean(canUpdate)}
+                  canDelete={Boolean(canDelete)}
+                  member={member}
+                  orgId={organization.id}
+                />
+              ) : null}
             </div>
           );
         },
@@ -129,7 +140,7 @@ function RouteComponent() {
         cell: ({ row }) => formatDateTime(row.original.createdAt, organization.dateFormat, organization.timeFormat),
       },
     ],
-    [organization.id, user?.id],
+    [],
   );
 
   const invitationColumns = useMemo<Array<ColumnDef<Invitation>>>(
