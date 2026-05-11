@@ -22,6 +22,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/
 import { getInitials } from "@/utils/string";
 import { memberQueries } from "@/queries/member";
 import { projectQueries } from "@/queries/project";
+import { Can } from "@/components/ui/can";
 
 type MembersProjectProps = {
   project: Project;
@@ -104,82 +105,88 @@ export function MembersProject({ project }: MembersProjectProps) {
   }
 
   return (
-    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
-      <Tooltip>
-        <DropdownMenuTrigger render={<TooltipTrigger render={<ProjectAvatarGroup project={project} />} />} />
-        <TooltipContent className="flex flex-col items-start">
-          {project.members.map((member) => (
-            <p key={member.id}>{member.name}</p>
-          ))}
-        </TooltipContent>
-      </Tooltip>
+    <Can
+      orgId={project.organizationId}
+      permissions={{ project: ["update"] }}
+      fallback={<ProjectMembersTooltip project={project} />}
+    >
+      <DropdownMenu open={open} onOpenChange={handleOpenChange}>
+        <Tooltip>
+          <DropdownMenuTrigger render={<TooltipTrigger render={<ProjectAvatarGroup project={project} />} />} />
+          <TooltipContent className="flex flex-col items-start">
+            {project.members.map((member) => (
+              <p key={member.id}>{member.name}</p>
+            ))}
+          </TooltipContent>
+        </Tooltip>
 
-      <DropdownMenuContent className="w-60 p-0">
-        <DropdownMenuGroup className="px-2 pt-2 pb-1">
-          <DropdownMenuLabel className="px-0 pt-0 text-foreground">SELECT MEMBERS</DropdownMenuLabel>
+        <DropdownMenuContent className="w-60 p-0">
+          <DropdownMenuGroup className="px-2 pt-2 pb-1">
+            <DropdownMenuLabel className="px-0 pt-0 text-foreground">SELECT MEMBERS</DropdownMenuLabel>
 
-          <InputGroup className="h-8">
-            <InputGroupAddon align="inline-start">
-              <RiSearchLine />
-            </InputGroupAddon>
-            <InputGroupInput
-              placeholder="Search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.stopPropagation()}
-            />
-            {search && (
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton size="icon-xs" onClick={() => setSearch("")}>
-                  <RiCloseLine />
-                </InputGroupButton>
+            <InputGroup className="h-8">
+              <InputGroupAddon align="inline-start">
+                <RiSearchLine />
               </InputGroupAddon>
+              <InputGroupInput
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              {search && (
+                <InputGroupAddon align="inline-end">
+                  <InputGroupButton size="icon-xs" onClick={() => setSearch("")}>
+                    <RiCloseLine />
+                  </InputGroupButton>
+                </InputGroupAddon>
+              )}
+            </InputGroup>
+          </DropdownMenuGroup>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuGroup className="max-h-60 overflow-y-auto p-1 pt-0">
+            {isLoading ? (
+              <div className="space-y-1 p-1">
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+              </div>
+            ) : filtered.length > 0 ? (
+              filtered.map((member) => {
+                const checked = currentMemberIds.includes(member.userId);
+                const isLast = checked && currentMemberIds.length === 1;
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={member.id}
+                    checked={checked}
+                    disabled={isLast || isPending}
+                    closeOnClick={false}
+                    onCheckedChange={(next) => handleToggle(member.userId, next)}
+                  >
+                    <Avatar size="sm">
+                      <AvatarImage src={member.image ?? undefined} alt={member.name} />
+                      <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
+                    </Avatar>
+                    {member.name}
+                  </DropdownMenuCheckboxItem>
+                );
+              })
+            ) : (
+              <Empty className="py-4">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <RiSearchLine />
+                  </EmptyMedia>
+                  <EmptyTitle>No results</EmptyTitle>
+                  <EmptyDescription>No members found.</EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             )}
-          </InputGroup>
-        </DropdownMenuGroup>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuGroup className="max-h-60 overflow-y-auto p-1 pt-0">
-          {isLoading ? (
-            <div className="space-y-1 p-1">
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-            </div>
-          ) : filtered.length > 0 ? (
-            filtered.map((member) => {
-              const checked = currentMemberIds.includes(member.userId);
-              const isLast = checked && currentMemberIds.length === 1;
-              return (
-                <DropdownMenuCheckboxItem
-                  key={member.id}
-                  checked={checked}
-                  disabled={isLast || isPending}
-                  closeOnClick={false}
-                  onCheckedChange={(next) => handleToggle(member.userId, next)}
-                >
-                  <Avatar size="sm">
-                    <AvatarImage src={member.image ?? undefined} alt={member.name} />
-                    <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
-                  </Avatar>
-                  {member.name}
-                </DropdownMenuCheckboxItem>
-              );
-            })
-          ) : (
-            <Empty className="py-4">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <RiSearchLine />
-                </EmptyMedia>
-                <EmptyTitle>No results</EmptyTitle>
-                <EmptyDescription>No members found.</EmptyDescription>
-              </EmptyHeader>
-            </Empty>
-          )}
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </Can>
   );
 }

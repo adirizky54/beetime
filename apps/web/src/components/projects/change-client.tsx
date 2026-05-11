@@ -21,6 +21,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "
 
 import { clientQueries } from "@/queries/client";
 import { projectQueries } from "@/queries/project";
+import { Can } from "@/components/ui/can";
 
 type ChangeClientProps = {
   project: Project;
@@ -59,98 +60,106 @@ export function ChangeClient({ project }: ChangeClientProps) {
     setOpen(next);
   };
 
+  const clientLabel = project.client ? project.client.name : <span className="text-muted-foreground">No Client</span>;
+
   return (
-    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            size="sm"
-            variant={null}
-            className="h-auto px-0 text-foreground data-popup-open:[&_svg]:rotate-180 data-popup-open:[&_svg]:opacity-100"
-          >
-            {project.client ? project.client.name : <span className="text-muted-foreground">No Client</span>}
-            <RiArrowDownSLine
-              data-icon="inline-end"
-              className="opacity-0 transition-all group-hover/table-row:opacity-100"
-            />
-          </Button>
-        }
-      />
+    <Can
+      orgId={project.organizationId}
+      permissions={{ project: ["update"] }}
+      fallback={<span className="text-sm">{clientLabel}</span>}
+    >
+      <DropdownMenu open={open} onOpenChange={handleOpenChange}>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              size="sm"
+              variant={null}
+              className="h-auto px-0 text-foreground data-popup-open:[&_svg]:rotate-180 data-popup-open:[&_svg]:opacity-100"
+            >
+              {project.client ? project.client.name : <span className="text-muted-foreground">No Client</span>}
+              <RiArrowDownSLine
+                data-icon="inline-end"
+                className="opacity-0 transition-all group-hover/table-row:opacity-100"
+              />
+            </Button>
+          }
+        />
 
-      <DropdownMenuContent className="w-60 p-0">
-        <DropdownMenuGroup className="px-2 pt-2 pb-1">
-          <DropdownMenuLabel className="px-0 pt-0 text-foreground">SELECT CLIENT</DropdownMenuLabel>
+        <DropdownMenuContent className="w-60 p-0">
+          <DropdownMenuGroup className="px-2 pt-2 pb-1">
+            <DropdownMenuLabel className="px-0 pt-0 text-foreground">SELECT CLIENT</DropdownMenuLabel>
 
-          <InputGroup className="h-8">
-            <InputGroupAddon align="inline-start">
-              <RiSearchLine />
-            </InputGroupAddon>
-            <InputGroupInput
-              placeholder="Search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.stopPropagation()}
-            />
-            {search && (
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton size="icon-xs" onClick={() => setSearch("")}>
-                  <RiCloseLine />
-                </InputGroupButton>
+            <InputGroup className="h-8">
+              <InputGroupAddon align="inline-start">
+                <RiSearchLine />
               </InputGroupAddon>
-            )}
-          </InputGroup>
-        </DropdownMenuGroup>
+              <InputGroupInput
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              {search && (
+                <InputGroupAddon align="inline-end">
+                  <InputGroupButton size="icon-xs" onClick={() => setSearch("")}>
+                    <RiCloseLine />
+                  </InputGroupButton>
+                </InputGroupAddon>
+              )}
+            </InputGroup>
+          </DropdownMenuGroup>
 
-        <DropdownMenuSeparator />
+          <DropdownMenuSeparator />
 
-        <DropdownMenuGroup className="max-h-60 overflow-y-auto p-1 pt-0">
-          <DropdownMenuRadioGroup
-            disabled={isPending}
-            value={project.client?.id ?? ""}
-            onValueChange={(value) =>
-              updateClient({
-                clientId: value || null,
-                privacy: project.privacy,
-                userIds: project.members.map((m) => m.id),
-              })
-            }
-          >
-            {isLoading ? (
-              <div className="space-y-1 p-1">
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-              </div>
-            ) : (
-              <>
-                {showNoClient && (
-                  <DropdownMenuRadioItem value="" closeOnClick>
-                    No Client
-                  </DropdownMenuRadioItem>
-                )}
+          <DropdownMenuGroup className="max-h-60 overflow-y-auto p-1 pt-0">
+            <DropdownMenuRadioGroup
+              disabled={isPending}
+              value={project.client?.id ?? ""}
+              onValueChange={(value) =>
+                updateClient({
+                  clientId: value || null,
+                  privacy: project.privacy,
+                  userIds: project.members.map((m) => m.id),
+                })
+              }
+            >
+              {isLoading ? (
+                <div className="space-y-1 p-1">
+                  <Skeleton className="h-8 w-full" />
+                  <Skeleton className="h-8 w-full" />
+                  <Skeleton className="h-8 w-full" />
+                </div>
+              ) : (
+                <>
+                  {showNoClient && (
+                    <DropdownMenuRadioItem value="" closeOnClick>
+                      No Client
+                    </DropdownMenuRadioItem>
+                  )}
 
-                {filtered.length > 0
-                  ? filtered.map((item) => (
-                      <DropdownMenuRadioItem key={item.id} value={item.id} closeOnClick>
-                        {item.name}
-                      </DropdownMenuRadioItem>
-                    ))
-                  : !showNoClient && (
-                      <Empty className="py-4">
-                        <EmptyHeader>
-                          <EmptyMedia variant="icon">
-                            <RiSearchLine />
-                          </EmptyMedia>
-                          <EmptyTitle>No results</EmptyTitle>
-                          <EmptyDescription>No clients found.</EmptyDescription>
-                        </EmptyHeader>
-                      </Empty>
-                    )}
-              </>
-            )}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+                  {filtered.length > 0
+                    ? filtered.map((item) => (
+                        <DropdownMenuRadioItem key={item.id} value={item.id} closeOnClick>
+                          {item.name}
+                        </DropdownMenuRadioItem>
+                      ))
+                    : !showNoClient && (
+                        <Empty className="py-4">
+                          <EmptyHeader>
+                            <EmptyMedia variant="icon">
+                              <RiSearchLine />
+                            </EmptyMedia>
+                            <EmptyTitle>No results</EmptyTitle>
+                            <EmptyDescription>No clients found.</EmptyDescription>
+                          </EmptyHeader>
+                        </Empty>
+                      )}
+                </>
+              )}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </Can>
   );
 }
