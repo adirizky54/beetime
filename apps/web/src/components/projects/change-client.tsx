@@ -71,7 +71,7 @@ export function ChangeClient({ project }: ChangeClientProps) {
             {project.client ? project.client.name : <span className="text-muted-foreground">No Client</span>}
             <RiArrowDownSLine
               data-icon="inline-end"
-              className="opacity-0 transition-transform group-hover/table-row:opacity-100"
+              className="opacity-0 transition-all group-hover/table-row:opacity-100"
             />
           </Button>
         }
