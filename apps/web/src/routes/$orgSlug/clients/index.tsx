@@ -1,6 +1,6 @@
 import { RiAddLine, RiArchiveLine, RiCheckboxBlankCircleLine, RiSearchLine } from "@remixicon/react";
 import { useDebouncedCallback } from "@tanstack/react-pacer/debouncer";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -26,11 +26,21 @@ import { AppContent } from "@/components/layouts/app-content";
 import { AppHeader } from "@/components/layouts/app-header";
 import { CreateClientDialog } from "@/components/clients/create-client-dialog";
 import { ActionsClient } from "@/components/clients/actions-client";
+import { authQueries } from "@/queries/auth";
 import { clientQueries } from "@/queries/client";
 import { formatDate } from "@/utils/time";
 import { toTitleCase } from "@/utils/string";
 
 export const Route = createFileRoute("/$orgSlug/clients/")({
+  beforeLoad: async ({ context }) => {
+    const result = await context.queryClient.ensureQueryData(
+      authQueries.hasPermission(context.organization.id, { client: ["read"] }),
+    );
+
+    if (!result.data?.success) {
+      throw redirect({ to: "/access-denied" });
+    }
+  },
   head: () => ({
     meta: [{ title: "Clients — Bee Time" }],
   }),

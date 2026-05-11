@@ -1,6 +1,6 @@
 import { RiAddLine, RiLock2Line, RiSearchLine, RiShieldUserLine } from "@remixicon/react";
 import { useDebouncedCallback } from "@tanstack/react-pacer/debouncer";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -32,6 +32,7 @@ import { ActionsMember } from "@/components/members/actions-member";
 import { ActionsInvitation } from "@/components/members/actions-invitation";
 import { InviteMemberDialog } from "@/components/members/invite-member-dialog";
 import type { Invitation } from "@/lib/auth";
+import { authQueries } from "@/queries/auth";
 import { memberQueries } from "@/queries/member";
 import { invitationQueries } from "@/queries/invitation";
 import { formatDateTime } from "@/utils/time";
@@ -44,6 +45,15 @@ const MembersPageSearchSchema = v.object({
 });
 
 export const Route = createFileRoute("/$orgSlug/members/")({
+  beforeLoad: async ({ context }) => {
+    const result = await context.queryClient.ensureQueryData(
+      authQueries.hasPermission(context.organization.id, { member: ["read"] }),
+    );
+
+    if (!result.data?.success) {
+      throw redirect({ to: "/access-denied" });
+    }
+  },
   head: () => ({
     meta: [{ title: "Members — Bee Time" }],
   }),
