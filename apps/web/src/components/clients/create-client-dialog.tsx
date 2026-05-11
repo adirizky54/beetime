@@ -44,6 +44,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
     ...clientQueries.create(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clientQueries.listKey() });
+      queryClient.invalidateQueries({ queryKey: clientQueries.listAllKey() });
       toastManager.add({ type: "success", title: "Client created" });
       handleOpenChange(false);
     },
