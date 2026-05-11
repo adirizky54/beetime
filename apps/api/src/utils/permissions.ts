@@ -45,7 +45,7 @@ export const member = ac.newRole({
   organization: [],
   member: ["read"],
   invitation: [],
-  project: [],
+  project: ["read"],
   client: ["read"],
   task: ["read"],
 });
