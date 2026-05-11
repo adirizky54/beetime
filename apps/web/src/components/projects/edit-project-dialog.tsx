@@ -51,7 +51,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
   const form = useForm<UpdateProjectInput>({
     mode: "all",
     resolver: valibotResolver(UpdateProjectSchema),
-    defaultValues: {
+    values: {
       name: project.name,
       description: project.description ?? "",
       clientId: project.clientId,
@@ -61,16 +61,10 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
   });
   const privacy = useWatch({ control: form.control, name: "privacy" });
 
-  const { data: members } = useQuery({
-    ...memberQueries.listAll(project.organizationId),
-    enabled: open,
-  });
+  const { data: members } = useQuery(memberQueries.listAll(project.organizationId));
   const orgMembers = members?.data ?? [];
 
-  const { data: clientsResponse } = useQuery({
-    ...clientQueries.listAll(project.organizationId, { status: "active" }),
-    enabled: open,
-  });
+  const { data: clientsResponse } = useQuery(clientQueries.listAll(project.organizationId, { status: "active" }));
   const clients = clientsResponse?.data ?? [];
 
   const updateProject = useMutation({
@@ -187,7 +181,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                     itemToStringLabel={(item: Client) => item.name}
                     itemToStringValue={(item: Client) => item.id}
                     value={getClient(field.value)}
-                    onValueChange={(item) => field.onChange(item?.id)}
+                    onValueChange={(item) => field.onChange(item?.id ?? null)}
                   >
                     <ComboboxInput placeholder="Select client..." showClear onBlur={field.onBlur} />
                     <ComboboxContent>
