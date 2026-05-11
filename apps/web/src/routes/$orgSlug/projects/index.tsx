@@ -38,6 +38,7 @@ import { authQueries } from "@/queries/auth";
 import { projectQueries } from "@/queries/project";
 import { formatDate } from "@/utils/time";
 import { toTitleCase } from "@/utils/string";
+import { ChangeClient } from "@/components/projects/change-client";
 
 export const Route = createFileRoute("/$orgSlug/projects/")({
   beforeLoad: async ({ context }) => {
@@ -93,7 +94,7 @@ function RouteComponent() {
         cell: ({ row }) => {
           const project = row.original;
           return (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col items-start gap-0.5">
               <div className="flex items-center gap-2">
                 <Link
                   to="/$orgSlug/projects/$projectId"
@@ -127,6 +128,8 @@ function RouteComponent() {
                   <ActionsProject project={project} />
                 </Can>
               </div>
+
+              <ChangeClient project={project} />
             </div>
           );
         },
@@ -150,7 +153,7 @@ function RouteComponent() {
         cell: ({ row }) => formatDate(row.original.createdAt, organization.dateFormat),
       },
     ],
-    [],
+    [orgSlug, organization.dateFormat],
   );
 
   const table = useReactTable({
