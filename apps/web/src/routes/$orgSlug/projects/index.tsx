@@ -7,7 +7,7 @@ import {
   RiSearchLine,
 } from "@remixicon/react";
 import { useDebouncedCallback } from "@tanstack/react-pacer/debouncer";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -34,11 +34,21 @@ import { AppHeader } from "@/components/layouts/app-header";
 import { CreateProjectDialog } from "@/components/projects/create-project-dialog";
 import { ActionsProject } from "@/components/projects/actions-project";
 import { MembersProject } from "@/components/projects/members-project";
+import { authQueries } from "@/queries/auth";
 import { projectQueries } from "@/queries/project";
 import { formatDate } from "@/utils/time";
 import { toTitleCase } from "@/utils/string";
 
 export const Route = createFileRoute("/$orgSlug/projects/")({
+  beforeLoad: async ({ context }) => {
+    const result = await context.queryClient.ensureQueryData(
+      authQueries.hasPermission(context.organization.id, { project: ["read"] }),
+    );
+
+    if (!result.data?.success) {
+      throw redirect({ to: "/access-denied" });
+    }
+  },
   head: () => ({
     meta: [{ title: "Projects — Bee Time" }],
   }),

@@ -20,6 +20,7 @@ import { Route as OrganizationInvitationsRouteImport } from "./routes/organizati
 import { Route as LoginRouteImport } from "./routes/login";
 import { Route as ForgotPasswordRouteImport } from "./routes/forgot-password";
 import { Route as CreateOrganizationRouteImport } from "./routes/create-organization";
+import { Route as AccessDeniedRouteImport } from "./routes/access-denied";
 import { Route as AppRouteImport } from "./routes/_app";
 import { Route as OrgSlugRouteRouteImport } from "./routes/$orgSlug/route";
 import { Route as OrgSlugIndexRouteImport } from "./routes/$orgSlug/index";
@@ -63,6 +64,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
   id: "/create-organization",
   path: "/create-organization",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const AccessDeniedRoute = AccessDeniedRouteImport.update({
+  id: "/access-denied",
+  path: "/access-denied",
   getParentRoute: () => rootRouteImport,
 } as any);
 const AppRoute = AppRouteImport.update({
@@ -114,6 +120,7 @@ const OrgSlugProjectsProjectIdIndexRoute =
 export interface FileRoutesByFullPath {
   "/$orgSlug": typeof OrgSlugRouteRouteWithChildren;
   "/": typeof AppRoute;
+  "/access-denied": typeof AccessDeniedRoute;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -131,6 +138,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   "/": typeof AppRoute;
+  "/access-denied": typeof AccessDeniedRoute;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/$orgSlug": typeof OrgSlugRouteRouteWithChildren;
   "/_app": typeof AppRoute;
+  "/access-denied": typeof AccessDeniedRoute;
   "/create-organization": typeof CreateOrganizationRoute;
   "/forgot-password": typeof ForgotPasswordRoute;
   "/login": typeof LoginRoute;
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
   fullPaths:
     | "/$orgSlug"
     | "/"
+    | "/access-denied"
     | "/create-organization"
     | "/forgot-password"
     | "/login"
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
+    | "/access-denied"
     | "/create-organization"
     | "/forgot-password"
     | "/login"
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | "__root__"
     | "/$orgSlug"
     | "/_app"
+    | "/access-denied"
     | "/create-organization"
     | "/forgot-password"
     | "/login"
@@ -224,6 +236,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   OrgSlugRouteRoute: typeof OrgSlugRouteRouteWithChildren;
   AppRoute: typeof AppRoute;
+  AccessDeniedRoute: typeof AccessDeniedRoute;
   CreateOrganizationRoute: typeof CreateOrganizationRoute;
   ForgotPasswordRoute: typeof ForgotPasswordRoute;
   LoginRoute: typeof LoginRoute;
@@ -282,6 +295,13 @@ declare module "@tanstack/react-router" {
       path: "/create-organization";
       fullPath: "/create-organization";
       preLoaderRoute: typeof CreateOrganizationRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/access-denied": {
+      id: "/access-denied";
+      path: "/access-denied";
+      fullPath: "/access-denied";
+      preLoaderRoute: typeof AccessDeniedRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/_app": {
@@ -377,6 +397,7 @@ const OrgSlugRouteRouteWithChildren = OrgSlugRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   OrgSlugRouteRoute: OrgSlugRouteRouteWithChildren,
   AppRoute: AppRoute,
+  AccessDeniedRoute: AccessDeniedRoute,
   CreateOrganizationRoute: CreateOrganizationRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
