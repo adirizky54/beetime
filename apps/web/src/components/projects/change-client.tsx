@@ -62,7 +62,11 @@ export function ChangeClient({ project }: ChangeClientProps) {
     <DropdownMenu open={open} onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger
         render={
-          <Button size="sm" variant="link" className="h-auto px-0 text-foreground">
+          <Button
+            size="sm"
+            variant="link"
+            className="h-auto px-0 text-foreground data-popup-open:[&_svg]:rotate-180 data-popup-open:[&_svg]:opacity-100"
+          >
             {project.client ? project.client.name : <span className="text-muted-foreground">No Client</span>}
             <RiArrowDownSLine data-icon="inline-end" className="opacity-0 group-hover/table-row:opacity-100" />
           </Button>
