@@ -67,7 +67,11 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
   const { data: clientsResponse } = useQuery(clientQueries.listAll(project.organizationId, { status: "active" }));
   const clients = clientsResponse?.data ?? [];
 
-  const updateProject = useMutation({
+  const {
+    mutate: updateProject,
+    isPending: isUpdatingProject,
+    reset: resetUpdateProject,
+  } = useMutation({
     ...projectQueries.update(project.organizationId, project.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
@@ -96,14 +100,14 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       form.reset();
-      updateProject.reset();
+      resetUpdateProject();
     }
     onOpenChange(nextOpen);
   };
 
   const onSubmit = form.handleSubmit((values) => {
     form.clearErrors();
-    updateProject.mutate(values);
+    updateProject(values);
   });
 
   const getClient = (clientId: string | null) => {
@@ -288,9 +292,9 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
           <Button
             type="submit"
             form="edit-project-form"
-            disabled={updateProject.isPending || !form.formState.isValid || !form.formState.isDirty}
+            disabled={isUpdatingProject || !form.formState.isValid || !form.formState.isDirty}
           >
-            {updateProject.isPending && <Spinner data-icon="inline-start" />}
+            {isUpdatingProject && <Spinner data-icon="inline-start" />}
             Save Changes
           </Button>
         </DialogFooter>

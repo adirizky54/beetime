@@ -38,7 +38,7 @@ export function ChangeClient({ project }: ChangeClientProps) {
   });
   const clients = clientsResponse?.data ?? [];
 
-  const { mutate: updateClient, isPending } = useMutation({
+  const { mutate: updateClient, isPending: isUpdatingClient } = useMutation({
     ...projectQueries.update(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
@@ -113,7 +113,7 @@ export function ChangeClient({ project }: ChangeClientProps) {
 
           <DropdownMenuGroup className="max-h-60 overflow-y-auto p-1 pt-0">
             <DropdownMenuRadioGroup
-              disabled={isPending}
+              disabled={isUpdatingClient}
               value={project.client?.id ?? ""}
               onValueChange={(value) =>
                 updateClient({

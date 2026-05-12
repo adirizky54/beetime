@@ -26,7 +26,7 @@ type DeleteOrganizationDialogProps = {
 export function DeleteOrganizationDialog({ orgId, orgName, open, onOpenChange }: DeleteOrganizationDialogProps) {
   const navigate = useNavigate();
 
-  const { mutate: deleteOrganization, isPending } = useMutation({
+  const { mutate: deleteOrganization, isPending: isDeletingOrganization } = useMutation({
     ...organizationQueries.delete(orgId),
     onSuccess: async () => {
       toastManager.add({ type: "success", title: "Organization deleted" });
@@ -48,9 +48,13 @@ export function DeleteOrganizationDialog({ orgId, orgName, open, onOpenChange }:
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={isPending} onClick={() => deleteOrganization()}>
-            {isPending && <Spinner data-icon="inline-start" />}
+          <AlertDialogCancel disabled={isDeletingOrganization}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
+            disabled={isDeletingOrganization}
+            onClick={() => deleteOrganization()}
+          >
+            {isDeletingOrganization && <Spinner data-icon="inline-start" />}
             Delete Organization
           </AlertDialogAction>
         </AlertDialogFooter>

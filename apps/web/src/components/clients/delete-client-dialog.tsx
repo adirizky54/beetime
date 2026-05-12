@@ -25,7 +25,7 @@ type DeleteClientDialogProps = {
 export function DeleteClientDialog({ client, open, onOpenChange }: DeleteClientDialogProps) {
   const queryClient = useQueryClient();
 
-  const { mutate: deleteClient, isPending: isDeleting } = useMutation({
+  const { mutate: deleteClient, isPending: isDeletingClient } = useMutation({
     ...clientQueries.delete(client.organizationId, client.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: clientQueries.listKey() });
@@ -47,9 +47,9 @@ export function DeleteClientDialog({ client, open, onOpenChange }: DeleteClientD
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={isDeleting} onClick={() => deleteClient()}>
-            {isDeleting && <Spinner data-icon="inline-start" />}
+          <AlertDialogCancel disabled={isDeletingClient}>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" disabled={isDeletingClient} onClick={() => deleteClient()}>
+            {isDeletingClient && <Spinner data-icon="inline-start" />}
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

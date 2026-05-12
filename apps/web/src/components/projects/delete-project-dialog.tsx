@@ -25,7 +25,7 @@ type DeleteProjectDialogProps = {
 export function DeleteProjectDialog({ project, open, onOpenChange }: DeleteProjectDialogProps) {
   const queryClient = useQueryClient();
 
-  const { mutate: deleteProject, isPending: isDeleting } = useMutation({
+  const { mutate: deleteProject, isPending: isDeletingProject } = useMutation({
     ...projectQueries.delete(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
@@ -47,9 +47,9 @@ export function DeleteProjectDialog({ project, open, onOpenChange }: DeleteProje
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={isDeleting} onClick={() => deleteProject()}>
-            {isDeleting && <Spinner data-icon="inline-start" />}
+          <AlertDialogCancel disabled={isDeletingProject}>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" disabled={isDeletingProject} onClick={() => deleteProject()}>
+            {isDeletingProject && <Spinner data-icon="inline-start" />}
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

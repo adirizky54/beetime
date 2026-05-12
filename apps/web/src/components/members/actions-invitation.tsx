@@ -35,7 +35,7 @@ export function ActionsInvitation({ invitation, orgId }: ActionsInvitationProps)
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const queryClient = useQueryClient();
 
-  const cancelInvitation = useMutation({
+  const { mutate: cancelInvitation, isPending: isCancellingInvitation } = useMutation({
     ...invitationQueries.cancel(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: invitationQueries.listKey(orgId) });
@@ -97,8 +97,8 @@ export function ActionsInvitation({ invitation, orgId }: ActionsInvitationProps)
               <AlertDialogCancel>Keep</AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
-                disabled={cancelInvitation.isPending}
-                onClick={() => cancelInvitation.mutate(invitation.id)}
+                disabled={isCancellingInvitation}
+                onClick={() => cancelInvitation(invitation.id)}
               >
                 Cancel Invitation
               </AlertDialogAction>
