@@ -87,7 +87,7 @@ function InvitationDetails({ token }: { token: string }) {
 
   const { data } = useSuspenseQuery(invitationQueries.get(token));
 
-  const accept = useMutation({
+  const { mutate: acceptInvitation, isPending: isAcceptingInvitation } = useMutation({
     ...invitationQueries.accept(),
     onSuccess: () => {
       navigate({ to: "/" });
@@ -97,7 +97,7 @@ function InvitationDetails({ token }: { token: string }) {
     },
   });
 
-  const reject = useMutation({
+  const { mutate: rejectInvitation, isPending: isRejectingInvitation } = useMutation({
     ...invitationQueries.reject(),
     onSuccess: () => {
       navigate({ to: "/" });
@@ -108,7 +108,7 @@ function InvitationDetails({ token }: { token: string }) {
     },
   });
 
-  const isBusy = accept.isPending || reject.isPending;
+  const isBusy = isAcceptingInvitation || isRejectingInvitation;
 
   return (
     <>
@@ -140,12 +140,12 @@ function InvitationDetails({ token }: { token: string }) {
       </div>
 
       <div className="mt-6 flex flex-col gap-2">
-        <Button disabled={isBusy} onClick={() => accept.mutate({ invitationId: data.id })}>
-          {accept.isPending && <Spinner data-icon="inline-start" />}
+        <Button disabled={isBusy} onClick={() => acceptInvitation({ invitationId: data.id })}>
+          {isAcceptingInvitation && <Spinner data-icon="inline-start" />}
           Accept invitation
         </Button>
         <Button variant="outline" disabled={isBusy} onClick={() => setShowDeclineDialog(true)}>
-          {reject.isPending && <Spinner data-icon="inline-start" />}
+          {isRejectingInvitation && <Spinner data-icon="inline-start" />}
           Decline
         </Button>
       </div>
@@ -159,13 +159,13 @@ function InvitationDetails({ token }: { token: string }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={reject.isPending}>Keep</AlertDialogCancel>
+            <AlertDialogCancel disabled={isRejectingInvitation}>Keep</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
-              disabled={reject.isPending}
-              onClick={() => reject.mutate({ invitationId: data.id })}
+              disabled={isRejectingInvitation}
+              onClick={() => rejectInvitation({ invitationId: data.id })}
             >
-              {reject.isPending && <Spinner data-icon="inline-start" />}
+              {isRejectingInvitation && <Spinner data-icon="inline-start" />}
               Decline invitation
             </AlertDialogAction>
           </AlertDialogFooter>

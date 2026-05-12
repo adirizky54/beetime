@@ -57,7 +57,7 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId }: ChangeRo
     },
   });
 
-  const { mutate: updateMemberRole, isPending } = useMutation({
+  const { mutate: updateMemberRole, isPending: isUpdatingMemberRole } = useMutation({
     ...memberQueries.updateMemberRole(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...memberQueries.listKey(), orgId] });
@@ -121,15 +121,20 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId }: ChangeRo
         </form>
 
         <DialogFooter>
-          <Button type="button" variant="outline" disabled={isPending} onClick={() => handleOpenChange(false)}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isUpdatingMemberRole}
+            onClick={() => handleOpenChange(false)}
+          >
             Cancel
           </Button>
           <Button
             type="submit"
             form="change-role-form"
-            disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+            disabled={!form.formState.isValid || !form.formState.isDirty || isUpdatingMemberRole}
           >
-            {isPending && <Spinner data-icon="inline-start" />}
+            {isUpdatingMemberRole && <Spinner data-icon="inline-start" />}
             Save Changes
           </Button>
         </DialogFooter>

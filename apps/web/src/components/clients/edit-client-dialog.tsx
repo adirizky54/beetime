@@ -40,7 +40,11 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
     },
   });
 
-  const updateClient = useMutation({
+  const {
+    mutate: updateClient,
+    isPending: isUpdatingClient,
+    reset: resetUpdateClient,
+  } = useMutation({
     ...clientQueries.update(client.organizationId, client.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clientQueries.listKey() });
@@ -69,14 +73,14 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       form.reset();
-      updateClient.reset();
+      resetUpdateClient();
     }
     onOpenChange(nextOpen);
   };
 
   const onSubmit = form.handleSubmit((values) => {
     form.clearErrors();
-    updateClient.mutate(values);
+    updateClient(values);
   });
 
   return (
@@ -184,9 +188,9 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
           <Button
             type="submit"
             form="edit-client-form"
-            disabled={updateClient.isPending || !form.formState.isValid || !form.formState.isDirty}
+            disabled={isUpdatingClient || !form.formState.isValid || !form.formState.isDirty}
           >
-            {updateClient.isPending && <Spinner data-icon="inline-start" />}
+            {isUpdatingClient && <Spinner data-icon="inline-start" />}
             Save Changes
           </Button>
         </DialogFooter>

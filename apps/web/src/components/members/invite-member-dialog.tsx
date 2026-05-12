@@ -64,7 +64,11 @@ export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDi
     },
   });
 
-  const invite = useMutation({
+  const {
+    mutate: inviteMember,
+    isPending: isInvitingMember,
+    reset: resetInviteMember,
+  } = useMutation({
     ...memberQueries.invite(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: memberQueries.listKey() });
@@ -81,14 +85,14 @@ export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDi
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       form.reset();
-      invite.reset();
+      resetInviteMember();
     }
     onOpenChange(nextOpen);
   };
 
   const onSubmit = form.handleSubmit((values) => {
     form.clearErrors();
-    invite.mutate(values);
+    inviteMember(values);
   });
 
   return (
@@ -148,8 +152,8 @@ export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDi
         </form>
 
         <DialogFooter>
-          <Button type="submit" form="invite-member-form" disabled={invite.isPending || !form.formState.isValid}>
-            {invite.isPending && <Spinner data-icon="inline-start" />}
+          <Button type="submit" form="invite-member-form" disabled={isInvitingMember || !form.formState.isValid}>
+            {isInvitingMember && <Spinner data-icon="inline-start" />}
             Send Invite
           </Button>
         </DialogFooter>

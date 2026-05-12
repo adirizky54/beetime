@@ -94,7 +94,7 @@ function RouteComponent() {
     },
   });
 
-  const { mutate: updateOrganization, isPending: isUpdating } = useMutation({
+  const { mutate: updateOrganization, isPending: isUpdatingOrganization } = useMutation({
     ...organizationQueries.update(organization.id),
     onSuccess: async (data) => {
       toastManager.add({ type: "success", title: "Organization updated" });
@@ -223,7 +223,7 @@ function RouteComponent() {
                             id="org-slug"
                             placeholder="acme-inc"
                             aria-invalid={fieldState.invalid}
-                            className="pl-0.5!"
+                            className="pl-0!"
                             onChange={(e) => onChangeSlug(e, field.onChange)}
                           />
                         </InputGroup>
@@ -318,8 +318,11 @@ function RouteComponent() {
               </FieldSet>
 
               <Field orientation="horizontal" className="justify-end">
-                <Button type="submit" disabled={!form.formState.isDirty || !form.formState.isValid || isUpdating}>
-                  {isUpdating && <Spinner data-icon="inline-start" />}
+                <Button
+                  type="submit"
+                  disabled={!form.formState.isDirty || !form.formState.isValid || isUpdatingOrganization}
+                >
+                  {isUpdatingOrganization && <Spinner data-icon="inline-start" />}
                   Save Changes
                 </Button>
               </Field>

@@ -73,7 +73,11 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
   });
   const clients = clientsResponse?.data ?? [];
 
-  const createProject = useMutation({
+  const {
+    mutate: createProject,
+    isPending: isCreatingProject,
+    reset: resetCreateProject,
+  } = useMutation({
     ...projectQueries.create(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
@@ -102,14 +106,14 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       form.reset();
-      createProject.reset();
+      resetCreateProject();
     }
     onOpenChange(nextOpen);
   };
 
   const onSubmit = form.handleSubmit((values) => {
     form.clearErrors();
-    createProject.mutate(values);
+    createProject(values);
   });
 
   const getClient = (clientId: string | null) => {
@@ -291,12 +295,8 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
         </form>
 
         <DialogFooter>
-          <Button
-            type="submit"
-            form="create-project-form"
-            disabled={createProject.isPending || !form.formState.isValid}
-          >
-            {createProject.isPending && <Spinner data-icon="inline-start" />}
+          <Button type="submit" form="create-project-form" disabled={isCreatingProject || !form.formState.isValid}>
+            {isCreatingProject && <Spinner data-icon="inline-start" />}
             Create Project
           </Button>
         </DialogFooter>

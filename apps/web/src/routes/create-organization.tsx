@@ -49,7 +49,7 @@ function RouteComponent() {
     },
   });
 
-  const mutation = useMutation({
+  const { mutate: createOrganization, isPending: isCreatingOrganization } = useMutation({
     ...organizationQueries.create(),
     onSuccess: (data) => {
       void navigate({ to: "/$orgSlug", params: { orgSlug: data.slug } });
@@ -77,7 +77,7 @@ function RouteComponent() {
   };
 
   const onSubmit = form.handleSubmit((values) => {
-    mutation.mutate({
+    createOrganization({
       name: values.name,
       slug: values.slug,
       dateFormat: "hyphen-separated-yyyy-mm-dd",
@@ -132,7 +132,7 @@ function RouteComponent() {
                       id="org-slug"
                       placeholder="acme-inc"
                       aria-invalid={fieldState.invalid}
-                      className="pl-0.5!"
+                      className="pl-0!"
                       onChange={onChangeSlug}
                     />
                   </InputGroup>
@@ -148,8 +148,8 @@ function RouteComponent() {
                 </Button>
               )}
 
-              <Button type="submit" disabled={!form.formState.isValid || mutation.isPending}>
-                {mutation.isPending && <Spinner data-icon="inline-start" />}
+              <Button type="submit" disabled={!form.formState.isValid || isCreatingOrganization}>
+                {isCreatingOrganization && <Spinner data-icon="inline-start" />}
                 Create Organization
               </Button>
             </Field>

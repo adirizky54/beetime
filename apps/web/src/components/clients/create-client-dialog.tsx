@@ -40,7 +40,11 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
     },
   });
 
-  const createClient = useMutation({
+  const {
+    mutate: createClient,
+    isPending: isCreatingClient,
+    reset: resetCreateClient,
+  } = useMutation({
     ...clientQueries.create(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clientQueries.listKey() });
@@ -70,14 +74,14 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       form.reset();
-      createClient.reset();
+      resetCreateClient();
     }
     onOpenChange(nextOpen);
   };
 
   const onSubmit = form.handleSubmit((values) => {
     form.clearErrors();
-    createClient.mutate(values);
+    createClient(values);
   });
 
   return (
@@ -182,8 +186,8 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
         </form>
 
         <DialogFooter>
-          <Button type="submit" form="create-client-form" disabled={createClient.isPending || !form.formState.isValid}>
-            {createClient.isPending && <Spinner data-icon="inline-start" />}
+          <Button type="submit" form="create-client-form" disabled={isCreatingClient || !form.formState.isValid}>
+            {isCreatingClient && <Spinner data-icon="inline-start" />}
             Create Client
           </Button>
         </DialogFooter>

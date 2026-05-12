@@ -26,7 +26,7 @@ type RemoveMemberDialogProps = {
 export function RemoveMemberDialog({ member, open, onOpenChange, orgId }: RemoveMemberDialogProps) {
   const queryClient = useQueryClient();
 
-  const { mutate: removeMember, isPending: isRemoving } = useMutation({
+  const { mutate: removeMember, isPending: isRemovingMember } = useMutation({
     ...memberQueries.removeMember(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...memberQueries.listKey(), orgId] });
@@ -49,9 +49,9 @@ export function RemoveMemberDialog({ member, open, onOpenChange, orgId }: Remove
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isRemoving}>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={isRemoving} onClick={() => removeMember(member.id)}>
-            {isRemoving && <Spinner data-icon="inline-start" />}
+          <AlertDialogCancel disabled={isRemovingMember}>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" disabled={isRemovingMember} onClick={() => removeMember(member.id)}>
+            {isRemovingMember && <Spinner data-icon="inline-start" />}
             Remove
           </AlertDialogAction>
         </AlertDialogFooter>

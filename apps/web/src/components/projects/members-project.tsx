@@ -74,7 +74,7 @@ export function MembersProject({ project }: MembersProjectProps) {
     [orgMembers, search],
   );
 
-  const { mutate: updateMembers, isPending } = useMutation({
+  const { mutate: updateMembers, isPending: isUpdatingMembers } = useMutation({
     ...projectQueries.update(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
@@ -164,7 +164,7 @@ export function MembersProject({ project }: MembersProjectProps) {
                   <DropdownMenuCheckboxItem
                     key={member.id}
                     checked={checked}
-                    disabled={isLast || isPending}
+                    disabled={isLast || isUpdatingMembers}
                     closeOnClick={false}
                     onCheckedChange={(next) => handleToggle(member.userId, next)}
                   >
