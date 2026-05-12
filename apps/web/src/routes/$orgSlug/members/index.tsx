@@ -150,7 +150,7 @@ function RouteComponent() {
         cell: ({ row }) => formatDateTime(row.original.createdAt, organization.dateFormat, organization.timeFormat),
       },
     ],
-    [],
+    [canUpdate, canDelete, organization.id, user?.id],
   );
 
   const invitationColumns = useMemo<Array<ColumnDef<Invitation>>>(

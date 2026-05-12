@@ -1,12 +1,9 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { AnchoredToastProvider, ToastProvider } from "@beetime/ui/components/toast";
-import { TooltipProvider } from "@beetime/ui/components/tooltip";
-
 import { auth } from "@/lib/auth";
 import { useMount } from "@/hooks/use-mount";
 
-export const Route = createFileRoute("/_app")({
+export const Route = createFileRoute("/")({
   beforeLoad: async ({ context }) => {
     if (!context.session) {
       throw redirect({ to: "/login" });
@@ -51,13 +48,5 @@ function RouteComponent() {
     }
   });
 
-  return (
-    <ToastProvider>
-      <AnchoredToastProvider>
-        <TooltipProvider>
-          <Outlet />
-        </TooltipProvider>
-      </AnchoredToastProvider>
-    </ToastProvider>
-  );
+  return null;
 }

@@ -2,7 +2,7 @@ import { eq, and, or, like, isNull, isNotNull, asc } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import type { ClientQuery, CreateClientInput, UpdateClientInput } from "@beetime/schema";
 
-import { clients, projects } from "@/database/schema";
+import { clients } from "@/database/schema";
 import type { AuthUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { withPagination } from "@/lib/pagination";
@@ -110,7 +110,7 @@ export async function updateClient(orgId: string, clientId: string, data: Update
   }
 
   const [updatedClient] = await db
-    .update(projects)
+    .update(clients)
     .set(data)
     .where(and(eq(clients.organizationId, orgId), eq(clients.id, clientId)))
     .returning();
