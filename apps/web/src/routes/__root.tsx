@@ -3,10 +3,13 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 
+import { AnchoredToastProvider, ToastProvider } from "@beetime/ui/components/toast";
+import { TooltipProvider } from "@beetime/ui/components/tooltip";
 import appCss from "@beetime/ui/globals.css?url";
 
 import { NotFound } from "@/components/errors/not-found";
 import { auth, type Organization, type Session, type User } from "@/lib/auth";
+import { Outlet } from "@tanstack/react-router";
 
 type RouterContext = {
   queryClient: QueryClient;
@@ -34,12 +37,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       user: session.data?.user ?? null,
     };
   },
-  shellComponent: RootDocument,
+  shellComponent: RootShell,
+  component: RootComponent,
   notFoundComponent: NotFound,
   ssr: false,
 });
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -52,5 +56,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function RootComponent() {
+  return (
+    <ToastProvider>
+      <AnchoredToastProvider>
+        <TooltipProvider>
+          <Outlet />
+        </TooltipProvider>
+      </AnchoredToastProvider>
+    </ToastProvider>
   );
 }

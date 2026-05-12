@@ -32,7 +32,7 @@ export function EditClientDialog({ open, onOpenChange, client }: EditClientDialo
   const form = useForm<UpdateClientInput>({
     mode: "all",
     resolver: valibotResolver(UpdateClientSchema),
-    defaultValues: {
+    values: {
       name: client.name,
       email: client.email,
       phone: client.phone,

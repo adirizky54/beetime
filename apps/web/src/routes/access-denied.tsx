@@ -1,4 +1,4 @@
-import { Link, createFileRoute, useRouter } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { RiShieldLine } from "@remixicon/react";
 
 import { Button } from "@beetime/ui/components/button";
@@ -17,6 +17,11 @@ export const Route = createFileRoute("/access-denied")({
   head: () => ({
     meta: [{ title: "Access Denied — Bee Time" }],
   }),
+  beforeLoad: async ({ context }) => {
+    if (!context.session) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: RouteComponent,
 });
 

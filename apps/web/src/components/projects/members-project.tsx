@@ -112,7 +112,10 @@ export function MembersProject({ project }: MembersProjectProps) {
     >
       <DropdownMenu open={open} onOpenChange={handleOpenChange}>
         <Tooltip>
-          <DropdownMenuTrigger render={<TooltipTrigger render={<ProjectAvatarGroup project={project} />} />} />
+          <DropdownMenuTrigger
+            nativeButton={false}
+            render={<TooltipTrigger render={<ProjectAvatarGroup project={project} />} />}
+          />
           <TooltipContent className="flex flex-col items-start">
             {project.members.map((member) => (
               <p key={member.id}>{member.name}</p>

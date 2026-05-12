@@ -90,7 +90,7 @@ function RouteComponent() {
 
               {client.archivedAt ? (
                 <Tooltip>
-                  <TooltipTrigger render={<RiArchiveLine className="size-4 text-muted-foreground" />} />
+                  <TooltipTrigger render={<RiArchiveLine className="size-4 shrink-0 text-muted-foreground" />} />
                   <TooltipContent>Archived</TooltipContent>
                 </Tooltip>
               ) : null}
