@@ -1,0 +1,60 @@
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@beetime/ui/components/alert-dialog";
+import { Spinner } from "@beetime/ui/components/spinner";
+import { toastManager } from "@beetime/ui/components/toast";
+
+import { organizationQueries } from "@/queries/organization";
+
+type DeleteOrganizationDialogProps = {
+  orgId: string;
+  orgName: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
+
+export function DeleteOrganizationDialog({ orgId, orgName, open, onOpenChange }: DeleteOrganizationDialogProps) {
+  const navigate = useNavigate();
+
+  const { mutate: deleteOrganization, isPending } = useMutation({
+    ...organizationQueries.delete(orgId),
+    onSuccess: async () => {
+      toastManager.add({ type: "success", title: "Organization deleted" });
+      navigate({ to: "/" });
+    },
+    onError: () => {
+      toastManager.add({ type: "error", title: "Failed to delete organization. Please try again." });
+    },
+  });
+
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete organization</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete <strong>{orgName}</strong>? All projects, clients, members, and time entries
+            will be permanently removed. This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" disabled={isPending} onClick={() => deleteOrganization()}>
+            {isPending && <Spinner data-icon="inline-start" />}
+            Delete Organization
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

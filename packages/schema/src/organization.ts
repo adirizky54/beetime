@@ -21,7 +21,7 @@ export const CreateOrganizationSchema = v.object({
   ]),
 });
 
-export const UpdateOrganizationSchema = CreateOrganizationSchema;
+export const UpdateOrganizationSchema = v.omit(CreateOrganizationSchema, ["keepCurrentActiveOrganization"]);
 
 export type CreateOrganizationInput = v.InferOutput<typeof CreateOrganizationSchema>;
 export type UpdateOrganizationInput = v.InferOutput<typeof UpdateOrganizationSchema>;
