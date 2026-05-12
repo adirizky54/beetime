@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { auth } from "@/lib/auth";
 import { useMount } from "@/hooks/use-mount";
