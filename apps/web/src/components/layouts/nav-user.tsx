@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RiAccountCircleLine, RiExpandUpDownLine, RiLogoutBoxLine } from "@remixicon/react";
-import { useNavigate, useRouteContext } from "@tanstack/react-router";
+import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 
 import {
   AlertDialog,
@@ -25,6 +25,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@beetime/ui/components/sidebar";
 
 import { auth } from "@/lib/auth";
+import { getInitials } from "@/utils/string";
 
 export function NavUser() {
   const navigate = useNavigate();
@@ -50,8 +51,8 @@ export function NavUser() {
         <DropdownMenu>
           <DropdownMenuTrigger render={<SidebarMenuButton size="lg" className="select-none aria-expanded:bg-muted" />}>
             <Avatar>
-              <AvatarImage src="https://ui.shadcn.com/avatars/shadcn.jpg" alt={user?.name} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={user?.image ?? undefined} alt={user?.name} />
+              <AvatarFallback>{getInitials(user?.name ?? "")}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user?.name}</span>
@@ -69,8 +70,8 @@ export function NavUser() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar>
-                    <AvatarImage src="https://ui.shadcn.com/avatars/shadcn.jpg" alt={user?.name} />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarImage src={user?.image ?? undefined} alt={user?.name} />
+                    <AvatarFallback>{getInitials(user?.name ?? "")}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{user?.name}</span>
@@ -80,7 +81,7 @@ export function NavUser() {
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem render={<Link to="/profile" />}>
               <RiAccountCircleLine />
               Profile
             </DropdownMenuItem>
