@@ -1,10 +1,12 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@beetime/ui/components/avatar";
+import { Badge } from "@beetime/ui/components/badge";
 import { Button } from "@beetime/ui/components/button";
 import {
   Field,
@@ -79,6 +81,7 @@ function RouteComponent() {
   const queryClient = useQueryClient();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
   const slugManuallyEdited = useRef(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
@@ -93,6 +96,20 @@ function RouteComponent() {
       intervalFormat: organization.intervalFormat,
     },
   });
+
+  const { mutate: checkSlug, isPending: isCheckingSlug } = useMutation({
+    ...organizationQueries.checkSlug(),
+    onSuccess: () => {
+      setSlugAvailable(true);
+      form.clearErrors("slug");
+    },
+    onError: () => {
+      setSlugAvailable(false);
+      form.setError("slug", { type: "value", message: "This slug is already taken" });
+    },
+  });
+
+  const debouncedCheckSlug = useDebouncedCallback((slug: string) => checkSlug(slug), { wait: 300 });
 
   const { mutate: updateOrganization, isPending: isUpdatingOrganization } = useMutation({
     ...organizationQueries.update(organization.id),
@@ -120,13 +137,23 @@ function RouteComponent() {
   const onChangeName = (e: React.ChangeEvent<HTMLInputElement>, onChange: (v: string) => void) => {
     onChange(e.target.value);
     if (!slugManuallyEdited.current) {
-      form.setValue("slug", toSlug(e.target.value), { shouldValidate: true });
+      const slug = toSlug(e.target.value);
+      form.setValue("slug", slug, { shouldValidate: true });
+      setSlugAvailable(null);
+      if (slug && slug !== organization.slug) {
+        debouncedCheckSlug(slug);
+      }
     }
   };
 
   const onChangeSlug = (e: React.ChangeEvent<HTMLInputElement>, onChange: (v: string) => void) => {
     slugManuallyEdited.current = true;
-    onChange(toSlug(e.target.value));
+    const slug = toSlug(e.target.value);
+    onChange(slug);
+    setSlugAvailable(null);
+    if (slug && slug !== organization.slug) {
+      debouncedCheckSlug(slug);
+    }
   };
 
   return (
@@ -226,6 +253,15 @@ function RouteComponent() {
                             className="pl-0!"
                             onChange={(e) => onChangeSlug(e, field.onChange)}
                           />
+                          <InputGroupAddon align="inline-end">
+                            {isCheckingSlug ? (
+                              <Spinner />
+                            ) : slugAvailable !== null ? (
+                              <Badge variant={slugAvailable ? "success" : "error"}>
+                                {slugAvailable ? "Available" : "Taken"}
+                              </Badge>
+                            ) : null}
+                          </InputGroupAddon>
                         </InputGroup>
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
@@ -320,7 +356,9 @@ function RouteComponent() {
               <Field orientation="horizontal" className="justify-end">
                 <Button
                   type="submit"
-                  disabled={!form.formState.isDirty || !form.formState.isValid || isUpdatingOrganization}
+                  disabled={
+                    !form.formState.isDirty || !form.formState.isValid || isUpdatingOrganization || isCheckingSlug
+                  }
                 >
                   {isUpdatingOrganization && <Spinner data-icon="inline-start" />}
                   Save Changes
