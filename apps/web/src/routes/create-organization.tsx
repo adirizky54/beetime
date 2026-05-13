@@ -1,16 +1,19 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { createFileRoute, redirect, useCanGoBack, useRouter } from "@tanstack/react-router";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useMutation } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as v from "valibot";
 
+import { Badge } from "@beetime/ui/components/badge";
 import { Button } from "@beetime/ui/components/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@beetime/ui/components/input-group";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { CreateOrganizationSchema } from "@beetime/schema";
+import { toastManager } from "@beetime/ui/components/toast";
 
 import { auth } from "@/lib/auth";
 import { organizationQueries } from "@/queries/organization";
@@ -39,6 +42,7 @@ function RouteComponent() {
   const { data: organizations } = auth.useListOrganizations();
 
   const slugManuallyEdited = useRef(false);
+  const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
 
   const form = useForm<FormValues>({
     mode: "onChange",
@@ -49,23 +53,55 @@ function RouteComponent() {
     },
   });
 
+  const { mutate: checkSlug, isPending: isCheckingSlug } = useMutation({
+    ...organizationQueries.checkSlug(),
+    onSuccess: () => {
+      setSlugAvailable(true);
+      form.clearErrors("slug");
+    },
+    onError: () => {
+      setSlugAvailable(false);
+      form.setError("slug", { type: "value", message: "This slug is already taken" });
+    },
+  });
+
+  const debouncedCheckSlug = useDebouncedCallback((slug: string) => checkSlug(slug), { wait: 300 });
+
   const { mutate: createOrganization, isPending: isCreatingOrganization } = useMutation({
     ...organizationQueries.create(),
     onSuccess: (data) => {
+      toastManager.add({ type: "success", title: "Organization created" });
       void navigate({ to: "/$orgSlug", params: { orgSlug: data.slug } });
+    },
+    onError: (err) => {
+      const message = err instanceof Error ? err.message : undefined;
+      toastManager.add({ type: "error", title: message || "Failed to create organization. Please try again." });
     },
   });
 
   const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     form.setValue("name", e.target.value, { shouldValidate: true });
     if (!slugManuallyEdited.current) {
-      form.setValue("slug", toSlug(e.target.value), { shouldValidate: true });
+      const slug = toSlug(e.target.value);
+      form.setValue("slug", slug, { shouldValidate: true });
+      if (slug) {
+        debouncedCheckSlug(slug);
+      } else {
+        setSlugAvailable(null);
+      }
     }
   };
 
   const onChangeSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
     slugManuallyEdited.current = true;
-    form.setValue("slug", toSlug(e.target.value));
+    const slug = toSlug(e.target.value);
+    form.setValue("slug", slug);
+    setSlugAvailable(null);
+    if (slug) {
+      debouncedCheckSlug(slug);
+    } else {
+      setSlugAvailable(null);
+    }
   };
 
   const onBack = () => {
@@ -109,6 +145,7 @@ function RouteComponent() {
                     id="org-name"
                     placeholder="Acme Inc."
                     aria-invalid={fieldState.invalid}
+                    autoComplete="off"
                     autoFocus
                     onChange={onChangeName}
                   />
@@ -135,6 +172,15 @@ function RouteComponent() {
                       className="pl-0!"
                       onChange={onChangeSlug}
                     />
+                    <InputGroupAddon align="inline-end">
+                      {isCheckingSlug ? (
+                        <Spinner />
+                      ) : slugAvailable !== null ? (
+                        <Badge variant={slugAvailable ? "success" : "error"}>
+                          {slugAvailable ? "Available" : "Taken"}
+                        </Badge>
+                      ) : null}
+                    </InputGroupAddon>
                   </InputGroup>
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
@@ -148,7 +194,7 @@ function RouteComponent() {
                 </Button>
               )}
 
-              <Button type="submit" disabled={!form.formState.isValid || isCreatingOrganization}>
+              <Button type="submit" disabled={!form.formState.isValid || isCreatingOrganization || isCheckingSlug}>
                 {isCreatingOrganization && <Spinner data-icon="inline-start" />}
                 Create Organization
               </Button>

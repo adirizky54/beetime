@@ -50,6 +50,16 @@ export const organizationQueries = {
         return data;
       },
     }),
+  checkSlugKey: () => [...organizationQueries.all(), "check-slug"] as const,
+  checkSlug: () =>
+    mutationOptions({
+      mutationKey: organizationQueries.checkSlugKey(),
+      mutationFn: async (slug: string) => {
+        const { data, error } = await auth.organization.checkSlug({ slug });
+        if (error) throw error;
+        return data;
+      },
+    }),
   deleteKey: (orgId: string) => [...organizationQueries.all(), "delete", orgId] as const,
   delete: (orgId: string) =>
     mutationOptions({
