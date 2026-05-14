@@ -21,14 +21,6 @@ export const Route = createFileRoute("/$orgSlug")({
       throw notFound();
     }
 
-    if (context.session.activeOrganizationId !== org.data.id) {
-      const { error } = await auth.organization.setActive({ organizationSlug: params.orgSlug });
-
-      if (error && error.code === "USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION") {
-        throw notFound();
-      }
-    }
-
     return {
       organization: {
         id: org.data.id,

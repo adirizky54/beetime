@@ -1,6 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { auth } from "@/lib/auth";
 import { useMount } from "@/hooks/use-mount";
 
 export const Route = createFileRoute("/")({
@@ -14,37 +13,18 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
-  const { session } = Route.useRouteContext();
+  const { organizations } = Route.useRouteContext();
 
   useMount(async () => {
-    if (session && session.activeOrganizationId) {
-      const org = await auth.organization.getFullOrganization({
-        query: {
-          organizationId: session.activeOrganizationId,
+    if (organizations.length > 0) {
+      navigate({
+        to: "/$orgSlug",
+        params: {
+          orgSlug: organizations[0].slug,
         },
       });
-
-      if (!org.error) {
-        navigate({
-          to: "/$orgSlug",
-          params: {
-            orgSlug: org.data.slug,
-          },
-        });
-      }
     } else {
-      const { data: organizations } = await auth.organization.list();
-
-      if (Array.isArray(organizations) && organizations.length > 0) {
-        navigate({
-          to: "/$orgSlug",
-          params: {
-            orgSlug: organizations[0].slug,
-          },
-        });
-      } else {
-        navigate({ to: "/create-organization" });
-      }
+      navigate({ to: "/create-organization" });
     }
   });
 
