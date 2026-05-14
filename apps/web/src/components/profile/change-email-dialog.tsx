@@ -33,7 +33,11 @@ export function ChangeEmailDialog({ open, onOpenChange }: ChangeEmailDialogProps
     },
   });
 
-  const { mutate: changeEmail, isPending, reset: resetMutation } = useMutation({
+  const {
+    mutate: changeEmail,
+    isPending,
+    reset: resetMutation,
+  } = useMutation({
     ...profileQueries.changeEmail(),
     onSuccess: () => {
       handleOpenChange(false);
