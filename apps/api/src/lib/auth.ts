@@ -20,6 +20,14 @@ export const auth = betterAuth({
     provider: "pg",
     usePlural: true,
   }),
+  user: {
+    changeEmail: {
+      enabled: true,
+    },
+    deleteUser: {
+      enabled: true,
+    },
+  },
   disabledPaths: ["/organization/list-members"],
   emailAndPassword: {
     enabled: true,
