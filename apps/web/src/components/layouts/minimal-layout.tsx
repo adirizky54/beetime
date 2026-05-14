@@ -25,13 +25,19 @@ import {
 
 import { auth } from "@/lib/auth";
 import { Button } from "@beetime/ui/components/button";
+import { cn } from "@beetime/ui/lib/utils";
 
-export function MinimalLayout({ children }: { children: React.ReactNode }) {
+export function MinimalLayout({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
     <main className="flex min-h-svh w-full flex-1 flex-col bg-muted">
       <Header />
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="grid min-h-svh flex-1 place-items-center rounded-xl bg-background p-4 md:min-h-min">
+        <div
+          className={cn(
+            "grid min-h-svh flex-1 place-items-center rounded-xl bg-background p-4 md:min-h-min",
+            className,
+          )}
+        >
           {children}
         </div>
       </div>
