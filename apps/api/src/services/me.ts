@@ -10,7 +10,7 @@ export async function getCurrentUser(headers: Headers) {
   const organizations = await auth.api.listOrganizations({ headers });
 
   return {
-    user: session.user,
+    ...session,
     organizations: organizations,
   };
 }

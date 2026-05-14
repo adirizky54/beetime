@@ -9,6 +9,7 @@ type RouterContext = {
   session: Session | null;
   user: User | null;
   organization: Organization | null;
+  organizations: Organization[];
 };
 
 export function getRouter() {
@@ -31,6 +32,7 @@ export function getRouter() {
       session: null,
       user: null,
       organization: null,
+      organizations: [],
     } satisfies RouterContext,
     scrollRestoration: true,
     defaultPreload: "intent",
