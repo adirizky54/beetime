@@ -4,6 +4,7 @@
   "globalDependencies": [".env"],
   "tasks": {
     "build": {
+      "env": ["VITE_API_BASE_URL"],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".vinxi/**", ".output/**", ".vercel/output/**"]
