@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --hot --port=8080 src/index.ts",
-    "build": "tsc",
     "clean": "rm -rf .turbo && rm -rf node_modules",
     "check:format": "oxfmt --check",
     "check:lint": "oxlint",
