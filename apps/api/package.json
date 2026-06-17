@@ -2,6 +2,7 @@
   "name": "@beetime/api",
   "version": "0.0.1",
   "type": "module",
+  "main": "./src/index.ts",
   "scripts": {
     "dev": "bun run --hot --port=8080 src/index.ts",
     "clean": "rm -rf .turbo && rm -rf node_modules",
