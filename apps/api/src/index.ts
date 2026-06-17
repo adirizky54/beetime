@@ -13,9 +13,15 @@
 
 // export default app;
 import { Hono } from "hono";
+import { env } from "@beetime/env/api";
 
 const app = new Hono();
 
-app.get("/", (c) => c.text("hello"));
+app.get("/", (c) => {
+  return c.json({
+    APP_NAME: env.APP_NAME,
+    BETTER_AUTH_SECRET: env.BETTER_AUTH_SECRET,
+  });
+});
 
 export default app;
