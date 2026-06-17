@@ -19,7 +19,8 @@ const app = new Hono();
 
 app.get("/", (c) => {
   return c.json({
-    APP_NAME: env.APP_NAME,
+    APP_NAME: "test",
+    // APP_NAME: env.APP_NAME,
   });
 });
 
