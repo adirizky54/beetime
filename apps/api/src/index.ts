@@ -12,16 +12,3 @@ showRoutes(app, {
 });
 
 export default app;
-// import { Hono } from "hono";
-// import { env } from "@/env";
-
-// const app = new Hono();
-
-// app.get("/", (c) => {
-//   return c.json({
-//     APP_NAME: "test",
-//     // APP_NAME: env.APP_NAME,
-//   });
-// });
-
-// export default app;
