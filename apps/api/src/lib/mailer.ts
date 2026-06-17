@@ -1,11 +1,11 @@
 import { render, toPlainText } from "react-email";
 import { Resend } from "resend";
 import * as v from "valibot";
-import type { Env } from "@beetime/env/api";
+import type { Env } from "@/env";
 
-import { EmailVerification } from "./templates/email-verification";
-import { Invitation } from "./templates/invitation";
-import { ResetPassword } from "./templates/reset-password";
+import EmailVerification from "@/emails/email-verification";
+import ResetPassword from "@/emails/reset-password";
+import Invitation from "@/emails/invitation";
 
 export interface EmailOptions {
   to: string | string[];

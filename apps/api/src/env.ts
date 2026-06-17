@@ -4,7 +4,6 @@ const EnvSchema = v.object({
   APP_NAME: v.string(),
   APP_ORIGIN: v.pipe(v.string(), v.nonEmpty(), v.url()),
   API_ORIGIN: v.pipe(v.string(), v.nonEmpty(), v.url()),
-  PORT: v.string(),
   DATABASE_URL: v.pipe(v.string(), v.url()),
   BETTER_AUTH_SECRET: v.pipe(v.string(), v.minLength(32)),
   RESEND_API_KEY: v.string(),

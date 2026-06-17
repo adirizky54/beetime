@@ -2,10 +2,10 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin as adminPlugin, organization } from "better-auth/plugins";
 import { nanoid } from "nanoid";
-import { sendVerificationEmail, sendResetPasswordEmail, sendInvitationEmail } from "@beetime/email";
-import { env } from "@beetime/env/api";
+import { env } from "@/env";
 
 import { db } from "./db";
+import { sendVerificationEmail, sendResetPasswordEmail, sendInvitationEmail } from "./mailer";
 import { getActiveOrganization } from "@/utils/access";
 import { ac, admin, member, owner, superadmin, user } from "@/utils/permissions";
 import { toSlug } from "@/utils/string";

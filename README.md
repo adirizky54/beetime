@@ -39,13 +39,11 @@ beetime/
 │   ├── api/        # REST API — Hono + Bun + Drizzle ORM
 │   └── web/        # Frontend SPA — React + TanStack Router/Query + Vite
 └── packages/
-    ├── email/      # Transactional email templates and mailer (React Email + Resend)
-    ├── env/        # Shared environment variable validation (Valibot)
     ├── schema/     # Shared Valibot validation schemas and TypeScript types
     └── ui/         # Shared React component library (Shadcn UI + Tailwind CSS v4)
 ```
 
-The `@beetime/schema` and `@beetime/env` packages are shared across the stack, providing a single source of truth for validation and TypeScript types. `@beetime/email` encapsulates all transactional email logic and React Email templates.
+The `@beetime/schema` package is shared across the stack, providing a single source of truth for validation and TypeScript types.
 
 ## Tech Stack
 
@@ -98,7 +96,6 @@ The `@beetime/schema` and `@beetime/env` packages are shared across the stack, p
    |---|---|---|
    | `APP_NAME` | Application name | `Beetime API` |
    | `API_ORIGIN` | Root URL where your application server is hosted | `http://localhost:8080` |
-   | `PORT` | API server port | `8080` |
    | `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:postgres@localhost:5432/postgres` |
    | `BETTER_AUTH_SECRET` | Secret key for Better Auth (min. 32 chars) | — |
    | `RESEND_API_KEY` | API key from your [Resend](https://resend.com) dashboard | — |
@@ -130,9 +127,6 @@ The `@beetime/schema` and `@beetime/env` packages are shared across the stack, p
 
 > [!TIP]
 > Use `bun db:studio` to open Drizzle Studio, a browser-based database GUI, for inspecting and editing your data during development.
-
-> [!TIP]
-> You can preview email templates locally without a Resend account by running `bun dev --filter @beetime/email`. This starts the React Email dev server at `http://localhost:3001`.
 
 ## Available Scripts
 

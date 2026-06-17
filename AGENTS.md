@@ -10,13 +10,11 @@ beetime/
 │   ├── api/        # @beetime/api   — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
 │   └── web/        # @beetime/web   — Frontend SPA (React + TanStack Router/Query + Vite)
 └── packages/
-    ├── email/      # @beetime/email  — Transactional email templates and mailer (React Email + Resend)
-    ├── env/        # @beetime/env    — Shared environment variable validation (Valibot, no build step)
     ├── schema/     # @beetime/schema — Shared Valibot schemas + TypeScript types (no build step)
     └── ui/         # @beetime/ui    — Shared React component library (Shadcn + Tailwind CSS v4, no build step)
 ```
 
-Key domains: projects, clients, tasks, members, organizations, timesheets. Authentication is handled by **Better Auth** with the organization plugin and role-based access control (RBAC). Transactional email (verification, notifications) is handled by **Resend** via the `@beetime/email` package.
+Key domains: projects, clients, tasks, members, organizations, timesheets. Authentication is handled by **Better Auth** with the organization plugin and role-based access control (RBAC). Transactional email (verification, notifications, invitations) is handled by **Resend** via `apps/api/src/emails/` and `apps/api/src/lib/mailer.ts`.
 
 ---
 
@@ -39,16 +37,15 @@ cp apps/web/.env.example apps/web/.env
 |---|---|---|
 | `APP_NAME` | No | Application name; defaults to `"Beetime API"` |
 | `API_ORIGIN` | Yes | Root URL where your application server is hosted (e.g. `http://localhost:8080`) |
-| `PORT` | No | API server port; defaults to `8080` |
 | `DATABASE_URL` | Yes | PostgreSQL connection string (e.g. `postgresql://postgres:postgres@localhost:5432/postgres`) |
 | `BETTER_AUTH_SECRET` | Yes | Secret key — **must be at least 32 characters** |
 | `RESEND_API_KEY` | Yes | API key from your Resend dashboard |
 | `RESEND_EMAIL_FROM` | Yes | Verified sender address for outgoing emails (e.g. `noreply@yourdomain.com`) |
 
-Env vars are parsed and validated at startup via Valibot in `packages/env/src/api.ts`. The process exits immediately if a required variable is missing or invalid. The validated `env` object and `Env` type are imported as:
+Env vars are parsed and validated at startup via Valibot in `apps/api/src/env.ts`. The process exits immediately if a required variable is missing or invalid. The validated `env` object and `Env` type are imported as:
 
 ```ts
-import { env, type Env } from "@beetime/env/api"
+import { env, type Env } from "@/env"
 ```
 
 ### Web environment variables (`apps/web/.env`)
@@ -80,9 +77,6 @@ bun run dev --filter @beetime/api
 # Web only
 bun run dev --filter @beetime/web
 
-# Email template preview (React Email dev server)
-bun run dev --filter @beetime/email
-# Opens at http://localhost:3001 — no Resend account needed for local preview
 ```
 
 ---
@@ -134,18 +128,16 @@ bun run check:types --filter @beetime/api
 bun run check:types --filter @beetime/web
 bun run check:types --filter @beetime/schema
 bun run check:types --filter @beetime/ui
-bun run check:types --filter @beetime/env
-bun run check:types --filter @beetime/email
 ```
 
 All packages run `tsc --noEmit`. Fix all type errors before committing. Notable strictness flags active across packages:
 
 - `strict: true` — in all packages
-- `noUnusedLocals`, `noUnusedParameters` — in `apps/web`, `packages/schema`, and `packages/env`
+- `noUnusedLocals`, `noUnusedParameters` — in `apps/web` and `packages/schema`
 - `noUncheckedIndexedAccess` — in `packages/schema` (strictest)
-- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web` and `packages/env`
-- `verbatimModuleSyntax: true` — in `apps/api`, `packages/schema`, and `packages/env` (use `import type` for type-only imports)
-- `jsx: react-jsx` — in `packages/email` and `packages/ui`
+- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web`
+- `verbatimModuleSyntax: true` — in `apps/api` and `packages/schema` (use `import type` for type-only imports)
+- `jsx: react-jsx` — in `packages/ui`
 
 ---
 
@@ -193,9 +185,9 @@ Style conventions (not enforced by tooling, follow by observation):
 ### General
 
 - **Package manager:** always use `bun` — never `npm` or `pnpm`
-- **Adding a dependency:** `bun add <package> --cwd apps/api` (or `--cwd apps/web`, `--cwd packages/email`, etc.)
+- **Adding a dependency:** `bun add <package> --cwd apps/api` (or `--cwd apps/web`, etc.)
 - **Internal package references:** use `workspace:*` in `package.json` (e.g. `"@beetime/schema": "workspace:*"`)
-- **Workspace package names:** `@beetime/api`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`, `@beetime/env`, `@beetime/email`
+- **Workspace package names:** `@beetime/api`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`
 
 ### API (`apps/api`)
 
@@ -305,40 +297,31 @@ bunx shadcn add <component-name>
 
 Components go into `packages/ui/src/components/` and are consumed as `@beetime/ui/components/<name>`.
 
-### Shared Environment (`packages/env`)
+### Environment (`apps/api/src/env.ts`)
 
-- Consumed as TypeScript source directly — no build step, no compilation required
-- Exports a single subpath: `@beetime/env/api` → `src/api.ts`
-- Parses and validates `process.env` with Valibot at import time — **do not import this in browser code**
+- Parses and validates `process.env` with Valibot at import time
+- Export: `import { env, type Env } from "@/env"`
 - Usage:
 
 ```ts
-import { env, type Env } from "@beetime/env/api"
+import { env, type Env } from "@/env"
 // env.DATABASE_URL, env.RESEND_API_KEY, etc.
 ```
 
-- To add a new env var: add it to the `EnvSchema` in `packages/env/src/api.ts`, then update `apps/api/.env.example`
-- Uses `verbatimModuleSyntax: true` — use `import type` for type-only imports
+- To add a new env var: add it to `EnvSchema` in `apps/api/src/env.ts`, then update `apps/api/.env.example`
 
-### Shared Email (`packages/email`)
+### Email (`apps/api/src/emails/`)
 
-- Consumed as TypeScript source directly — no build step
-- Import path: `@beetime/email` → `index.ts`
-- Email templates are React components in `packages/email/templates/`
-- Shared layout primitives live in `packages/email/components/`
-- Depends on `@beetime/env` for Resend credentials at send time
+- Email templates are React components in `apps/api/src/emails/`
+- Mailer utility and send functions live in `apps/api/src/lib/mailer.ts`
+- Uses `react-email` for rendering, `resend` for delivery
+- Depends on `@/env` (`apps/api/src/env.ts`) for Resend credentials at send time
 
 **Adding a new email template:**
 
-1. Create a React component in `packages/email/templates/<name>.tsx`
-2. Add a send function in `packages/email/mailer.ts` that renders the template and calls `sendEmail`
-3. Export the new send function from `packages/email/index.ts`
-4. Preview the template locally:
-
-```sh
-bun run dev --filter @beetime/email
-# Opens React Email dev server at http://localhost:3001
-```
+1. Create a React component in `apps/api/src/emails/<name>.tsx`
+2. Add a send function in `apps/api/src/lib/mailer.ts` that renders the template and calls `sendEmail`
+3. Export the new send function from the top of `apps/api/src/lib/mailer.ts` (or re-export as needed)
 
 **Send function pattern:**
 
@@ -406,9 +389,9 @@ Before committing any change, ensure:
 1. `bun check` passes with zero errors across all packages (covers format, lint, and types)
 2. No `routeTree.gen.ts` manual edits — this file is auto-generated by the Vite plugin on `bun dev`
 3. New DB schema changes come with a generated migration: `bun db:generate`
-4. New env vars are added to `packages/env/src/api.ts` **and** `apps/api/.env.example`
+4. New env vars are added to `apps/api/src/env.ts` **and** `apps/api/.env.example`
 5. New shared types and validation schemas go in `packages/schema`, not duplicated in `apps/`
-6. New email templates and send functions go in `packages/email`, not inline in `apps/api`
+6. New email templates go in `apps/api/src/emails/`, send functions go in `apps/api/src/lib/mailer.ts`
 7. New reusable UI components go in `packages/ui/src/components/`, not in `apps/web/src/components/ui/`
 8. `import type` is used for type-only imports in all files (required by `verbatimModuleSyntax`)
 
