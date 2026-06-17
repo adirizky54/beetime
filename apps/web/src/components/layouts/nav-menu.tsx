@@ -29,7 +29,7 @@ export function NavMenu() {
           id: "dashboard",
           title: "Dashboard",
           link: linkOptions({
-            to: "/$orgSlug",
+            to: "/$orgSlug/dashboard",
             params: { orgSlug },
           }),
           icon: <RiDashboardFill />,
@@ -102,10 +102,7 @@ export function NavMenu() {
         <SidebarMenu>
           {group.items.map((item) => (
             <SidebarMenuItem key={item.id}>
-              <SidebarMenuButton
-                tooltip={item.title}
-                render={<Link {...item.link} preload={false} activeOptions={{ exact: true, includeSearch: false }} />}
-              >
+              <SidebarMenuButton tooltip={item.title} render={<Link {...item.link} preload={false} />}>
                 {item.icon}
                 <span>{item.title}</span>
               </SidebarMenuButton>

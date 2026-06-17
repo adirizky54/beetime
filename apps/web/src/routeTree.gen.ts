@@ -25,6 +25,7 @@ import { Route as AccessDeniedRouteImport } from "./routes/access-denied";
 import { Route as OrgSlugRouteRouteImport } from "./routes/$orgSlug/route";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as OrgSlugIndexRouteImport } from "./routes/$orgSlug/index";
+import { Route as OrgSlugDashboardRouteImport } from "./routes/$orgSlug/dashboard";
 import { Route as OrgSlugTimesheetIndexRouteImport } from "./routes/$orgSlug/timesheet/index";
 import { Route as OrgSlugSettingsIndexRouteImport } from "./routes/$orgSlug/settings/index";
 import { Route as OrgSlugProjectsIndexRouteImport } from "./routes/$orgSlug/projects/index";
@@ -92,6 +93,11 @@ const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
   path: "/",
   getParentRoute: () => OrgSlugRouteRoute,
 } as any);
+const OrgSlugDashboardRoute = OrgSlugDashboardRouteImport.update({
+  id: "/dashboard",
+  path: "/dashboard",
+  getParentRoute: () => OrgSlugRouteRoute,
+} as any);
 const OrgSlugTimesheetIndexRoute = OrgSlugTimesheetIndexRouteImport.update({
   id: "/timesheet/",
   path: "/timesheet/",
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
+  "/$orgSlug/dashboard": typeof OrgSlugDashboardRoute;
   "/$orgSlug/": typeof OrgSlugIndexRoute;
   "/$orgSlug/clients/": typeof OrgSlugClientsIndexRoute;
   "/$orgSlug/members/": typeof OrgSlugMembersIndexRoute;
@@ -155,6 +162,7 @@ export interface FileRoutesByTo {
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
+  "/$orgSlug/dashboard": typeof OrgSlugDashboardRoute;
   "/$orgSlug": typeof OrgSlugIndexRoute;
   "/$orgSlug/clients": typeof OrgSlugClientsIndexRoute;
   "/$orgSlug/members": typeof OrgSlugMembersIndexRoute;
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   "/reset-password": typeof ResetPasswordRoute;
   "/sign-up": typeof SignUpRoute;
   "/verify-email": typeof VerifyEmailRoute;
+  "/$orgSlug/dashboard": typeof OrgSlugDashboardRoute;
   "/$orgSlug/": typeof OrgSlugIndexRoute;
   "/$orgSlug/clients/": typeof OrgSlugClientsIndexRoute;
   "/$orgSlug/members/": typeof OrgSlugMembersIndexRoute;
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
+    | "/$orgSlug/dashboard"
     | "/$orgSlug/"
     | "/$orgSlug/clients/"
     | "/$orgSlug/members/"
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
+    | "/$orgSlug/dashboard"
     | "/$orgSlug"
     | "/$orgSlug/clients"
     | "/$orgSlug/members"
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | "/reset-password"
     | "/sign-up"
     | "/verify-email"
+    | "/$orgSlug/dashboard"
     | "/$orgSlug/"
     | "/$orgSlug/clients/"
     | "/$orgSlug/members/"
@@ -346,6 +358,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof OrgSlugIndexRouteImport;
       parentRoute: typeof OrgSlugRouteRoute;
     };
+    "/$orgSlug/dashboard": {
+      id: "/$orgSlug/dashboard";
+      path: "/dashboard";
+      fullPath: "/$orgSlug/dashboard";
+      preLoaderRoute: typeof OrgSlugDashboardRouteImport;
+      parentRoute: typeof OrgSlugRouteRoute;
+    };
     "/$orgSlug/timesheet/": {
       id: "/$orgSlug/timesheet/";
       path: "/timesheet";
@@ -392,6 +411,7 @@ declare module "@tanstack/react-router" {
 }
 
 interface OrgSlugRouteRouteChildren {
+  OrgSlugDashboardRoute: typeof OrgSlugDashboardRoute;
   OrgSlugIndexRoute: typeof OrgSlugIndexRoute;
   OrgSlugClientsIndexRoute: typeof OrgSlugClientsIndexRoute;
   OrgSlugMembersIndexRoute: typeof OrgSlugMembersIndexRoute;
@@ -402,6 +422,7 @@ interface OrgSlugRouteRouteChildren {
 }
 
 const OrgSlugRouteRouteChildren: OrgSlugRouteRouteChildren = {
+  OrgSlugDashboardRoute: OrgSlugDashboardRoute,
   OrgSlugIndexRoute: OrgSlugIndexRoute,
   OrgSlugClientsIndexRoute: OrgSlugClientsIndexRoute,
   OrgSlugMembersIndexRoute: OrgSlugMembersIndexRoute,
