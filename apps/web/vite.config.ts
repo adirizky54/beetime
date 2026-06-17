@@ -7,7 +7,9 @@ import { nitro } from "nitro/vite";
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
-    nitro(),
+    nitro({
+      preset: "vercel",
+    }),
     tailwindcss(),
     tanstackStart({
       router: {
