@@ -138,6 +138,13 @@ export const auth = betterAuth({
       },
     },
   },
+  advanced: {
+    defaultCookieAttributes: {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    },
+  },
 });
 
 // Base session types from Better Auth - plugin-specific fields added at runtime
