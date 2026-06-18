@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@beetime/ui/components/select";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 import { UpdateOrganizationSchema, type UpdateOrganizationInput } from "@beetime/schema";
 
 import { AppBody } from "@/components/layouts/app-body";
@@ -114,7 +114,7 @@ function RouteComponent() {
   const { mutate: updateOrganization, isPending: isUpdatingOrganization } = useMutation({
     ...organizationQueries.update(organization.id),
     onSuccess: async (data) => {
-      toastManager.add({ type: "success", title: "Organization updated" });
+      toast.success("Organization updated");
       await queryClient.invalidateQueries({ queryKey: organizationQueries.getKey(organization.id) });
 
       if (data && data.slug !== organization.slug) {
@@ -126,7 +126,7 @@ function RouteComponent() {
         error && typeof error === "object" && "message" in error
           ? String(error.message)
           : "Something went wrong. Please try again.";
-      toastManager.add({ type: "error", title: message });
+      toast.error(message);
     },
   });
 

@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@beetime/ui/components/dropdown-menu";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
 import { Can } from "@/components/ui/can";
@@ -39,10 +39,10 @@ export function ActionsProject({ project }: ActionProjectProps) {
     ...projectQueries.archive(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
-      toastManager.add({ type: "success", title: response.message });
+      toast.success(response.message);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to archive project" });
+      toast.error("Failed to archive project");
     },
   });
 
@@ -50,10 +50,10 @@ export function ActionsProject({ project }: ActionProjectProps) {
     ...projectQueries.unarchive(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
-      toastManager.add({ type: "success", title: response.message });
+      toast.success(response.message);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to unarchive project" });
+      toast.error("Failed to unarchive project");
     },
   });
 

@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@beetime/ui/components/select";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { memberQueries } from "@/queries/member";
 
@@ -61,12 +61,12 @@ export function ChangeRoleDialog({ member, open, onOpenChange, orgId }: ChangeRo
     ...memberQueries.updateMemberRole(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...memberQueries.listKey(), orgId] });
-      toastManager.add({ type: "success", title: "Role updated" });
+      toast.success("Role updated");
       handleOpenChange(false);
     },
     onError: (error) => {
       const message = error.message ?? "";
-      toastManager.add({ type: "error", title: message || "Something went wrong. Please try again." });
+      toast.error(message || "Something went wrong. Please try again.");
     },
   });
 

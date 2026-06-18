@@ -16,7 +16,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/component
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { Textarea } from "@beetime/ui/components/textarea";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { clientQueries } from "@/queries/client";
 
@@ -49,7 +49,7 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clientQueries.listKey() });
       queryClient.invalidateQueries({ queryKey: clientQueries.listAllKey() });
-      toastManager.add({ type: "success", title: "Client created" });
+      toast.success("Client created");
       handleOpenChange(false);
     },
     onError: (error) => {
@@ -63,10 +63,10 @@ export function CreateClientDialog({ open, onOpenChange, orgId }: CreateClientDi
             });
           }
         } else {
-          toastManager.add({ type: "error", title: error.data.message });
+          toast.error(error.data.message);
         }
       } else {
-        toastManager.add({ type: "error", title: "Something went wrong. Please try again." });
+        toast.error("Something went wrong. Please try again.");
       }
     },
   });

@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@beetime/ui/components/select";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { memberQueries } from "@/queries/member";
 import { invitationQueries } from "@/queries/invitation";
@@ -73,7 +73,7 @@ export function InviteMemberDialog({ open, onOpenChange, orgId }: InviteMemberDi
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: memberQueries.listKey() });
       queryClient.invalidateQueries({ queryKey: invitationQueries.listKey(orgId) });
-      toastManager.add({ type: "success", title: "Invitation sent" });
+      toast.success("Invitation sent");
       handleOpenChange(false);
     },
     onError: (error) => {

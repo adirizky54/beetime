@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@beetime/ui/components/dropdown-menu";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
 import { Can } from "@/components/ui/can";
@@ -32,10 +32,10 @@ export function ActionsClient({ client }: ActionsClientProps) {
     ...clientQueries.archive(client.organizationId, client.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: clientQueries.listKey() });
-      toastManager.add({ type: "success", title: response.message });
+      toast.success(response.message);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to archive client" });
+      toast.error("Failed to archive client");
     },
   });
 
@@ -43,10 +43,10 @@ export function ActionsClient({ client }: ActionsClientProps) {
     ...clientQueries.unarchive(client.organizationId, client.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: clientQueries.listKey() });
-      toastManager.add({ type: "success", title: response.message });
+      toast.success(response.message);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to unarchive client" });
+      toast.error("Failed to unarchive client");
     },
   });
 

@@ -15,7 +15,7 @@ import {
 import { Field, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { profileQueries } from "@/queries/profile";
 
@@ -41,14 +41,14 @@ export function ChangeEmailDialog({ open, onOpenChange }: ChangeEmailDialogProps
     ...profileQueries.changeEmail(),
     onSuccess: () => {
       handleOpenChange(false);
-      toastManager.add({ type: "success", title: "Verification email sent. Check your inbox." });
+      toast.success("Verification email sent. Check your inbox.");
     },
     onError: (error) => {
       const message =
         error && typeof error === "object" && "message" in error
           ? String(error.message)
           : "Something went wrong. Please try again.";
-      toastManager.add({ type: "error", title: message });
+      toast.error(message);
     },
   });
 

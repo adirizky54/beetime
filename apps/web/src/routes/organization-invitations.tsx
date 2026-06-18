@@ -19,7 +19,7 @@ import {
 import { Button } from "@beetime/ui/components/button";
 import { Skeleton } from "@beetime/ui/components/skeleton";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { MinimalLayout } from "@/components/layouts/minimal-layout";
 import { invitationQueries } from "@/queries/invitation";
@@ -93,7 +93,7 @@ function InvitationDetails({ token }: { token: string }) {
       navigate({ to: "/" });
     },
     onError: (err) => {
-      toastManager.add({ type: "error", title: err.message || "Failed to accept invitation." });
+      toast.error(err.message || "Failed to accept invitation.");
     },
   });
 
@@ -103,7 +103,7 @@ function InvitationDetails({ token }: { token: string }) {
       navigate({ to: "/" });
     },
     onError: (err) => {
-      toastManager.add({ type: "error", title: err.message || "Failed to decline invitation." });
+      toast.error(err.message || "Failed to decline invitation.");
       setShowDeclineDialog(false);
     },
   });

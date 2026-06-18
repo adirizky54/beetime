@@ -3,7 +3,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 
-import { AnchoredToastProvider, ToastProvider } from "@beetime/ui/components/toast";
+import { Toaster } from "@beetime/ui/components/sonner";
 import { TooltipProvider } from "@beetime/ui/components/tooltip";
 import appCss from "@beetime/ui/globals.css?url";
 
@@ -64,12 +64,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <ToastProvider>
-      <AnchoredToastProvider>
-        <TooltipProvider>
-          <Outlet />
-        </TooltipProvider>
-      </AnchoredToastProvider>
-    </ToastProvider>
+    <TooltipProvider>
+      <Outlet />
+      <Toaster />
+    </TooltipProvider>
   );
 }

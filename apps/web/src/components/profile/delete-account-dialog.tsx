@@ -16,7 +16,7 @@ import {
 import { Field, FieldError, FieldLabel } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 import { DeleteAccountSchema, type DeleteAccountInput } from "@beetime/schema";
 
 import { profileQueries } from "@/queries/profile";
@@ -44,7 +44,7 @@ export function DeleteAccountDialog({ open, onOpenChange }: { open: boolean; onO
         error && typeof error === "object" && "message" in error
           ? String(error.message)
           : "Something went wrong. Please try again.";
-      toastManager.add({ type: "error", title: message });
+      toast.error(message);
     },
   });
 

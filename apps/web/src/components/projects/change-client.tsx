@@ -16,7 +16,7 @@ import {
 } from "@beetime/ui/components/dropdown-menu";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@beetime/ui/components/empty";
 import { Skeleton } from "@beetime/ui/components/skeleton";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@beetime/ui/components/input-group";
 
 import { clientQueries } from "@/queries/client";
@@ -42,10 +42,10 @@ export function ChangeClient({ project }: ChangeClientProps) {
     ...projectQueries.update(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
-      toastManager.add({ type: "success", title: response.message });
+      toast.success(response.message);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to update client" });
+      toast.error("Failed to update client");
     },
   });
 

@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
 } from "@beetime/ui/components/alert-dialog";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { organizationQueries } from "@/queries/organization";
 
@@ -29,11 +29,11 @@ export function DeleteOrganizationDialog({ orgId, orgName, open, onOpenChange }:
   const { mutate: deleteOrganization, isPending: isDeletingOrganization } = useMutation({
     ...organizationQueries.delete(orgId),
     onSuccess: async () => {
-      toastManager.add({ type: "success", title: "Organization deleted" });
+      toast.success("Organization deleted");
       navigate({ to: "/" });
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to delete organization. Please try again." });
+      toast.error("Failed to delete organization. Please try again.");
     },
   });
 

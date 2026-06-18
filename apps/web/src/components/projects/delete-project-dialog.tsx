@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
 } from "@beetime/ui/components/alert-dialog";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { projectQueries } from "@/queries/project";
 
@@ -29,11 +29,11 @@ export function DeleteProjectDialog({ project, open, onOpenChange }: DeleteProje
     ...projectQueries.delete(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
-      toastManager.add({ type: "success", title: response.message });
+      toast.success(response.message);
       onOpenChange(false);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to delete project" });
+      toast.error("Failed to delete project");
     },
   });
 

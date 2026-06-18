@@ -31,7 +31,7 @@ import { Input } from "@beetime/ui/components/input";
 import { RadioGroup, RadioGroupItem } from "@beetime/ui/components/radio-group";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { Textarea } from "@beetime/ui/components/textarea";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { getInitials } from "@/utils/string";
 import { clientQueries } from "@/queries/client";
@@ -81,7 +81,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
     ...projectQueries.create(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
-      toastManager.add({ type: "success", title: "Project created" });
+      toast.success("Project created");
       handleOpenChange(false);
     },
     onError: (error) => {
@@ -95,10 +95,10 @@ export function CreateProjectDialog({ open, onOpenChange, orgId }: CreateProject
             });
           }
         } else {
-          toastManager.add({ type: "error", title: error.data.message });
+          toast.error(error.data.message);
         }
       } else {
-        toastManager.add({ type: "error", title: "Something went wrong. Please try again." });
+        toast.error("Something went wrong. Please try again.");
       }
     },
   });

@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
 } from "@beetime/ui/components/alert-dialog";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { memberQueries } from "@/queries/member";
 
@@ -30,11 +30,11 @@ export function RemoveMemberDialog({ member, open, onOpenChange, orgId }: Remove
     ...memberQueries.removeMember(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...memberQueries.listKey(), orgId] });
-      toastManager.add({ type: "success", title: "Member removed" });
+      toast.success("Member removed");
       onOpenChange(false);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to remove member" });
+      toast.error("Failed to remove member");
     },
   });
 

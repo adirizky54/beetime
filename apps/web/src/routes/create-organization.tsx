@@ -13,7 +13,7 @@ import { Input } from "@beetime/ui/components/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@beetime/ui/components/input-group";
 import { Spinner } from "@beetime/ui/components/spinner";
 import { CreateOrganizationSchema } from "@beetime/schema";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { auth } from "@/lib/auth";
 import { organizationQueries } from "@/queries/organization";
@@ -70,12 +70,12 @@ function RouteComponent() {
   const { mutate: createOrganization, isPending: isCreatingOrganization } = useMutation({
     ...organizationQueries.create(),
     onSuccess: (data) => {
-      toastManager.add({ type: "success", title: "Organization created" });
+      toast.success("Organization created");
       void navigate({ to: "/$orgSlug", params: { orgSlug: data.slug } });
     },
     onError: (err) => {
       const message = err instanceof Error ? err.message : undefined;
-      toastManager.add({ type: "error", title: message || "Failed to create organization. Please try again." });
+      toast.error(message || "Failed to create organization. Please try again.");
     },
   });
 

@@ -5,7 +5,7 @@ import { RiComputerLine, RiSmartphoneLine } from "@remixicon/react";
 import { Button } from "@beetime/ui/components/button";
 import { Badge } from "@beetime/ui/components/badge";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { profileQueries } from "@/queries/profile";
 import { parseUserAgent } from "@/utils/user-agent";
@@ -28,7 +28,7 @@ export function SessionsTab() {
         error && typeof error === "object" && "message" in error
           ? String(error.message)
           : "Something went wrong. Please try again.";
-      toastManager.add({ type: "error", title: message });
+      toast.error(message);
     },
   });
 
@@ -36,14 +36,14 @@ export function SessionsTab() {
     ...profileQueries.revokeOtherSessions(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileQueries.sessionsKey() });
-      toastManager.add({ type: "success", title: "All other sessions revoked" });
+      toast.success("All other sessions revoked");
     },
     onError: (error) => {
       const message =
         error && typeof error === "object" && "message" in error
           ? String(error.message)
           : "Something went wrong. Please try again.";
-      toastManager.add({ type: "error", title: message });
+      toast.error(message);
     },
   });
 

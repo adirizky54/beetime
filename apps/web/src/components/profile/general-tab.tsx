@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@beetime/ui/components/avat
 import { Button } from "@beetime/ui/components/button";
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 import {
   Field,
   FieldError,
@@ -43,7 +43,7 @@ export function GeneralTab() {
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
     ...profileQueries.updateProfile(),
     onSuccess: () => {
-      toastManager.add({ type: "success", title: "Profile updated" });
+      toast.success("Profile updated");
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       profileForm.reset(profileForm.getValues());
     },
@@ -52,7 +52,7 @@ export function GeneralTab() {
         error && typeof error === "object" && "message" in error
           ? String(error.message)
           : "Something went wrong. Please try again.";
-      toastManager.add({ type: "error", title: message });
+      toast.error(message);
     },
   });
 

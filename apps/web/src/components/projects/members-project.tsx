@@ -16,7 +16,7 @@ import {
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@beetime/ui/components/empty";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@beetime/ui/components/input-group";
 import { Skeleton } from "@beetime/ui/components/skeleton";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
 
 import { getInitials } from "@/utils/string";
@@ -78,10 +78,10 @@ export function MembersProject({ project }: MembersProjectProps) {
     ...projectQueries.update(project.organizationId, project.id),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: projectQueries.listKey() });
-      toastManager.add({ type: "success", title: response.message });
+      toast.success(response.message);
     },
     onError: () => {
-      toastManager.add({ type: "error", title: "Failed to update members" });
+      toast.error("Failed to update members");
     },
   });
 

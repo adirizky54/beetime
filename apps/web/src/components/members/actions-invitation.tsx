@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@beetime/ui/components/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@beetime/ui/components/tooltip";
-import { toastManager } from "@beetime/ui/components/toast";
+import { toast } from "@beetime/ui/components/sonner";
 
 import { Can } from "@/components/ui/can";
 import type { Invitation } from "@/lib/auth";
@@ -39,12 +39,12 @@ export function ActionsInvitation({ invitation, orgId }: ActionsInvitationProps)
     ...invitationQueries.cancel(orgId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: invitationQueries.listKey(orgId) });
-      toastManager.add({ type: "success", title: "Invitation cancelled" });
+      toast.success("Invitation cancelled");
       setShowCancelDialog(false);
     },
     onError: (error) => {
       const message = error.message ?? "";
-      toastManager.add({ type: "error", title: message || "Something went wrong. Please try again." });
+      toast.error(message || "Something went wrong. Please try again.");
       setShowCancelDialog(false);
     },
   });
