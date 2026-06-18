@@ -6,6 +6,9 @@ import { ac, admin, member, owner, superadmin, user } from "@/utils/permissions"
 export const auth = createAuthClient({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   basePath: "/api/v1/auth",
+  fetchOptions: {
+    credentials: "include",
+  },
   plugins: [
     adminClient({
       ac,
