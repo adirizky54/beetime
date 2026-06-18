@@ -61,6 +61,7 @@ export const Route = createFileRoute("/sign-up")({
 
 function RouteComponent() {
   const { redirectTo } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<v.InferInput<typeof formSchema>>({
@@ -89,6 +90,9 @@ function RouteComponent() {
         },
         onSuccess: () => {
           setLoading(false);
+          navigate({
+            to: "/",
+          });
         },
         onError: (err) => {
           const pattern = /\[body\.(\w+)\]\s([^;]+)/g;

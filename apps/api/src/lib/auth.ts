@@ -35,7 +35,7 @@ export const auth = betterAuth({
       await sendResetPasswordEmail(env, {
         user: {
           name: user.name,
-          email: "delivered@resend.dev",
+          email: user.email,
         },
         url: `${env.APP_ORIGIN}/reset-password?token=${token}`,
       });
@@ -49,7 +49,7 @@ export const auth = betterAuth({
       await sendVerificationEmail(env, {
         user: {
           name: user.name,
-          email: "delivered@resend.dev",
+          email: user.email,
         },
         url: `${env.APP_ORIGIN}/verify-email?token=${token}`,
       });
@@ -74,10 +74,7 @@ export const auth = betterAuth({
       organizationLimit: 2,
       sendInvitationEmail: async ({ invitation, inviter, organization }) => {
         await sendInvitationEmail(env, {
-          invitation: {
-            ...invitation,
-            email: "delivered@resend.dev",
-          },
+          invitation,
           inviter,
           organization,
         });
