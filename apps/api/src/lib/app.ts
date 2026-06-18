@@ -34,7 +34,9 @@ export function createApp() {
   app.use(
     "*",
     cors({
-      origin: [env.APP_ORIGIN],
+      origin: (origin) => {
+        return origin.endsWith(".vercel.app") ? origin : env.APP_ORIGIN;
+      },
       allowHeaders: ["Content-Type", "Authorization"],
       exposeHeaders: ["Content-Length"],
       credentials: true,

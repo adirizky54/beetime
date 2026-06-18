@@ -12,10 +12,12 @@ import { toSlug } from "@/utils/string";
 
 export const auth = betterAuth({
   appName: env.APP_NAME,
-  baseURL: env.API_ORIGIN,
+  baseURL: {
+    allowedHosts: ["localhost:*", "*.vercel.app", "*.adirizky.com"],
+    fallback: env.API_ORIGIN,
+  },
   basePath: "/api/v1/auth",
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: [env.APP_ORIGIN, "http://localhost:*"],
   database: drizzleAdapter(db, {
     provider: "pg",
     usePlural: true,
