@@ -37,6 +37,7 @@ This is a [Turborepo](https://turborepo.com) monorepo managed with [Bun](https:/
 beetime/
 ├── apps/
 │   ├── api/        # REST API — Hono + Bun + Drizzle ORM
+│   ├── desktop/    # Desktop app — Electron + React + Vite
 │   └── web/        # Frontend SPA — React + TanStack Router/Query + Vite
 └── packages/
     ├── schema/     # Shared Valibot validation schemas and TypeScript types
@@ -55,6 +56,7 @@ The `@beetime/schema` package is shared across the stack, providing a single sou
 | API framework | [Hono](https://hono.dev) |
 | Authentication | [Better Auth](https://www.better-auth.com) |
 | Database ORM | [Drizzle ORM](https://orm.drizzle.team) + PostgreSQL |
+| Desktop framework | [Electron](https://www.electronjs.org) |
 | Frontend framework | [React](https://react.dev) + [TanStack Start](https://tanstack.com/start) |
 | Routing | [TanStack Router](https://tanstack.com/router) (file-based) |
 | Data fetching | [TanStack Query](https://tanstack.com/query) |

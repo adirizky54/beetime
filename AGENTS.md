@@ -7,8 +7,9 @@
 ```
 beetime/
 ├── apps/
-│   ├── api/        # @beetime/api   — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
-│   └── web/        # @beetime/web   — Frontend SPA (React + TanStack Router/Query + Vite)
+│   ├── api/        # @beetime/api     — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
+│   ├── desktop/    # @beetime/desktop — Desktop app (Electron + React + Vite)
+│   └── web/        # @beetime/web     — Frontend SPA (React + TanStack Router/Query + Vite)
 └── packages/
     ├── schema/     # @beetime/schema — Shared Valibot schemas + TypeScript types (no build step)
     └── ui/         # @beetime/ui    — Shared React component library (Shadcn + Tailwind CSS v4, no build step)
@@ -66,6 +67,7 @@ bun dev
 ```
 
 - API: `http://localhost:8080` (hot-reload via `bun --hot`)
+- Desktop: Electron app with Vite HMR (compiles main/preload + React renderer)
 - Web: `http://localhost:3000` (Vite HMR)
 
 To run a single app or package:
@@ -76,6 +78,9 @@ bun run dev --filter @beetime/api
 
 # Web only
 bun run dev --filter @beetime/web
+
+# Desktop only
+bun run dev --filter @beetime/desktop
 
 ```
 
@@ -111,6 +116,7 @@ bun build
 
 Build outputs:
 - `apps/api` → `dist/`
+- `apps/desktop` → `dist-electron/`, `dist/` (bundled via `electron-builder`)
 - `apps/web` → `.output/` (via Nitro/Vinxi) and `.vinxi/`
 
 `build` has an upstream dependency (`^build`), so packages are built before apps automatically.
@@ -127,13 +133,14 @@ bun check:types
 bun run check:types --filter @beetime/api
 bun run check:types --filter @beetime/web
 bun run check:types --filter @beetime/schema
+bun run check:types --filter @beetime/desktop
 bun run check:types --filter @beetime/ui
 ```
 
 All packages run `tsc --noEmit`. Fix all type errors before committing. Notable strictness flags active across packages:
 
 - `strict: true` — in all packages
-- `noUnusedLocals`, `noUnusedParameters` — in `apps/web` and `packages/schema`
+- `noUnusedLocals`, `noUnusedParameters` — in `apps/web`, `apps/desktop`, and `packages/schema`
 - `noUncheckedIndexedAccess` — in `packages/schema` (strictest)
 - `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web`
 - `verbatimModuleSyntax: true` — in `apps/api` and `packages/schema` (use `import type` for type-only imports)
@@ -187,7 +194,7 @@ Style conventions (not enforced by tooling, follow by observation):
 - **Package manager:** always use `bun` — never `npm` or `pnpm`
 - **Adding a dependency:** `bun add <package> --cwd apps/api` (or `--cwd apps/web`, etc.)
 - **Internal package references:** use `workspace:*` in `package.json` (e.g. `"@beetime/schema": "workspace:*"`)
-- **Workspace package names:** `@beetime/api`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`
+- **Workspace package names:** `@beetime/api`, `@beetime/desktop`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`
 
 ### API (`apps/api`)
 
