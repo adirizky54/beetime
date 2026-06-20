@@ -7,13 +7,15 @@
 ```
 beetime/
 ├── apps/
-│   ├── api/        # @beetime/api     — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
-│   ├── desktop/    # @beetime/desktop — Desktop app (Electron + React + Vite)
-│   └── web/        # @beetime/web     — Frontend SPA (React + TanStack Router/Query + Vite)
+│   ├── api/        # @beetime/api        — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
+│   ├── desktop/    # @beetime/desktop    — Desktop app (Electron via electron-vite, React 19, TanStack Router/Query)
+│   └── web/        # @beetime/web        — Frontend SPA (React, TanStack Router/Query, Vite)
 └── packages/
     ├── schema/     # @beetime/schema — Shared Valibot schemas + TypeScript types (no build step)
     └── ui/         # @beetime/ui    — Shared React component library (Shadcn + Tailwind CSS v4, no build step)
 ```
+
+The desktop app targets freelancers who need a dedicated timer window — built with **electron-vite** (main/preload/renderer architecture), **TanStack Router** (hash history), **TanStack Query**, and **Tailwind CSS v4**. Timer, login, sidebar navigation, and org/project/task management are implemented with mock data for early development.
 
 Key domains: projects, clients, tasks, members, organizations, timesheets. Authentication is handled by **Better Auth** with the organization plugin and role-based access control (RBAC). Transactional email (verification, notifications, invitations) is handled by **Resend** via `apps/api/src/emails/` and `apps/api/src/lib/mailer.ts`.
 
@@ -57,6 +59,10 @@ import { env, type Env } from "@/env"
 
 This is exposed to the browser as `import.meta.env.VITE_API_BASE_URL`.
 
+### Desktop environment
+
+The desktop app does **not** require any `.env` file. Environment-specific configuration is not yet set up.
+
 ---
 
 ## Development Workflow
@@ -67,7 +73,7 @@ bun dev
 ```
 
 - API: `http://localhost:8080` (hot-reload via `bun --hot`)
-- Desktop: Electron app with Vite HMR (compiles main/preload + React renderer)
+- Desktop: Electron app via `electron-vite dev` — hot-reloads main, preload, and renderer processes; renderer uses Vite HMR
 - Web: `http://localhost:3000` (Vite HMR)
 
 To run a single app or package:
@@ -116,7 +122,7 @@ bun build
 
 Build outputs:
 - `apps/api` → `dist/`
-- `apps/desktop` → `dist-electron/`, `dist/` (bundled via `electron-builder`)
+- `apps/desktop` → `out/` (compiled Electron app via `electron-vite build`), `dist/` (platform installers via `electron-builder`)
 - `apps/web` → `.output/` (via Nitro/Vinxi) and `.vinxi/`
 
 `build` has an upstream dependency (`^build`), so packages are built before apps automatically.
@@ -142,9 +148,9 @@ All packages run `tsc --noEmit`. Fix all type errors before committing. Notable 
 - `strict: true` — in all packages
 - `noUnusedLocals`, `noUnusedParameters` — in `apps/web`, `apps/desktop`, and `packages/schema`
 - `noUncheckedIndexedAccess` — in `packages/schema` (strictest)
-- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web`
-- `verbatimModuleSyntax: true` — in `apps/api` and `packages/schema` (use `import type` for type-only imports)
-- `jsx: react-jsx` — in `packages/ui`
+- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web` and `apps/desktop` (renderer tsconfig)
+- `verbatimModuleSyntax: true` — in `apps/api`, `apps/desktop` (renderer), and `packages/schema` (use `import type` for type-only imports)
+- `jsx: react-jsx` — in `apps/web`, `packages/ui` and `apps/desktop` (renderer)
 
 ---
 
@@ -253,6 +259,17 @@ const result = await db.query.clients.findMany({
   where: and(...conditions),
 })
 ```
+
+### Desktop (`apps/desktop`)
+
+**Electron structure:** Three-process architecture via `electron-vite`:
+- `src/main/` — Electron main process (window management, IPC handlers)
+- `src/preload/` — Preload script exposing APIs via `contextBridge`
+- `src/renderer/` — React app (TanStack Router + Query + Tailwind CSS v4)
+
+**Import alias:** `@/*` → `src/renderer/src/*`
+
+**Routing:** Uses `createHashHistory` (hash-based routing) — required for Electron's `file://` protocol in production.
 
 ### Web (`apps/web`)
 
