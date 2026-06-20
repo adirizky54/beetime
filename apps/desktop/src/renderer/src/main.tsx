@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { RouterProvider, createMemoryHistory, createRouter } from "@tanstack/react-router";
+import { RouterProvider, createHashHistory, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 
@@ -27,9 +27,7 @@ const router = createRouter({
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   defaultPendingMinMs: 0,
-  history: createMemoryHistory({
-    initialEntries: ["/"],
-  }),
+  history: createHashHistory(),
 });
 
 declare module "@tanstack/react-router" {
@@ -48,8 +46,3 @@ if (!rootElement.innerHTML) {
     </QueryClientProvider>,
   );
 }
-
-// Use contextBridge
-window.ipcRenderer.on("main-process-message", (_event, message) => {
-  console.log(message);
-});

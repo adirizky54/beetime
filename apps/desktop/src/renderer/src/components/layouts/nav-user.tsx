@@ -1,4 +1,4 @@
-import { RiAccountCircleLine, RiExpandUpDownLine, RiLogoutBoxLine } from "@remixicon/react";
+import { RiAccountCircleLine, RiLogoutBoxLine } from "@remixicon/react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -54,9 +54,9 @@ export function NavUser() {
                   <Avatar className="rounded-lg after:rounded-lg">
                     <AvatarFallback className="rounded-lg">{getInitials("Adi Rizky")}</AvatarFallback>
                   </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">Adi Rizky</span>
-                    <span className="truncate text-xs">adirizky@gmail.com</span>
+                  <div className="grid flex-1 text-left text-sm leading-tight select-none">
+                    <p className="truncate font-medium">Adi Rizky</p>
+                    <p className="truncate text-xs">adirizky@gmail.com</p>
                   </div>
                 </div>
               </DropdownMenuLabel>
@@ -74,7 +74,7 @@ export function NavUser() {
         </DropdownMenu>
 
         <AlertDialog open={showSignOutDialog} onOpenChange={setShowSignOutDialog}>
-          <AlertDialogContent>
+          <AlertDialogContent size="sm">
             <AlertDialogHeader>
               <AlertDialogTitle>Sign out</AlertDialogTitle>
               <AlertDialogDescription>Are you sure you want to sign out of your account?</AlertDialogDescription>

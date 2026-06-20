@@ -44,12 +44,11 @@ export function NavMenu() {
           {MENU.map((menu) => (
             <SidebarMenuItem key={menu.id}>
               <SidebarMenuButton
-                className="h-10 group-data-[collapsible=icon]:size-10! [&_svg]:size-6"
+                className="h-10 justify-center group-data-[collapsible=icon]:size-10! [&_svg]:size-5.5"
                 tooltip={menu.title}
                 render={<Link {...menu.link} preload={false} />}
               >
                 {menu.icon}
-                <span>{menu.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { RiTimerFlashLine } from "@remixicon/react";
 import { useState } from "react";
@@ -9,17 +9,13 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@be
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
 
-export const Route = createFileRoute("/login")({
-  component: RouteComponent,
-});
-
 const formSchema = v.object({
   email: v.pipe(v.string(), v.nonEmpty("Please enter your email."), v.email()),
   password: v.pipe(v.string(), v.nonEmpty("Please enter your password.")),
 });
 
-function RouteComponent() {
-  const navigate = Route.useNavigate();
+export function LoginPage() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<v.InferInput<typeof formSchema>>({
@@ -33,7 +29,7 @@ function RouteComponent() {
 
   const onSubmit = form.handleSubmit(() => {
     navigate({
-      to: "/app",
+      to: "/app/timer",
     });
   });
 
