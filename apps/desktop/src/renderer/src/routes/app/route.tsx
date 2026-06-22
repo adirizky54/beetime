@@ -1,9 +1,14 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { SidebarInset, SidebarProvider } from "@beetime/ui/components/sidebar";
 
 import { AppSidebar } from "@/components/layouts/app-sidebar";
 
 export const Route = createFileRoute("/app")({
+  beforeLoad: ({ context }) => {
+    if (!context.session) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: RouteComponent,
 });
 

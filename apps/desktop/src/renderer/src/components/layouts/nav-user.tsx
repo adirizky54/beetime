@@ -1,5 +1,5 @@
 import { RiAccountCircleLine, RiLogoutBoxLine } from "@remixicon/react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useState } from "react";
 
 import {
@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@beetime/ui/components/alert-dialog";
-import { Avatar, AvatarFallback } from "@beetime/ui/components/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@beetime/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +28,7 @@ import { getInitials } from "@/utils/string";
 
 export function NavUser() {
   const navigate = useNavigate();
+  const { user } = useRouteContext({ from: "__root__" });
 
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
 
@@ -44,7 +45,8 @@ export function NavUser() {
             render={<SidebarMenuButton size="lg" className="h-10 select-none group-data-[collapsible=icon]:size-10!" />}
           >
             <Avatar size="lg" className="rounded-lg after:rounded-lg">
-              <AvatarFallback className="rounded-lg">{getInitials("Adi Rizky")}</AvatarFallback>
+              <AvatarImage src={user?.image ?? undefined} className="rounded-lg" alt={user?.name} />
+              <AvatarFallback className="rounded-lg">{getInitials(user?.name ?? "")}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="min-w-56 rounded-lg" side="right" align="end" sideOffset={12}>
@@ -52,11 +54,12 @@ export function NavUser() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="rounded-lg after:rounded-lg">
-                    <AvatarFallback className="rounded-lg">{getInitials("Adi Rizky")}</AvatarFallback>
+                    <AvatarImage src={user?.image ?? undefined} className="rounded-lg" alt={user?.name} />
+                    <AvatarFallback className="rounded-lg">{getInitials(user?.name ?? "")}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight select-none">
-                    <p className="truncate font-medium">Adi Rizky</p>
-                    <p className="truncate text-xs">adirizky@gmail.com</p>
+                    <span className="truncate font-medium">{user?.name}</span>
+                    <span className="truncate text-xs">{user?.email}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>

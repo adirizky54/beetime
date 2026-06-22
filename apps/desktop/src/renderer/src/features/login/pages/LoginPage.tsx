@@ -4,10 +4,12 @@ import { RiTimerFlashLine } from "@remixicon/react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as v from "valibot";
+
 import { Button } from "@beetime/ui/components/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@beetime/ui/components/field";
 import { Input } from "@beetime/ui/components/input";
 import { Spinner } from "@beetime/ui/components/spinner";
+import { auth } from "@/lib/auth";
 
 const formSchema = v.object({
   email: v.pipe(v.string(), v.nonEmpty("Please enter your email."), v.email()),
@@ -19,7 +21,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<v.InferInput<typeof formSchema>>({
-    mode: "all",
+    mode: "onSubmit",
     resolver: valibotResolver(formSchema),
     defaultValues: {
       email: "",
@@ -27,10 +29,29 @@ export function LoginPage() {
     },
   });
 
-  const onSubmit = form.handleSubmit(() => {
-    navigate({
-      to: "/app/timer",
-    });
+  const onSubmit = form.handleSubmit(async (values) => {
+    await auth.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onRequest: () => {
+          form.clearErrors();
+          setLoading(true);
+        },
+        onSuccess: () => {
+          setLoading(false);
+          navigate({
+            to: "/",
+          });
+        },
+        onError: (err) => {
+          setLoading(false);
+          form.setError("email", { message: err.error.message });
+        },
+      },
+    );
   });
 
   return (

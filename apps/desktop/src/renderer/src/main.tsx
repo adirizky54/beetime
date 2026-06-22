@@ -1,10 +1,15 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createHashHistory, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import type { Session, User } from "@/lib/auth";
+
 import { routeTree } from "./routeTree.gen";
 
 type RouterContext = {
   queryClient: QueryClient;
+  session: Session | null;
+  user: User | null;
 };
 
 const queryClient = new QueryClient({
@@ -23,6 +28,8 @@ const router = createRouter({
   routeTree,
   context: {
     queryClient,
+    session: null,
+    user: null,
   } satisfies RouterContext,
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,

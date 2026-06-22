@@ -1,9 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
+  beforeLoad: ({ context }) => {
+    if (!context.session) {
+      throw redirect({ to: "/login" });
+    }
+
     throw redirect({
-      to: "/login",
+      to: "/app/timer",
     });
   },
 });

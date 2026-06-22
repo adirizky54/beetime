@@ -1,4 +1,4 @@
-appId: com.beetime.desktop
+appId: com.beetime.app
 productName: Bee Time
 directories:
   buildResources: build

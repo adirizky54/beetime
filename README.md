@@ -45,11 +45,6 @@ beetime/
     └── ui/         # Shared React component library (Shadcn UI + Tailwind CSS v4)
 ```
 
-The desktop app uses an **electron-vite** three-process architecture:
-- `src/main/` — Electron main process (window management, IPC)
-- `src/preload/` — Preload script (contextBridge API exposure)
-- `src/renderer/` — React app with hash-based TanStack Router, TanStack Query, and Tailwind CSS v4
-
 The `@beetime/schema` package is shared across the stack, providing a single source of truth for validation and TypeScript types.
 
 ## Tech Stack
@@ -63,8 +58,7 @@ The `@beetime/schema` package is shared across the stack, providing a single sou
 | Authentication | [Better Auth](https://www.better-auth.com) |
 | Database ORM | [Drizzle ORM](https://orm.drizzle.team) + PostgreSQL |
 | Desktop framework | [Electron](https://www.electronjs.org) via [electron-vite](https://electron-vite.org) |
-| Desktop router | [TanStack Router](https://tanstack.com/router) (hash history) |
-| Frontend framework | [React](https://react.dev) + [TanStack Start](https://tanstack.com/start) (web) / React (desktop) |
+| Frontend framework | [React](https://react.dev) |
 | Routing | [TanStack Router](https://tanstack.com/router) (file-based) |
 | Data fetching | [TanStack Query](https://tanstack.com/query) |
 | UI components | [Shadcn UI](https://ui.shadcn.com) + [Tailwind CSS v4](https://tailwindcss.com) |
@@ -97,6 +91,7 @@ The `@beetime/schema` package is shared across the stack, providing a single sou
    ```sh
    cp apps/api/.env.example apps/api/.env
    cp apps/web/.env.example apps/web/.env
+   cp apps/desktop/.env.example apps/desktop/.env
    ```
 
    **`apps/api/.env`**
@@ -114,7 +109,13 @@ The `@beetime/schema` package is shared across the stack, providing a single sou
 
    | Variable | Description | Default |
    |---|---|---|
-   | `VITE_API_BASE_URL` | Backend API base URL (must include trailing slash) | `http://localhost:8080/` |
+   | `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:8080` |
+
+   **`apps/desktop/.env`**
+
+   | Variable | Description | Default |
+   |---|---|---|
+   | `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:8080` |
 
 3. Apply database migrations:
 
@@ -131,9 +132,6 @@ The `@beetime/schema` package is shared across the stack, providing a single sou
    - API: `http://localhost:8080`
    - Web: `http://localhost:3000`
    - Desktop: Launches an Electron window (hot-reload via `electron-vite dev`)
-
-> [!NOTE]
-> The desktop app does not require any `.env` file. There are no desktop-specific environment variables.
 
 > [!NOTE]
 > On first sign-up, a personal organization is automatically created for the new user.

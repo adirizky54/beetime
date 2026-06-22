@@ -55,13 +55,17 @@ import { env, type Env } from "@/env"
 
 | Variable | Required | Notes |
 |---|---|---|
-| `VITE_API_BASE_URL` | Yes | Backend API base URL — **must include a trailing slash** (e.g. `http://localhost:8080/`) |
+| `VITE_API_BASE_URL` | Yes | Backend API base URL (e.g. `http://localhost:8080`) |
 
 This is exposed to the browser as `import.meta.env.VITE_API_BASE_URL`.
 
-### Desktop environment
+### Desktop environment variables (`apps/web/.env`)
 
-The desktop app does **not** require any `.env` file. Environment-specific configuration is not yet set up.
+| Variable | Required | Notes |
+|---|---|---|
+| `VITE_API_BASE_URL` | Yes | Backend API base URL (e.g. `http://localhost:8080`) |
+
+This is exposed to the browser as `import.meta.env.VITE_API_BASE_URL`.
 
 ---
 
@@ -270,6 +274,11 @@ const result = await db.query.clients.findMany({
 **Import alias:** `@/*` → `src/renderer/src/*`
 
 **Routing:** Uses `createHashHistory` (hash-based routing) — required for Electron's `file://` protocol in production.
+
+**HTTP client (`lib/api.ts`):**
+
+- `ApiClient` wraps `ky` with `baseUrl: import.meta.env.VITE_API_BASE_URL`, `prefix: "/api"`, `credentials: "include"`, 30s timeout
+- Use the exported `api` singleton: `api.get<T>(path)`, `api.post<T>(path, body)`, `api.put<T>(path, body)`, `api.patch<T>(path, body)`, `api.delete<T>(path)`
 
 ### Web (`apps/web`)
 
