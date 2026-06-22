@@ -3,11 +3,15 @@ import {
   ClientQuerySchema,
   CreateClientSchema,
   CreateProjectSchema,
+  CreateTaskSchema,
   MemberAllQuerySchema,
   MemberQuerySchema,
   ProjectQuerySchema,
+  TaskAssigneesBodySchema,
+  TaskQuerySchema,
   UpdateClientSchema,
   UpdateProjectSchema,
+  UpdateTaskSchema,
 } from "@beetime/schema";
 
 import { createRouter } from "@/lib/app";
@@ -18,6 +22,7 @@ import { verifyMembership } from "@/middlewares/verify-membership";
 import * as clientService from "@/services/clients";
 import * as memberService from "@/services/members";
 import * as projectService from "@/services/projects";
+import * as taskService from "@/services/tasks";
 
 export const organizationsRoutes = createRouter().basePath("/:orgId");
 
@@ -334,6 +339,116 @@ organizationsRoutes.get(
       {
         data,
         message: "Members retrieved successfully",
+      },
+      200,
+    );
+  },
+);
+
+// Task routes under project
+
+organizationsRoutes.get(
+  "/projects/:projectId/tasks",
+  authorize({ task: ["read"] }),
+  validator("query", TaskQuerySchema),
+  async (c) => {
+    const { projectId } = c.req.param();
+    const query = c.req.valid("query");
+
+    const result = await taskService.listTasks(projectId, query);
+
+    return c.json(
+      {
+        ...result,
+        message: "Tasks retrieved successfully",
+      },
+      200,
+    );
+  },
+);
+
+organizationsRoutes.get("/projects/:projectId/tasks/:taskId", authorize({ task: ["read"] }), async (c) => {
+  const { projectId, taskId } = c.req.param();
+
+  const data = await taskService.getTask(projectId, taskId);
+
+  return c.json(
+    {
+      data,
+      message: "Task retrieved successfully",
+    },
+    200,
+  );
+});
+
+organizationsRoutes.post(
+  "/projects/:projectId/tasks",
+  authorize({ task: ["create"] }),
+  validator("json", CreateTaskSchema),
+  async (c) => {
+    const { projectId } = c.req.param();
+    const body = c.req.valid("json");
+
+    const data = await taskService.createTask(projectId, body);
+
+    return c.json(
+      {
+        data,
+        message: "Task created successfully",
+      },
+      201,
+    );
+  },
+);
+
+organizationsRoutes.patch(
+  "/projects/:projectId/tasks/:taskId",
+  authorize({ task: ["update"] }),
+  validator("json", UpdateTaskSchema),
+  async (c) => {
+    const { projectId, taskId } = c.req.param();
+    const body = c.req.valid("json");
+
+    const data = await taskService.updateTask(projectId, taskId, body);
+
+    return c.json(
+      {
+        data,
+        message: "Task updated successfully",
+      },
+      200,
+    );
+  },
+);
+
+organizationsRoutes.delete("/projects/:projectId/tasks/:taskId", authorize({ task: ["delete"] }), async (c) => {
+  const { projectId, taskId } = c.req.param();
+
+  await taskService.deleteTask(projectId, taskId);
+
+  return c.json(
+    {
+      data: null,
+      message: "Task deleted successfully",
+    },
+    200,
+  );
+});
+
+organizationsRoutes.patch(
+  "/projects/:projectId/tasks/:taskId/assignees",
+  authorize({ task: ["update"] }),
+  validator("json", TaskAssigneesBodySchema),
+  async (c) => {
+    const { projectId, taskId } = c.req.param();
+    const { userIds } = c.req.valid("json");
+
+    await taskService.setTaskAssignees(projectId, taskId, userIds);
+
+    return c.json(
+      {
+        data: null,
+        message: "Assignees updated successfully",
       },
       200,
     );
