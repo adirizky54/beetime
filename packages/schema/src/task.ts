@@ -15,6 +15,8 @@ export const TaskSchema = v.object({
   id: v.string(),
   name: v.string(),
   description: v.nullable(v.string()),
+  startDate: v.nullable(v.string()),
+  endDate: v.nullable(v.string()),
   projectId: v.nullable(v.string()),
   priority: v.nullable(TaskPrioritySchema),
   state: TaskStateSchema,
@@ -26,6 +28,8 @@ export const TaskSchema = v.object({
 export const CreateTaskSchema = v.object({
   name: v.pipe(v.string(), v.nonEmpty("Task name cannot be empty")),
   description: v.optional(v.string()),
+  startDate: v.optional(v.string()),
+  endDate: v.optional(v.string()),
   priority: v.optional(TaskPrioritySchema),
   state: v.optional(TaskStateSchema),
   assigneeIds: v.optional(v.array(v.string())),
@@ -35,6 +39,8 @@ export const UpdateTaskSchema = v.partial(
   v.object({
     name: v.pipe(v.string(), v.nonEmpty("Task name cannot be empty")),
     description: v.nullable(v.string()),
+    startDate: v.nullable(v.string()),
+    endDate: v.nullable(v.string()),
     priority: v.nullable(TaskPrioritySchema),
     state: TaskStateSchema,
   }),

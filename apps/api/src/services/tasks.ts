@@ -27,6 +27,8 @@ export async function listTasks(projectId: string, query: TaskQuery) {
       id: tasks.id,
       name: tasks.name,
       description: tasks.description,
+      startDate: tasks.startDate,
+      endDate: tasks.endDate,
       projectId: tasks.projectId,
       priority: tasks.priority,
       state: tasks.state,
@@ -92,6 +94,8 @@ export async function createTask(projectId: string, data: CreateTaskInput) {
         projectId,
         name: data.name,
         description: data.description ?? null,
+        startDate: data.startDate ?? null,
+        endDate: data.endDate ?? null,
         priority: data.priority ?? null,
         state: data.state ?? "backlog",
       })

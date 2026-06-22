@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgEnum, pgTable, text, timestamp, uuid, index, primaryKey } from "drizzle-orm/pg-core";
+import { date, pgEnum, pgTable, text, timestamp, uuid, index, primaryKey } from "drizzle-orm/pg-core";
 import { projects } from "./projects";
 import { users } from "./users";
 
@@ -21,6 +21,8 @@ export const tasks = pgTable(
     name: text().notNull(),
     description: text("description"),
     projectId: uuid("project_id").references(() => projects.id, { onDelete: "cascade" }),
+    startDate: date("start_date"),
+    endDate: date("end_date"),
     priority: taskPriorityEnum("priority"),
     state: taskStateEnum("state").default("backlog").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
