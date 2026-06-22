@@ -1,15 +1,15 @@
 import { createRoot } from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { RouterProvider, createHashHistory, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { Organization, Session, User } from "./lib/auth";
+
+import type { Session, User } from "@/lib/auth";
+
 import { routeTree } from "./routeTree.gen";
 
 type RouterContext = {
   queryClient: QueryClient;
   session: Session | null;
   user: User | null;
-  organization: Organization | null;
-  organizations: Organization[];
 };
 
 const queryClient = new QueryClient({
@@ -30,12 +30,11 @@ const router = createRouter({
     queryClient,
     session: null,
     user: null,
-    organization: null,
-    organizations: [],
   } satisfies RouterContext,
-  scrollRestoration: true,
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
+  defaultPendingMinMs: 0,
+  history: createHashHistory(),
 });
 
 declare module "@tanstack/react-router" {
@@ -44,7 +43,7 @@ declare module "@tanstack/react-router" {
   }
 }
 
-const rootElement = document.getElementById("app")!;
+const rootElement = document.getElementById("root")!;
 
 if (!rootElement.innerHTML) {
   const root = createRoot(rootElement);

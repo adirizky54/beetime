@@ -7,12 +7,15 @@
 ```
 beetime/
 ├── apps/
-│   ├── api/        # @beetime/api   — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
-│   └── web/        # @beetime/web   — Frontend SPA (React + TanStack Router/Query + Vite)
+│   ├── api/        # @beetime/api        — REST API (Hono + Bun + Drizzle ORM + PostgreSQL)
+│   ├── desktop/    # @beetime/desktop    — Desktop app (Electron via electron-vite, React 19, TanStack Router/Query)
+│   └── web/        # @beetime/web        — Frontend SPA (React, TanStack Router/Query, Vite)
 └── packages/
     ├── schema/     # @beetime/schema — Shared Valibot schemas + TypeScript types (no build step)
     └── ui/         # @beetime/ui    — Shared React component library (Shadcn + Tailwind CSS v4, no build step)
 ```
+
+The desktop app targets freelancers who need a dedicated timer window — built with **electron-vite** (main/preload/renderer architecture), **TanStack Router** (hash history), **TanStack Query**, and **Tailwind CSS v4**. Timer, login, sidebar navigation, and org/project/task management are implemented with mock data for early development.
 
 Key domains: projects, clients, tasks, members, organizations, timesheets. Authentication is handled by **Better Auth** with the organization plugin and role-based access control (RBAC). Transactional email (verification, notifications, invitations) is handled by **Resend** via `apps/api/src/emails/` and `apps/api/src/lib/mailer.ts`.
 
@@ -52,7 +55,15 @@ import { env, type Env } from "@/env"
 
 | Variable | Required | Notes |
 |---|---|---|
-| `VITE_API_BASE_URL` | Yes | Backend API base URL — **must include a trailing slash** (e.g. `http://localhost:8080/`) |
+| `VITE_API_BASE_URL` | Yes | Backend API base URL (e.g. `http://localhost:8080`) |
+
+This is exposed to the browser as `import.meta.env.VITE_API_BASE_URL`.
+
+### Desktop environment variables (`apps/web/.env`)
+
+| Variable | Required | Notes |
+|---|---|---|
+| `VITE_API_BASE_URL` | Yes | Backend API base URL (e.g. `http://localhost:8080`) |
 
 This is exposed to the browser as `import.meta.env.VITE_API_BASE_URL`.
 
@@ -66,6 +77,7 @@ bun dev
 ```
 
 - API: `http://localhost:8080` (hot-reload via `bun --hot`)
+- Desktop: Electron app via `electron-vite dev` — hot-reloads main, preload, and renderer processes; renderer uses Vite HMR
 - Web: `http://localhost:3000` (Vite HMR)
 
 To run a single app or package:
@@ -76,6 +88,9 @@ bun run dev --filter @beetime/api
 
 # Web only
 bun run dev --filter @beetime/web
+
+# Desktop only
+bun run dev --filter @beetime/desktop
 
 ```
 
@@ -111,6 +126,7 @@ bun build
 
 Build outputs:
 - `apps/api` → `dist/`
+- `apps/desktop` → `out/` (compiled Electron app via `electron-vite build`), `dist/` (platform installers via `electron-builder`)
 - `apps/web` → `.output/` (via Nitro/Vinxi) and `.vinxi/`
 
 `build` has an upstream dependency (`^build`), so packages are built before apps automatically.
@@ -127,17 +143,18 @@ bun check:types
 bun run check:types --filter @beetime/api
 bun run check:types --filter @beetime/web
 bun run check:types --filter @beetime/schema
+bun run check:types --filter @beetime/desktop
 bun run check:types --filter @beetime/ui
 ```
 
 All packages run `tsc --noEmit`. Fix all type errors before committing. Notable strictness flags active across packages:
 
 - `strict: true` — in all packages
-- `noUnusedLocals`, `noUnusedParameters` — in `apps/web` and `packages/schema`
+- `noUnusedLocals`, `noUnusedParameters` — in `apps/web`, `apps/desktop`, and `packages/schema`
 - `noUncheckedIndexedAccess` — in `packages/schema` (strictest)
-- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web`
-- `verbatimModuleSyntax: true` — in `apps/api` and `packages/schema` (use `import type` for type-only imports)
-- `jsx: react-jsx` — in `packages/ui`
+- `noFallthroughCasesInSwitch`, `noUncheckedSideEffectImports` — in `apps/web` and `apps/desktop` (renderer tsconfig)
+- `verbatimModuleSyntax: true` — in `apps/api`, `apps/desktop` (renderer), and `packages/schema` (use `import type` for type-only imports)
+- `jsx: react-jsx` — in `apps/web`, `packages/ui` and `apps/desktop` (renderer)
 
 ---
 
@@ -187,7 +204,7 @@ Style conventions (not enforced by tooling, follow by observation):
 - **Package manager:** always use `bun` — never `npm` or `pnpm`
 - **Adding a dependency:** `bun add <package> --cwd apps/api` (or `--cwd apps/web`, etc.)
 - **Internal package references:** use `workspace:*` in `package.json` (e.g. `"@beetime/schema": "workspace:*"`)
-- **Workspace package names:** `@beetime/api`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`
+- **Workspace package names:** `@beetime/api`, `@beetime/desktop`, `@beetime/web`, `@beetime/schema`, `@beetime/ui`
 
 ### API (`apps/api`)
 
@@ -246,6 +263,22 @@ const result = await db.query.clients.findMany({
   where: and(...conditions),
 })
 ```
+
+### Desktop (`apps/desktop`)
+
+**Electron structure:** Three-process architecture via `electron-vite`:
+- `src/main/` — Electron main process (window management, IPC handlers)
+- `src/preload/` — Preload script exposing APIs via `contextBridge`
+- `src/renderer/` — React app (TanStack Router + Query + Tailwind CSS v4)
+
+**Import alias:** `@/*` → `src/renderer/src/*`
+
+**Routing:** Uses `createHashHistory` (hash-based routing) — required for Electron's `file://` protocol in production.
+
+**HTTP client (`lib/api.ts`):**
+
+- `ApiClient` wraps `ky` with `baseUrl: import.meta.env.VITE_API_BASE_URL`, `prefix: "/api"`, `credentials: "include"`, 30s timeout
+- Use the exported `api` singleton: `api.get<T>(path)`, `api.post<T>(path, body)`, `api.put<T>(path, body)`, `api.patch<T>(path, body)`, `api.delete<T>(path)`
 
 ### Web (`apps/web`)
 

@@ -16,7 +16,7 @@ export const auth = betterAuth({
     allowedHosts: ["localhost:*", "*.vercel.app", "*.adirizky.com"],
     fallback: env.API_ORIGIN,
   },
-  trustedOrigins: ["https://*.vercel.app", "https://*.adirizky.com", "http://localhost:*"],
+  trustedOrigins: ["https://*.vercel.app", "https://*.adirizky.com", "http://localhost:*", "app://."],
   basePath: "/api/v1/auth",
   secret: env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
