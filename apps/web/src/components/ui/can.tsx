@@ -12,9 +12,9 @@ interface CanProps {
 export function Can({ orgId, permissions, children, fallback = null }: CanProps) {
   const { data: allowed, isError, isLoading } = usePermission(orgId, permissions);
 
-  // if (isLoading) {
-  //   return null;
-  // }
+  if (isLoading) {
+    return null;
+  }
 
   if (isError || !allowed) {
     return fallback;
