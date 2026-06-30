@@ -76,7 +76,7 @@ export function ChangeClient({ project }: ChangeClientProps) {
               variant={null}
               className="h-auto px-0 text-foreground data-popup-open:[&_svg]:rotate-180 data-popup-open:[&_svg]:opacity-100"
             >
-              {project.client ? project.client.name : <span className="text-muted-foreground">No Client</span>}
+              {clientLabel}
               <RiArrowDownSLine
                 data-icon="inline-end"
                 className="opacity-0 transition-all group-hover/table-row:opacity-100"
@@ -118,8 +118,6 @@ export function ChangeClient({ project }: ChangeClientProps) {
               onValueChange={(value) =>
                 updateClient({
                   clientId: value || null,
-                  privacy: project.privacy,
-                  userIds: project.members.map((m) => m.id),
                 })
               }
             >

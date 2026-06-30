@@ -40,12 +40,15 @@ export const UpdateProjectSchema = v.pipe(
   v.object({
     name: v.optional(v.pipe(v.string(), v.trim(), v.nonEmpty("Project name must not be empty"))),
     description: v.optional(v.string()),
-    clientId: v.nullable(v.string()),
-    privacy: v.picklist(["public", "private"]),
-    userIds: v.array(v.string()),
+    clientId: v.optional(v.nullable(v.string())),
+    privacy: v.optional(v.picklist(["public", "private"])),
+    userIds: v.optional(v.array(v.string())),
   }),
   v.forward(
-    v.check((input) => input.privacy !== "private" || input.userIds.length > 0, "Please select at least one member"),
+    v.check(
+      (input) => input.privacy !== "private" || (input.userIds ?? []).length > 0,
+      "Please select at least one member",
+    ),
     ["userIds"],
   ),
 );

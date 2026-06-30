@@ -28,8 +28,16 @@ export async function listProjects(user: AuthUser, orgId: string, query: Project
     }
   }
 
+  // Fetch org role — session.user doesn't have org-level role
+  const membership = await db.query.members.findFirst({
+    where: and(eq(members.organizationId, orgId), eq(members.userId, user.id)),
+    columns: { role: true },
+  });
+
+  const isAdminOrOwner = membership?.role === "admin" || membership?.role === "owner";
+
   // Admins/owners see all projects; regular members see public + their private projects
-  if (!user.role?.includes("admin") && !user.role?.includes("owner")) {
+  if (!isAdminOrOwner) {
     const privacyCondition = or(
       eq(projects.privacy, "public"),
       exists(
@@ -59,15 +67,26 @@ export async function listProjects(user: AuthUser, orgId: string, query: Project
         name: clients.name,
       },
       members: sql<{ id: string; name: string; image: string | null }[]>`
-        COALESCE(
-          (
-            SELECT json_agg(json_build_object('id', ${users.id}, 'name', ${users.name}, 'image', ${users.image}))
-            FROM ${projectMembers}
-            JOIN ${users} ON ${projectMembers.userId} = ${users.id}
-            WHERE ${projectMembers.projectId} = ${projects.id}
-          ),
-          '[]'::json
-        )
+        CASE
+          WHEN ${projects.privacy} = 'public' THEN (
+            SELECT COALESCE(
+              json_agg(json_build_object('id', ${users.id}, 'name', ${users.name}, 'image', ${users.image})),
+              '[]'::json
+            )
+            FROM ${members}
+            JOIN ${users} ON ${members.userId} = ${users.id}
+            WHERE ${members.organizationId} = ${projects.organizationId}
+          )
+          ELSE COALESCE(
+            (
+              SELECT json_agg(json_build_object('id', ${users.id}, 'name', ${users.name}, 'image', ${users.image}))
+              FROM ${projectMembers}
+              JOIN ${users} ON ${projectMembers.userId} = ${users.id}
+              WHERE ${projectMembers.projectId} = ${projects.id}
+            ),
+            '[]'::json
+          )
+        END
       `,
     })
     .from(projects)
@@ -93,6 +112,17 @@ export async function getProject(user: AuthUser, orgId: string, projectId: strin
           name: true,
         },
       },
+      members: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -100,23 +130,80 @@ export async function getProject(user: AuthUser, orgId: string, projectId: strin
     throw new HTTPException(404, { message: "Project not found!" });
   }
 
+  // Fetch org role — session.user doesn't have org-level role
+  const membershipRow = await db.query.members.findFirst({
+    where: and(eq(members.organizationId, orgId), eq(members.userId, user.id)),
+    columns: { role: true },
+  });
+
+  const isAdminOrOwner = membershipRow?.role === "admin" || membershipRow?.role === "owner";
+
   if (project.privacy === "private") {
-    if (!user.role?.includes("admin") && !user.role?.includes("owner")) {
-      const membership = await db.query.projectMembers.findFirst({
+    if (!isAdminOrOwner) {
+      const projectMembership = await db.query.projectMembers.findFirst({
         where: and(eq(projectMembers.projectId, projectId), eq(projectMembers.userId, user.id)),
       });
-      if (!membership) {
+      if (!projectMembership) {
         // Return 404 to avoid leaking existence of private projects
         throw new HTTPException(404, { message: "Project not found!" });
       }
     }
   }
 
-  return project;
+  let membersData = [];
+  if (project.privacy === "public") {
+    const orgMemberRows = await db.query.members.findMany({
+      where: eq(members.organizationId, orgId),
+      with: {
+        users: {
+          columns: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+    membersData = orgMemberRows.map((m) => m.users);
+  } else {
+    membersData = project.members.map((member) => member.user);
+  }
+
+  return {
+    ...project,
+    members: membersData,
+  };
 }
 
-export async function getProjectMembers(projectId: string) {
-  const members = await db.query.projectMembers.findMany({
+export async function getProjectMembers(orgId: string, projectId: string) {
+  const project = await db.query.projects.findFirst({
+    where: and(eq(projects.id, projectId), eq(projects.organizationId, orgId)),
+    columns: {
+      privacy: true,
+    },
+  });
+
+  if (!project) {
+    throw new HTTPException(404, { message: "Project not found!" });
+  }
+
+  if (project.privacy === "public") {
+    const orgMemberRows = await db.query.members.findMany({
+      where: eq(members.organizationId, orgId),
+      with: {
+        users: {
+          columns: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+    return orgMemberRows.map((m) => m.users);
+  }
+
+  const memberRows = await db.query.projectMembers.findMany({
     where: eq(projectMembers.projectId, projectId),
     with: {
       user: {
@@ -129,7 +216,7 @@ export async function getProjectMembers(projectId: string) {
     },
   });
 
-  return members.map((member) => member.user);
+  return memberRows.map((member) => member.user);
 }
 
 export async function createProject(user: AuthUser, orgId: string, data: CreateProjectInput) {
@@ -160,18 +247,7 @@ export async function createProject(user: AuthUser, orgId: string, data: CreateP
       })
       .returning();
 
-    if (data.privacy === "public") {
-      const orgMembers = await tx.query.members.findMany({
-        where: eq(members.organizationId, orgId),
-      });
-
-      if (orgMembers.length > 0) {
-        await tx
-          .insert(projectMembers)
-          .values(orgMembers.map((m) => ({ projectId: newProject.id, userId: m.userId })))
-          .onConflictDoNothing();
-      }
-    } else {
+    if (data.privacy === "private") {
       const orgMembers = await tx.query.members.findMany({
         where: and(eq(members.organizationId, orgId), inArray(members.userId, data.userIds)),
       });
@@ -247,17 +323,8 @@ export async function updateProject(orgId: string, projectId: string, data: Upda
     const [result] = await tx.update(projects).set(projectData).where(eq(projects.id, projectId)).returning();
 
     if (switchingToPublic) {
-      // Enroll all current org members (existing behavior)
-      const orgMembers = await tx.query.members.findMany({
-        where: eq(members.organizationId, orgId),
-      });
-
-      if (orgMembers.length > 0) {
-        await tx
-          .insert(projectMembers)
-          .values(orgMembers.map((m) => ({ projectId, userId: m.userId })))
-          .onConflictDoNothing();
-      }
+      // Cleanup: public project doesn't need project_members
+      await tx.delete(projectMembers).where(eq(projectMembers.projectId, projectId));
     } else if (validatedUserIds) {
       // Full replacement: delete all current members, re-insert new list
       await tx.delete(projectMembers).where(eq(projectMembers.projectId, projectId));

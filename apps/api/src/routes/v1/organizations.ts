@@ -68,9 +68,9 @@ organizationsRoutes.get("/projects/:projectId", authorize({ project: ["read"] })
 });
 
 organizationsRoutes.get("/projects/:projectId/members", authorize({ project: ["read"] }), async (c) => {
-  const { projectId } = c.req.param();
+  const { orgId, projectId } = c.req.param();
 
-  const projectMembers = await projectService.getProjectMembers(projectId);
+  const projectMembers = await projectService.getProjectMembers(orgId, projectId);
 
   return c.json(
     {

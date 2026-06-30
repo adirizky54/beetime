@@ -42,7 +42,9 @@ export function AppHeader({ className, breadcrumbs, children, ...props }: AppHea
                 return (
                   <Fragment key={index}>
                     <BreadcrumbItem>
-                      <BreadcrumbLink render={<Link {...breadcrumb} />}>{breadcrumb.title}</BreadcrumbLink>
+                      <BreadcrumbLink render={<Link {...breadcrumb} preload={false} />}>
+                        {breadcrumb.title}
+                      </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                   </Fragment>

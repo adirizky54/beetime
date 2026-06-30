@@ -4,7 +4,7 @@ export const Route = createFileRoute("/$orgSlug/")({
   head: () => ({
     meta: [{ title: "Dashboard — Bee Time" }],
   }),
-  loader: ({ params }) => {
+  beforeLoad: ({ params }) => {
     throw redirect({
       to: "/$orgSlug/dashboard",
       params,

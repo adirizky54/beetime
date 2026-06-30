@@ -110,11 +110,11 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
     updateProject(values);
   });
 
-  const getClient = (clientId: string | null) => {
+  const getClient = (clientId: string | null | undefined) => {
     return clients.find((c) => c.id === clientId);
   };
 
-  const getMembers = (userIds: Array<string>) => {
+  const getMembers = (userIds: Array<string> | undefined) => {
     return orgMembers.filter((m) => userIds.includes(m.userId));
   };
 
@@ -214,7 +214,7 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
                     value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
-                      form.setValue("userIds", []);
+                      form.setValue("userIds", undefined);
                     }}
                   >
                     <FieldLabel className="font-normal">

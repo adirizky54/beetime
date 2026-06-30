@@ -90,7 +90,6 @@ export function MembersProject({ project }: MembersProjectProps) {
 
     updateMembers({
       privacy: project.privacy,
-      clientId: project.clientId,
       userIds: next,
     });
   };

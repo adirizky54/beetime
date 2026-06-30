@@ -97,7 +97,7 @@ function RouteComponent() {
             <div className="flex flex-col items-start gap-0.5">
               <div className="flex items-center gap-2">
                 <Link
-                  to="/$orgSlug/projects/$projectId"
+                  to="/$orgSlug/projects/$projectId/overview"
                   params={{ orgSlug, projectId: project.id }}
                   className="truncate font-medium hover:underline"
                 >

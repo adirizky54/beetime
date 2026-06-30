@@ -21,7 +21,7 @@ export const projectQueries = {
     queryOptions({
       queryKey: [...projectQueries.detailkey(), orgId, projectId] as const,
       queryFn: async ({ signal }) =>
-        await api.get<Omit<Project, "members">>(`v1/organizations/${orgId}/projects/${projectId}`, {
+        await api.get<Project>(`v1/organizations/${orgId}/projects/${projectId}`, {
           signal,
         }),
     }),
